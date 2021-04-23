@@ -68,33 +68,65 @@ namespace eXtensionSharp {
             return false;
         }
 
-        public static string xToValue(this string src, string @default = null) {
-            return src.xIfNullOrEmpty(x => @default);
+        public static string xValue(this string src, string @default = null) {
+            return src.xIfNullOrEmpty(x => @default).xTrim();
         }
 
-        public static string xToValue(this object src, object @default = null) {
-            return Convert.ToString(src);
-        }
-        
-        public static T xToValue<T>(this object src, object @deafult = null) {
-            if (src is string) {
-                if (string.IsNullOrEmpty(src as string)) {
-                    return (T)Convert.ChangeType(@deafult, typeof(T));
-                }
+        public static string xValue(this object src, object @default = null) {
+            if (src.xIsNull() && @default.xIsNull()) return string.Empty;
+            if (src.xIsNotNull()) {
+                return Convert.ToString(src);
             }
-            return (T)Convert.ChangeType(src, typeof(T));
+
+            if (@default.xIsNotNull()) {
+                return Convert.ToString(@default);
+            }
+
+            return string.Empty;
         }
         
-        public static string xToValue<T>(this XENUM_BASE<T> src, XENUM_BASE<T> @default = null) where T : XENUM_BASE<T>, new() {
-            return src.Value.xIfNotNull(x => x, @default.Value);
+        public static T xValue<T>(this object src, object @default = null) {
+            if (src.xIsNull() && @default.xIsNull()) return default;
+            if (src.xIsNotNull()) {
+                return (T)Convert.ChangeType(src, typeof(T));
+            }
+
+            if (@default.xIsNotNull()) {
+                return (T)Convert.ChangeType(@default, typeof(T));
+            }
+
+            return default;
+        }
+        
+        public static string xValue<T>(this XENUM_BASE<T> src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
+            if (defaultValue.xIsNotNull()) {
+                return src.Value.xIfNotNull(x => x, defaultValue.Value);    
+            }
+
+            return src.Value;
+        }
+
+        public static XENUM_BASE<T> xValue<T>(this string src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
+            if (src.xIsNullOrEmpty()) {
+                return (XENUM_BASE<T>)src; 
+            }
+            
+            if (defaultValue.xIsNotNull()) {
+                return defaultValue;
+            }
+
+            return null;
+        }
+
+        public static string xTrim(this string src) {
+            return src.xIsNullOrEmpty() ? string.Empty : src.Trim();
         }
 
         public static bool xIsEquals<T>(this T src, T compare) {
             return src.Equals(compare);
         }
         
-        public static bool xIsEquals<T>(this T src, IEnumerable<T> compares)
-            where T : struct {
+        public static bool xIsEquals<T>(this T src, IEnumerable<T> compares) {
             var isEqual = false;
             compares.xForEach(item => {
                 isEqual = item.xIsEquals(src);
@@ -104,28 +136,7 @@ namespace eXtensionSharp {
             return isEqual;
         }
 
-        public static bool xIsEquals<T>(this IEnumerable<T> srcs, T compare) 
-            where T: struct {
-            return compare.xIsEquals(srcs);
-        }
-
-        
-
-        public static bool xIsEquals(this string src, string compare) {
-            return src.Equals(compare);
-        }
-        
-        public static bool xIsEquals(this string src, IEnumerable<string> compares) {
-            var isEqaul = false;
-            compares.xForEach(item => {
-                isEqaul = src.xIsEquals(item);
-                return !isEqaul;
-            });
-
-            return isEqaul;
-        }
-
-        public static bool xIsEquals(this IEnumerable<string> srcs, string compare) {
+        public static bool xIsEquals<T>(this IEnumerable<T> srcs, T compare) {
             return compare.xIsEquals(srcs);
         }
         

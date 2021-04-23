@@ -64,6 +64,10 @@ namespace eXtensionSharp {
             return string.IsNullOrEmpty(str);
         }
 
+        public static bool xIsNotNullOrEmpty(this string str) {
+            return !string.IsNullOrEmpty(str);
+        }
+
         public static string xReplace(this string text, string oldValue, string newValue) {
             return text.xIfNullOrEmpty(x => string.Empty).Replace(oldValue, newValue);
         }
