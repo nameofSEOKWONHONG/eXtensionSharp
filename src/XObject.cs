@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Xml.Serialization;
 using NetFabric.Hyperlinq;
 
 namespace eXtensionSharp {
@@ -96,6 +97,10 @@ namespace eXtensionSharp {
             }
 
             return default;
+        }
+
+        public static T xValue<T>(this string src) where T : struct {
+            return src.xFromStringToEnum<T>();
         }
         
         public static string xValue<T>(this XENUM_BASE<T> src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {

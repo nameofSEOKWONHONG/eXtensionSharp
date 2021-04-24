@@ -10,8 +10,8 @@ using Newtonsoft.Json.Linq;
 
 namespace eXtensionSharp {
     /// <summary>
-    /// String Enum Implement
-    /// ref : [stackoverflow] https://stackoverflow.com/questions/8588384/how-to-define-an-enum-with-string-value
+    /// enum class, use static property
+    /// ref : [stackoverflow] https://stackoverflow.com/questions/8588384/how-to-Define-an-enum-with-string-value
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
     public abstract class XENUM_BASE<TEnum> : IEquatable<TEnum>
@@ -20,7 +20,7 @@ namespace eXtensionSharp {
 
         //protected JENUM_BASE(string value) => this.Value = value;
         
-        public static TEnum define(string value) {
+        public static TEnum Define(string value) {
             TEnum @enum = new TEnum();
             @enum.Value = value;
             return @enum;

@@ -148,7 +148,7 @@ namespace eXtensionSharp {
         /// <param name="second"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IDictionary<string, T> jConcat<T>(this IDictionary<string, T> first, IDictionary<string, T> second) {
+        public static IDictionary<string, T> xConcat<T>(this IDictionary<string, T> first, IDictionary<string, T> second) {
             return first.Concat(second)
                 .ToDictionary(x => x.Key, x => x.Value);
         }
@@ -161,7 +161,7 @@ namespace eXtensionSharp {
         /// <param name="second"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IDictionary<string, T> jConcatUpdate<T>(this IDictionary<string, T> first, IDictionary<string, T> second) {
+        public static IDictionary<string, T> xConcatUpdate<T>(this IDictionary<string, T> first, IDictionary<string, T> second) {
             var result = new Dictionary<string, T>();
             first.xForEach(firstPair => {
                 result.Add(firstPair.Key, firstPair.Value);
