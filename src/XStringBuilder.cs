@@ -50,15 +50,12 @@ namespace eXtensionSharp {
             _stringBuilder.AppendJoin(seperator, objs);
         }
 
-        public override string ToString() {
-            return _stringBuilder.ToString();
-        }
-
         public void Dispose() {
-            Release();
+            
         }
 
-        public void Release() {
+        public void Release(out string str) {
+            str = _stringBuilder.ToString();
             _stringBuilderPool.Return(_stringBuilder);
             _stringBuilderPool = null;
             GC.Collect();

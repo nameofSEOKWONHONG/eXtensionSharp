@@ -63,10 +63,10 @@ namespace eXtensionSharp {
             }
             else if (obj is ICollection) {
                 if ((obj as ICollection).Count > 0)
-                    return true;
+                    return false;
             }
 
-            return false;
+            return true;
         }
 
         public static string xValue(this string src, string @default = null) {
@@ -143,6 +143,17 @@ namespace eXtensionSharp {
 
         public static bool xIsEquals<T>(this IEnumerable<T> srcs, T compare) {
             return compare.xIsEquals(srcs);
+        }
+
+        public static bool xContains(this string src, IEnumerable<string> compares) {
+            var isContain = false;
+            compares.xForEach(compare => {
+                isContain = src.Contains(compare);
+                if (isContain) return false;
+                return true;
+            });
+
+            return isContain;
         }
         
         public static T xFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null) {

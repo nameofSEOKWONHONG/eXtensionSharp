@@ -129,5 +129,11 @@ namespace eXtensionSharp {
             if (value.xIsNullOrEmpty()) return -1;
             return src.LastIndexOfAny(value.ToCharArray());
         }
+
+        public static string xValue(this XStringBuilder xsb) {
+            var str = string.Empty;
+            xsb.Release(out str);
+            return str;
+        }
     }
 }
