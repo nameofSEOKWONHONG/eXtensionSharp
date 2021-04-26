@@ -133,7 +133,7 @@ namespace eXtensionSharp {
         public static string xValue(this XStringBuilder xsb) {
             var str = string.Empty;
             xsb.Release(out str);
-            return str;
+            return str.xTrim();
         }
     }
 }

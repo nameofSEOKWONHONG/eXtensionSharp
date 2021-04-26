@@ -128,10 +128,28 @@ namespace eXtensionSharp {
             }
         }
 
-        public static async Task jForeachAsync<T>(this IEnumerable<T> iterator, Func<T, Task> func) {
+        public static async Task xForEachAsync<T>(this IEnumerable<T> iterator, Func<T, Task> func) {
             foreach (var value in iterator)
             {
                 await func(value);
+            }
+        }
+
+        public static void xForEach(this (DateTime from, DateTime to) fromToDate, ENUM_DATETIME_FOREACH_TYPE type,  Action<DateTime> action) {
+            if (type.xIsEquals(ENUM_DATETIME_FOREACH_TYPE.DAY)) {
+                for (var i = fromToDate.from; i <= fromToDate.to; i = i.AddDays(1)) {
+                    action(i);
+                }       
+            }
+            else if (type.xIsEquals(ENUM_DATETIME_FOREACH_TYPE.MONTH)) {
+                for (var i = fromToDate.from; i <= fromToDate.to; i = i.AddMonths(1)) {
+                    action(i);
+                }
+            }
+            else {
+                for (var i = fromToDate.from; i <= fromToDate.to; i = i.AddYears(1)) {
+                    action(i);
+                }
             }
         }
 
@@ -177,5 +195,11 @@ namespace eXtensionSharp {
         }
 
         #endregion [Datatable & DataReader]
+    }
+    
+    public class ENUM_DATETIME_FOREACH_TYPE : XENUM_BASE<ENUM_DATETIME_FOREACH_TYPE> {
+        public static readonly ENUM_DATETIME_FOREACH_TYPE DAY = Define("Day");
+        public static readonly ENUM_DATETIME_FOREACH_TYPE MONTH = Define("Month");
+        public static readonly ENUM_DATETIME_FOREACH_TYPE YEAR = Define("Year");
     }
 }

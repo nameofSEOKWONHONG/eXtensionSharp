@@ -76,11 +76,11 @@ namespace eXtensionSharp {
         public static string xValue(this object src, object @default = null) {
             if (src.xIsNull() && @default.xIsNull()) return string.Empty;
             if (src.xIsNotNull()) {
-                return Convert.ToString(src);
+                return Convert.ToString(src).xTrim();
             }
 
             if (@default.xIsNotNull()) {
-                return Convert.ToString(@default);
+                return Convert.ToString(@default).xTrim();
             }
 
             return string.Empty;

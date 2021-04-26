@@ -8,7 +8,7 @@ namespace eXtensionSharp {
     /// StringBuilder Pool
     /// 메모리 소비를 늘리는 대신 GC를 줄입니다.
     /// </summary>
-    public class XStringBuilder : IDisposable {
+    public class XStringBuilder {
         private ObjectPool<StringBuilder> _stringBuilderPool = null;
         private StringBuilder _stringBuilder = null;
         
