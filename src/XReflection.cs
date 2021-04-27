@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,10 @@ namespace eXtensionSharp {
             var att = type.GetCustomAttributes(typeof(TAttribute), true).FirstOrDefault() as TAttribute;
             if (att.xIsNotNull()) return valueSelector(att);
             return default;
+        }
+
+        public static IEnumerable<PropertyInfo> GetProperties<T>(this T obj) {
+            return obj.GetProperties();
         }
         
         public static IEnumerable<T> CreateInstance<T>(this string assemblyPath, string[] containKeywords = null, string[] notContainKeywords = null) where T : class {
