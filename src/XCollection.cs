@@ -176,7 +176,7 @@ namespace eXtensionSharp {
             return dt;
         }
 
-        public static T xFromReaderToObject<T>(this IDataReader reader)
+        public static T xReaderToObject<T>(this IDataReader reader)
             where T : class, new() {
             var properties = typeof(T).GetProperties().xToList();
 

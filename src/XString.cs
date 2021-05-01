@@ -80,7 +80,7 @@ namespace eXtensionSharp {
             while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0) dest.Write(bytes, 0, cnt);
         }
 
-        public static byte[] xFromStringToByteArray(this string str) {
+        public static byte[] xStringToByteArray(this string str) {
             var bytes = Encoding.UTF8.GetBytes(str);
 
             using (var msi = new MemoryStream(bytes))

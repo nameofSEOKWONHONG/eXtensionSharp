@@ -11,7 +11,7 @@ namespace eXtensionSharp.test {
 
         [Test]
         public void enum_attribute_test() {
-            Assert.AreEqual(EnumUseYn.Y.xFromEnumToString(), "Y");
+            Assert.AreEqual(EnumUseYn.Y.xEnumToString(), "Y");
         }
 
         [Test]

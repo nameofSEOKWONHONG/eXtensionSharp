@@ -101,7 +101,7 @@ namespace eXtensionSharp {
         }
 
         public static T xValue<T>(this string src) where T : struct {
-            return src.xFromStringToEnum<T>();
+            return src.xStringToEnum<T>();
         }
         
         public static string xValue<T>(this XENUM_BASE<T> src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {

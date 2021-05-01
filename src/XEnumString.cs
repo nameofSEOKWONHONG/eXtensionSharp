@@ -218,11 +218,11 @@ namespace eXtensionSharp {
 
     #region [static enum util]
     public static class XEnumStringUtil {
-        public static T xFromStringToEnum<T>(this string value) where T : struct {
+        public static T xStringToEnum<T>(this string value) where T : struct {
             return Enum.TryParse(value, true, out T result) ? result : default;
         }
 
-        public static string xFromEnumToString(this Enum value) {
+        public static string xEnumToString(this Enum value) {
             var da = (DescriptionAttribute[]) value.GetType().GetField(value.ToString())
                 ?.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return da != null && da.Length > 0 ? da[0].Description : value.ToString();
