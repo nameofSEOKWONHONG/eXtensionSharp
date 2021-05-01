@@ -42,5 +42,14 @@ namespace eXtensionSharp {
         public static T xBsonToObject<T>(this BsonDocument doc) {
             return BsonSerializer.Deserialize<T>(doc);
         }
+
+        public static BsonDocument xFromObjectToBson<T>(this T obj) {
+            return BsonDocument.Parse(obj.xObjectToJson());
+        }
+
+        public static T xFromBsonToObject<T>(this BsonDocument doc) {
+            return BsonSerializer.Deserialize<T>(doc);
+
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using Microsoft.VisualBasic;
 using NetFabric.Hyperlinq;
 
 namespace eXtensionSharp {
@@ -176,6 +177,14 @@ namespace eXtensionSharp {
         public static T[] xToArray<T>(this IEnumerable<T> enumerable) where T : new() {
             if (enumerable.xIsNull()) return new T[0];
             return enumerable.AsValueEnumerable().ToArray();
-        }        
+        }
+
+        public static string xToHash(this string str) {
+            return str.GetHashCode().ToString();
+        }
+
+        public static string xToName(this Type type) {
+            return type.Name;
+        }
     }
 }
