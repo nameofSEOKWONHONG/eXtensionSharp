@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -84,7 +85,54 @@ namespace eXtensionSharp {
         }
 
         public static void xFileUnzip(this string srcFileName, string destdir) {
-            if (srcFileName.xIsFileExtension()) ZipFile.ExtractToDirectory(srcFileName, destdir, null, true);
+            if (srcFileName.xIsFileExtension()) 
+                ZipFile.ExtractToDirectory(srcFileName, destdir, null, true);
         }
+
+        /// <summary>
+        /// create file
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static void xFileCreate(this string fileName) {
+            File.Create(fileName);
+        }
+
+        /// <summary>
+        /// create dir and file
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static void xFileCreateAll(this string fileName) {
+            List<string> paths = null;
+
+            if (XOS.xIsWindows()) {
+                paths = fileName.xSplit('\\').xToList();
+            }
+            else if (XOS.xIsLinux() || XOS.xIsMac()) {
+                paths = fileName.xSplit('/').xToList();
+            }
+            
+            var dir = string.Empty;
+            paths.xForEach((path, i) => {
+                if (path.xContains(new[]{":"})) {
+                    dir += path;    
+                }
+                else {
+                    if (XOS.xIsWindows()) {
+                        dir += $"{"\\"}{path}";    
+                    }
+                    else if (XOS.xIsLinux() || XOS.xIsLinux()) {
+                        dir += $"{"/"}{path}";
+                    }   
+                }
+                
+                if (!Directory.Exists(dir)) {
+                    Directory.CreateDirectory(dir);
+                }
+
+                return true;
+            });
+            fileName.xFileCreate();
+        }
+            
     }
 }

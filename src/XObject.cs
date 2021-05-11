@@ -170,8 +170,8 @@ namespace eXtensionSharp {
             return enumerable.AsValueEnumerable().LastOrDefault();
         }        
         
-        public static IEnumerable<T> xToList<T>(this IEnumerable<T> enumerable) {
-            return enumerable.xIfNotNull(x => x, new XList<T>());
+        public static List<T> xToList<T>(this IEnumerable<T> enumerable) {
+            return enumerable == null ? new List<T>() : enumerable.ToList();
         }
 
         public static T[] xToArray<T>(this IEnumerable<T> enumerable) where T : new() {

@@ -1,5 +1,5 @@
 ﻿namespace eXtensionSharp {
-    public static class XCastExtension {
+    public static class XCast {
         public static TDest xCast<TDest>(this object src)
             where TDest : class {
             return src as TDest;

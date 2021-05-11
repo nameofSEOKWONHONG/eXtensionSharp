@@ -59,8 +59,8 @@ namespace eXtensionSharp {
         #endregion
 
         #region [util]
-        public static XList<TEnum> AsList() {
-            return (XList<TEnum>) typeof(TEnum)
+        public static IList<TEnum> AsList() {
+            return (IList<TEnum>) typeof(TEnum)
                 .GetProperties(BindingFlags.Public | BindingFlags.Static)
                 .Where(p => p.PropertyType == typeof(TEnum))
                 .Select(p => (TEnum) p.GetValue(null))
@@ -68,7 +68,7 @@ namespace eXtensionSharp {
         }
 
         public static TEnum Parse(string value) {
-            XList<TEnum> all = AsList();
+            IList<TEnum> all = AsList();
 
             if (!all.Any(a => a.Value == value))
                 throw new InvalidOperationException($"\"{value}\" is not a valid value for the type {typeof(TEnum).Name}");

@@ -6,6 +6,7 @@ using System.Text;
 using NetFabric.Hyperlinq;
 
 namespace eXtensionSharp {
+    [Obsolete("test code, do not use", true)]
     ref struct SplitSpanEnumerator {
         private ReadOnlySpan<char> text;
         private readonly char splitChar;
@@ -48,12 +49,8 @@ namespace eXtensionSharp {
         }
 
         public static IEnumerable<string> xSplit(this string str, char splitChar) {
-            XList<string> result = new XList<string>();
-            foreach (var @char in new SplitSpanEnumerator(str.AsSpan(), splitChar)) {
-                result.Add(@char.ToString());
-            }
-
-            return result;
+            if (str.xIsNullOrEmpty()) return new List<string>();
+            return str.Split(splitChar);
         }
 
         public static int xCount(this string str) {

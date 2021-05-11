@@ -14,15 +14,15 @@ namespace eXtensionSharp {
         public static IEnumerable<T> xWhere<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
             where T : class {
 
-            return NullToNew(enumerable).AsValueEnumerable().Where(predicate);
+            return xNullToNew(enumerable).AsValueEnumerable().Where(predicate);
         }
 
         public static IEnumerable<T> xSelect<T>(this IEnumerable<T> enumerable, Func<T, T> predicate)
             where T : class {
-            return NullToNew(enumerable).AsValueEnumerable().Select(predicate);
+            return xNullToNew(enumerable).AsValueEnumerable().Select(predicate);
         }
 
-        private static IEnumerable<T> NullToNew<T>(IEnumerable<T> enumerable) {
+        private static IEnumerable<T> xNullToNew<T>(IEnumerable<T> enumerable) {
             if (enumerable.xIsEmpty()) {
                 enumerable = new XList<T>();
                 return enumerable;
