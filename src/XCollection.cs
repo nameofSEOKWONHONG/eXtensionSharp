@@ -195,6 +195,18 @@ namespace eXtensionSharp {
         }
 
         #endregion [Datatable & DataReader]
+
+        public static void xForeach(this ValueTuple<int, int> fromTo, Action<int> action) {
+            for (var i = fromTo.Item1; i <= fromTo.Item2; i++) {
+                action(i);
+            }
+        }
+
+        public static void xReverseForeach(this ValueTuple<int, int> fromTo, Action<int> action) {
+            for (var i = fromTo.Item2; i >= fromTo.Item1; i--) {
+                action(i);
+            }
+        }
     }
     
     public class ENUM_DATETIME_FOREACH_TYPE : XENUM_BASE<ENUM_DATETIME_FOREACH_TYPE> {

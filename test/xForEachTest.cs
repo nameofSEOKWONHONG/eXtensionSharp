@@ -48,5 +48,19 @@ namespace eXtensionSharp.test {
             
             Assert.GreaterOrEqual(list.Count, 2);
         }
+
+        [Test]
+        public void number_from_to_test() {
+            (1, 10).xForeach(num => {
+                Console.WriteLine(num);
+            });
+        }
+
+        [Test]
+        public void reverse_number_from_to_test() {
+            (1, 10).xReverseForeach(i => {
+                Console.WriteLine(i);
+            });
+        }
     }
 }
