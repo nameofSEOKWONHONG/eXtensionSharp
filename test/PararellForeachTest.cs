@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Internal.Execution;
 
 namespace eXtensionSharp.test {
     public class PararellForeachTest {
@@ -64,6 +65,21 @@ namespace eXtensionSharp.test {
             maps.xForEach(item => {
                 Console.WriteLine(item.xObjectToJson());
             });            
+        }
+
+        /// <summary>
+        /// 병렬 루프를 확장 메서드로 진행한 케이스
+        /// </summary>
+        [Test]
+        public void Parallel_loop_extension_test() {
+            _list.xPararellForeach(items => {
+                return items.GroupBy(m => m.COM_CODE);
+            }, (key, datas) => {
+                return datas.Where(m => m.COM_CODE == key);
+            }, (data, i) => {
+                data.FORM_SEQ = i + 1;
+                Console.WriteLine(data.xObjectToJson());
+            });
         }
     }
 

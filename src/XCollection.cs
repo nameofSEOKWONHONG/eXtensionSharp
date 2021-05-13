@@ -207,6 +207,27 @@ namespace eXtensionSharp {
                 action(i);
             }
         }
+
+        public static void xPararellForeach<T>(this IEnumerable<T> items, 
+            Func<IEnumerable<T>, IEnumerable<IGrouping<string, T>>> groupby, 
+            Func<string, IEnumerable<T>, IEnumerable<T>> filter,
+            Action<T, int> action) where T : class {
+            var maps = new Dictionary<string, IEnumerable<T>>();
+            var groups = groupby(items);
+            groups.xForEach(group => {
+                var filterResult = filter(group.Key, items);
+                maps.Add(group.Key, filterResult);
+            });
+
+            Parallel.ForEach(maps, item => {
+                var i = 0;
+                item.Value.xForEach(item2 => {
+                    action(item2, i);
+                    i++;
+                });
+            });
+        }
+            
     }
     
     public class ENUM_DATETIME_FOREACH_TYPE : XENUM_BASE<ENUM_DATETIME_FOREACH_TYPE> {
