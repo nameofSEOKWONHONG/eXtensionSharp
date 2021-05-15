@@ -81,6 +81,23 @@ namespace eXtensionSharp.test {
                 Console.WriteLine(data.xObjectToJson());
             });
         }
+
+        [Test]
+        public void threadsafe_dictionary_test() {
+            var maps = new Dictionary<string, int>(); 
+            var range = Enumerable.Range(1, 10);
+            Parallel.ForEach(range, i => {
+                maps.Add(i.ToString(), i);
+                Console.WriteLine(maps[i.ToString()].ToString());
+            });
+            
+            Console.WriteLine("=========================");
+            
+            Parallel.ForEach(range, i => {
+                maps.Add(i.ToString(), i);
+                Console.WriteLine(maps[i.ToString()].ToString());
+            });
+        }
     }
 
     public class PararellData {

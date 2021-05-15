@@ -64,11 +64,11 @@ namespace eXtensionSharp {
                 if ((obj as string).xIsNullOrEmpty()) return true;    
             }
             else if (obj is ICollection) {
-                if ((obj as ICollection).Count > 0)
-                    return false;
+                if ((obj as ICollection).Count <= 0)
+                    return true;
             }
 
-            return true;
+            return false;
         }
 
         public static string xValue(this string src, string @default = null) {
@@ -170,8 +170,8 @@ namespace eXtensionSharp {
             return enumerable.AsValueEnumerable().LastOrDefault();
         }        
         
-        public static List<T> xToList<T>(this IEnumerable<T> enumerable) {
-            return enumerable == null ? new List<T>() : enumerable.ToList();
+        public static XList<T> xToList<T>(this IEnumerable<T> enumerable) {
+            return enumerable == null ? new XList<T>() : new XList<T>(enumerable);
         }
 
         public static T[] xToArray<T>(this IEnumerable<T> enumerable) where T : new() {

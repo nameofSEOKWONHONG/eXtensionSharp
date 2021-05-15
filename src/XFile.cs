@@ -102,7 +102,7 @@ namespace eXtensionSharp {
         /// </summary>
         /// <param name="fileName"></param>
         public static void xFileCreateAll(this string fileName) {
-            List<string> paths = null;
+            XList<string> paths = null;
 
             if (XOS.xIsWindows()) {
                 paths = fileName.xSplit('\\').xToList();
