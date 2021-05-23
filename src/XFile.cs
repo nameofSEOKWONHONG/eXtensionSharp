@@ -11,14 +11,16 @@ namespace eXtensionSharp {
     public static class XFile {
         public static string xFileReadLine(this string fileName) {
             if (fileName.xFileExists()) {
-                return File.ReadAllText(fileName);
+                var line = File.ReadAllText(fileName);
+                return line;
             }
 
             return string.Empty;
         }
         public static string[] xFileReadLines(this string fileName) {
             if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
-            return File.ReadAllLines(fileName);
+            var lines = File.ReadAllLines(fileName);
+            return lines;
         }
 
         public static async Task<string[]> xFileReadLineAsync(this string fileName) {
@@ -37,10 +39,7 @@ namespace eXtensionSharp {
         }
 
         public static void xFileWriteAllLines(this string fileName, string[] lines, Encoding encoding = null) {
-            if (encoding.xIsNotNull())
-                File.WriteAllLines(fileName, lines, encoding);
-
-            File.WriteAllLines(fileName, lines);
+            File.WriteAllLines(fileName, lines, encoding.xIfNotNull(x => x, Encoding.Default));
         }
 
         public static async Task
@@ -91,10 +90,12 @@ namespace eXtensionSharp {
 
         /// <summary>
         /// create file
+        /// if dir path not exists, throw exception
         /// </summary>
         /// <param name="fileName"></param>
         public static void xFileCreate(this string fileName) {
-            File.Create(fileName);
+            var fs = File.Create(fileName);
+            fs.Close();
         }
 
         /// <summary>
@@ -113,6 +114,7 @@ namespace eXtensionSharp {
             
             var dir = string.Empty;
             paths.xForEach((path, i) => {
+                if (Path.GetExtension(path).xIsNotEmpty()) return false;
                 if (path.xContains(new[]{":"})) {
                     dir += path;    
                 }

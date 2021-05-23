@@ -71,6 +71,10 @@ namespace eXtensionSharp {
             return false;
         }
 
+        public static bool xIsNotEmpty(this object obj) {
+            return !obj.xIsEmpty();
+        }
+
         public static string xValue(this string src, string @default = null) {
             return src.xIfNullOrEmpty(x => @default).xTrim();
         }
