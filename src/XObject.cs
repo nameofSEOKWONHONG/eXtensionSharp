@@ -75,11 +75,11 @@ namespace eXtensionSharp {
             return !obj.xIsEmpty();
         }
 
-        public static string xValue(this string src, string @default = null) {
+        public static string xSafe(this string src, string @default = null) {
             return src.xIfNullOrEmpty(x => @default).xTrim();
         }
 
-        public static string xValue(this object src, object @default = null) {
+        public static string xSafe(this object src, object @default = null) {
             if (src.xIsNull() && @default.xIsNull()) return string.Empty;
             if (src.xIsNotNull()) {
                 return Convert.ToString(src).xTrim();
@@ -92,7 +92,7 @@ namespace eXtensionSharp {
             return string.Empty;
         }
         
-        public static T xValue<T>(this object src, object @default = null) {
+        public static T xSafe<T>(this object src, object @default = null) {
             if (src.xIsNull() && @default.xIsNull()) return default;
             if (src.xIsNotNull()) {
                 return (T)Convert.ChangeType(src, typeof(T));
@@ -105,11 +105,11 @@ namespace eXtensionSharp {
             return default;
         }
 
-        public static T xValue<T>(this string src) where T : struct {
+        public static T xSafe<T>(this string src) where T : struct {
             return src.xStringToEnum<T>();
         }
         
-        public static string xValue<T>(this XENUM_BASE<T> src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
+        public static string xSafe<T>(this XENUM_BASE<T> src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
             if (defaultValue.xIsNotNull()) {
                 return src.Value.xIfNotNull(x => x, defaultValue.Value);    
             }
@@ -117,7 +117,7 @@ namespace eXtensionSharp {
             return src.Value;
         }
 
-        public static XENUM_BASE<T> xValue<T>(this string src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
+        public static XENUM_BASE<T> xSafe<T>(this string src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
             if (src.xIsNullOrEmpty()) {
                 return (XENUM_BASE<T>)src; 
             }
