@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Mapster;
 using NetFabric.Hyperlinq;
 
 namespace eXtensionSharp {
@@ -180,6 +181,10 @@ namespace eXtensionSharp {
             });
 
             return result;
+        }
+
+        public static IDictionary<string, object> xToDictionary<T>(this T entity) where T : class {
+            return entity.Adapt<Dictionary<string, object>>();
         }
     }
 }
