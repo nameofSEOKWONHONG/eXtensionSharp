@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Mapster;
-using NetFabric.Hyperlinq;
 
 namespace eXtensionSharp {
     /// <summary>
@@ -143,7 +142,7 @@ namespace eXtensionSharp {
     public static class JDictionaryUtil {
         /// <summary>
         /// dictionary concat.
-        /// if same key exists, throw error. 
+        /// if same key exists, throw error.
         /// </summary>
         /// <param name="first"></param>
         /// <param name="second"></param>
@@ -167,7 +166,7 @@ namespace eXtensionSharp {
             first.xForEach(firstPair => {
                 result.Add(firstPair.Key, firstPair.Value);
             });
-            
+
             second.xForEach(secondPair => {
                 var exists = result.ContainsKey(secondPair.Key);
                 if (exists) {

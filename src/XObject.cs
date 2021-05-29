@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using Microsoft.VisualBasic;
-using NetFabric.Hyperlinq;
 
 namespace eXtensionSharp {
     public static class XObject {
@@ -163,15 +162,15 @@ namespace eXtensionSharp {
         }
         
         public static T xFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null) {
-            if (predicate.xIsNotNull()) return enumerable.AsValueEnumerable().FirstOrDefault(predicate);
+            if (predicate.xIsNotNull()) return enumerable.FirstOrDefault(predicate);
 
-            return enumerable.AsValueEnumerable().FirstOrDefault();
+            return enumerable.FirstOrDefault();
         }
 
         public static T xLast<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null) {
-            if (predicate.xIsNotNull()) return enumerable.AsValueEnumerable().LastOrDefault(predicate);
+            if (predicate.xIsNotNull()) return enumerable.LastOrDefault(predicate);
 
-            return enumerable.AsValueEnumerable().LastOrDefault();
+            return enumerable.LastOrDefault();
         }        
         
         public static XList<T> xToList<T>(this IEnumerable<T> enumerable) {
@@ -180,7 +179,7 @@ namespace eXtensionSharp {
 
         public static T[] xToArray<T>(this IEnumerable<T> enumerable) where T : new() {
             if (enumerable.xIsNull()) return new T[0];
-            return enumerable.AsValueEnumerable().ToArray();
+            return enumerable.ToArray();
         }
 
         public static string xToHash(this string str) {

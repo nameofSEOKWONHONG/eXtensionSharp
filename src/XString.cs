@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using NetFabric.Hyperlinq;
 
 namespace eXtensionSharp {
     [Obsolete("test code, do not use", true)]

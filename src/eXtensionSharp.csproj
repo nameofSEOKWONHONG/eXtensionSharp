@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>seokwon hong</Authors>
+    <Description>c# extension methods</Description>
+    <Copyright>MIT</Copyright>
+    <PackageLicenseFile>README.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
+    <PackageTags>#eXtensionSharp</PackageTags>
+    <PackageReleaseNotes>first release</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,8 +18,14 @@
     <PackageReference Include="Mapster" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.6" />
     <PackageReference Include="MongoDB.Bson" Version="2.12.3" />
-    <PackageReference Include="NetFabric.Hyperlinq" Version="3.0.0-beta44" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
