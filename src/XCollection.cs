@@ -196,6 +196,13 @@ namespace eXtensionSharp {
 
         #endregion [Datatable & DataReader]
 
+        public static void xForEach(this IEnumerable<string> itorator, string split, Action<string, string> action) {
+            itorator.xForEach((item, i) => {
+                if (itorator.Count() - 1 == i) split = "";
+                action(item, split);
+            });
+        }
+
         public static void xForeach(this ValueTuple<int, int> fromTo, Action<int> action) {
             for (var i = fromTo.Item1; i <= fromTo.Item2; i++) {
                 action(i);
