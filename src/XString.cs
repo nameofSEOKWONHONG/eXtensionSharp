@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace eXtensionSharp {
@@ -76,7 +77,7 @@ namespace eXtensionSharp {
             while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0) dest.Write(bytes, 0, cnt);
         }
 
-        public static byte[] xStringToByteArray(this string str) {
+        public static byte[] xToCompress(this string str) {
             var bytes = Encoding.UTF8.GetBytes(str);
 
             using (var msi = new MemoryStream(bytes))
@@ -90,7 +91,7 @@ namespace eXtensionSharp {
             }
         }
 
-        public static string xToString(this byte[] bytes) {
+        public static string xToUnCompress(this byte[] bytes) {
             using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream()) {
                 using (var gs = new GZipStream(msi, CompressionMode.Decompress)) {
@@ -130,6 +131,19 @@ namespace eXtensionSharp {
             var str = string.Empty;
             xsb.Release(out str);
             return str.xTrim();
+        }
+
+        public static string xGetHashCode(this string text) {
+            SHA256 sha = new SHA256Managed();
+            byte[] hash = sha.ComputeHash (Encoding.ASCII.GetBytes (text));
+            XStringBuilder stringBuilder = new XStringBuilder();
+            foreach (byte b in hash) {
+                stringBuilder.AppendFormat("{0:x2}", b);
+            }
+
+            var result = string.Empty;
+            stringBuilder.Release(out result);
+            return result;
         }
     }
 }

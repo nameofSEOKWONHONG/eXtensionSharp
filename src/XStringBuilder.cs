@@ -42,6 +42,10 @@ namespace eXtensionSharp {
             _stringBuilder.AppendLine(str);
         }
 
+        public void AppendFormat(string format, params object[] objs) {
+            _stringBuilder.AppendFormat(format, objs);
+        }
+
         public void AppendFormat(CultureInfo cultureInfo, string format, params object[] objs) {
             _stringBuilder.AppendFormat(cultureInfo, format, objs);
         }

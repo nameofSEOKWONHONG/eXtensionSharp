@@ -203,19 +203,19 @@ namespace eXtensionSharp {
             });
         }
 
-        public static void xForeach(this ValueTuple<int, int> fromTo, Action<int> action) {
+        public static void xForEach(this ValueTuple<int, int> fromTo, Action<int> action) {
             for (var i = fromTo.Item1; i <= fromTo.Item2; i++) {
                 action(i);
             }
         }
 
-        public static void xReverseForeach(this ValueTuple<int, int> fromTo, Action<int> action) {
+        public static void xReverseForEach(this ValueTuple<int, int> fromTo, Action<int> action) {
             for (var i = fromTo.Item2; i >= fromTo.Item1; i--) {
                 action(i);
             }
         }
 
-        public static void xPararellForeach<T>(this IEnumerable<T> items, 
+        public static void xPararellForEach<T>(this IEnumerable<T> items, 
             Func<IEnumerable<T>, IEnumerable<IGrouping<string, T>>> groupby, 
             Func<string, IEnumerable<T>, IEnumerable<T>> filter,
             Action<T, int> action) where T : class {
