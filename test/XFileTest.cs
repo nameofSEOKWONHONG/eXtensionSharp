@@ -6,7 +6,7 @@ namespace eXtensionSharp.test {
     public class XFileTest {
         [Test]
         public void create_file_all() {
-            //not tested without windows.
+            //tested only windows.
             var fileName = @"D:\test\test\test.txt";
             fileName.xFileCreateAll();
             
