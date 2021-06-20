@@ -135,6 +135,57 @@ namespace eXtensionSharp {
             });
             fileName.xFileCreate();
         }
+
+        public static void xDirCreateAll(this string path) {
+            XList<string> paths = null;
+
+            if (XOS.xIsWindows()) {
+                paths = path.xSplit('\\').xToList();
+            }
+            else if (XOS.xIsLinux() || XOS.xIsMac()) {
+                paths = path.xSplit('/').xToList();
+            }
+            
+            var dir = string.Empty;
+            paths.xForEach((path, i) => {
+                if (Path.GetExtension(path).xIsNotEmpty()) return false;
+                if (path.xContains(new[]{":"})) {
+                    dir += path;    
+                }
+                else {
+                    if (XOS.xIsWindows()) {
+                        dir += $"{"\\"}{path}";    
+                    }
+                    else if (XOS.xIsLinux() || XOS.xIsLinux()) {
+                        dir += $"{"/"}{path}";
+                    }   
+                }
+                
+                if (!Directory.Exists(dir)) {
+                    Directory.CreateDirectory(dir);
+                }
+
+                return true;
+            });
+        }
+
+        public static void xFileDelete(this string fullFileName) {
+            if (File.Exists(fullFileName)) {
+                File.Delete(fullFileName);
+            }
+        }
+
+        public static void xFileDeleteAll(this string fullPathName) {
+            if (Directory.Exists(fullPathName)) {
+                var files = Directory.GetFiles(fullPathName);
+                files.xForEach(file => {
+                    if (File.Exists(file)) {
+                        File.Delete(file);
+                    }
+                });
+                Directory.Delete(fullPathName);
+            }
+        }
             
     }
 }
