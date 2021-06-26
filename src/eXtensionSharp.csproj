@@ -16,9 +16,9 @@
   <ItemGroup>
     <PackageReference Include="C5" Version="2.5.3" />
     <PackageReference Include="Google.Protobuf" Version="3.17.3" />
-    <PackageReference Include="Mapster" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.6" />
-    <PackageReference Include="MongoDB.Bson" Version="2.12.3" />
+    <PackageReference Include="Mapster" Version="7.2.0" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.7" />
+    <PackageReference Include="MongoDB.Bson" Version="2.12.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

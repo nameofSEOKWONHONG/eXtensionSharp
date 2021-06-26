@@ -49,7 +49,7 @@ namespace eXtensionSharp.test {
         [Test]
         public void value_test4() {
             var x1 = ENUM_DATE_FORMAT.DEFAULT.xSafe(ENUM_DATE_FORMAT.HHMMSS);
-            var x2 = ENUM_DATE_FORMAT.DEFAULT.Value;
+            var x2 = ENUM_DATE_FORMAT.DEFAULT.ToString();
             Assert.AreEqual(x1, x2);
 
             var x3 = "HHmmss".xSafe<ENUM_DATE_FORMAT>(ENUM_DATE_FORMAT.HHMMSS);

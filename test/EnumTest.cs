@@ -20,7 +20,7 @@ namespace eXtensionSharp.test {
         }
     }
 
-    public class ENUM_USE_YN : XENUM_BASE<ENUM_USE_YN> {
+    public class ENUM_USE_YN : XEnumBase<ENUM_USE_YN> {
         public static readonly ENUM_USE_YN Y = Define("Y");
         public static readonly ENUM_USE_YN N = Define("N");
     }
