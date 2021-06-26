@@ -9,8 +9,8 @@ namespace eXtensionSharp {
         }
 
         public static string xToDate(this DateTime date, ENUM_DATE_FORMAT format = null ) {
-            if (format.xIsNotNull()) date.ToString(format.Value);
-            return date.ToString(ENUM_DATE_FORMAT.DEFAULT.Value);
+            if (format.xIsNotNull()) date.ToString(format.ToString());
+            return date.ToString(ENUM_DATE_FORMAT.DEFAULT.ToString());
         }
 
         public static string xToDate(this DateTime date, string format = null) {
@@ -19,7 +19,7 @@ namespace eXtensionSharp {
         }
     }
 
-    public class ENUM_DATE_FORMAT : XENUM_BASE<ENUM_DATE_FORMAT> {
+    public class ENUM_DATE_FORMAT : XEnumBase<ENUM_DATE_FORMAT> {
         public static readonly ENUM_DATE_FORMAT DEFAULT = Define("yyyy-MM-dd");
         public static readonly ENUM_DATE_FORMAT YYYY_MM_DD = Define("yyyy-MM-dd");
         public static readonly ENUM_DATE_FORMAT YYYY_MM_DD_HH_MM_SS = Define("yyyy-MM-dd HH:mm:ss");

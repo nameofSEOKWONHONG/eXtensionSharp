@@ -9,106 +9,84 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace eXtensionSharp {
+    // ref : https://github.com/gerardog/StringEnum/blob/master/StringEnum/StringEnum.cs
+    // For Newtonsoft.Json support check /StringEnum.Sample.NewtonsoftSerialization/StringEnum.cs .</remarks>
     /// <summary>
-    /// enum class, use static property
-    /// ref : [stackoverflow] https://stackoverflow.com/questions/8588384/how-to-Define-an-enum-with-string-value
+    /// Base class for creating string-valued enums in .NET.<br/>
+    /// Provides static Parse() and TryParse() methods and implicit cast to string.
     /// </summary>
-    /// <typeparam name="TEnum"></typeparam>
-    public abstract class XENUM_BASE<TEnum> : IEquatable<TEnum>
-        where TEnum : XENUM_BASE<TEnum>, new() {
-        public string Value { get; private set; }
-
-        //protected JENUM_BASE(string value) => this.Value = value;
-        
-        public static TEnum Define(string value) {
-            TEnum @enum = new TEnum();
-            @enum.Value = value;
-            return @enum;
-        }
-
-        #region [override]
-        public override string ToString() => this.Value;
-
-        public bool Equals(TEnum other) {
-            if (other == null) return false;
-            return this.Value == other?.Value;
-        }
-
-        public override bool Equals(object obj) {
-            if (obj == null) return false;
-            if (obj is TEnum other) return this.Equals(other);
-            return false;
-        }
-
-        public override int GetHashCode() => this.Value.GetHashCode();
-        #endregion
-
-        #region [operator]
-        public static bool operator ==(XENUM_BASE<TEnum> a, XENUM_BASE<TEnum> b) => a?.Equals(b) ?? false;
-
-        public static bool operator !=(XENUM_BASE<TEnum> a, XENUM_BASE<TEnum> b) => !(a?.Equals(b) ?? false);
-        
-        public static explicit operator string(XENUM_BASE<TEnum> source)
+    /// <example> 
+    /// <code>
+    /// class Color : StringEnum &lt;Color&gt;
+    /// {
+    ///     public static readonly Color Blue = Create("Blue");
+    ///     public static readonly Color Red = Create("Red");
+    ///     public static readonly Color Green = Create("Green");
+    /// }
+    /// </code>
+    /// </example>
+    /// <typeparam name="T">The string-valued enum type. (i.e. class Color : StringEnum&lt;Color&gt;)</typeparam>
+    public abstract class XEnumBase<T> : IEquatable<T> where T : XEnumBase<T>, new()
+    {
+        protected string Value;
+        private static Dictionary<string, T> valueDict = new Dictionary<string, T>();
+        protected static T Define(string value)
         {
-            return source.Value;
+            if (value == null)
+                return null; // the null-valued instance is null.
+
+            var result = new T() { Value = value };
+            valueDict.Add(value, result);
+            return result;
         }
-        public static implicit operator XENUM_BASE<TEnum>(string source)
+
+        public static implicit operator string(XEnumBase<T> enumValue) => enumValue.Value;
+        
+        public override string ToString() => Value;
+
+        public static bool operator !=(XEnumBase<T> o1, XEnumBase<T> o2) => o1?.Value != o2?.Value;
+        public static bool operator ==(XEnumBase<T> o1, XEnumBase<T> o2) => o1?.Value == o2?.Value;
+
+        public override bool Equals(object other) => this.Value.Equals((other as T)?.Value ?? (other as string));
+        bool IEquatable<T>.Equals(T other) => this.Value.Equals(other.Value);
+        public override int GetHashCode() => Value.GetHashCode();
+
+        /// <summary>
+        /// Parse the <paramref name="value"/> specified and returns a valid <typeparamref name="T"/> or else throws InvalidOperationException.
+        /// </summary>
+        /// <param name="value">The string value representad by an instance of <typeparamref name="T"/>. Matches by string value, not by the member name.</param>
+        /// <param name="caseSensitive">If true, the strings must match case and takes O(log n). False allows different case but is little bit slower (O(n))</param>
+        public static T Parse(string value, bool caseSensitive = true)
         {
-            return XENUM_BASE<TEnum>.Parse(source);
-        }
-        #endregion
+            var result = TryParse(value, caseSensitive);
+            if (result == null)
+                throw new InvalidOperationException((value == null ? "null" : $"'{value}'") + $" is not a valid {typeof(T).Name}");
 
-        #region [util]
-        public static IList<TEnum> AsList() {
-            return (IList<TEnum>) typeof(TEnum)
-                .GetProperties(BindingFlags.Public | BindingFlags.Static)
-                .Where(p => p.PropertyType == typeof(TEnum))
-                .Select(p => (TEnum) p.GetValue(null))
-                .xToList();
+            return result;
         }
 
-        public static TEnum Parse(string value) {
-            IList<TEnum> all = AsList();
-
-            if (!all.Any(a => a.Value == value))
-                throw new InvalidOperationException($"\"{value}\" is not a valid value for the type {typeof(TEnum).Name}");
-
-            return all.Single(a => a.Value == value);
-        }
-        #endregion
-
-        #region [json converter]
-        public class JsonConverter<T> : Newtonsoft.Json.JsonConverter
-            where T : XENUM_BASE<T>, new() {
-            public override bool CanRead => true;
-
-            public override bool CanWrite => true;
-
-            public override bool CanConvert(Type objectType) => ImplementsGeneric(objectType, typeof(XENUM_BASE<>));
-
-            private static bool ImplementsGeneric(Type type, Type generic) {
-                while (type != null) {
-                    if (type.IsGenericType && type.GetGenericTypeDefinition() == generic)
-                        return true;
-
-                    type = type.BaseType;
-                }
-
-                return false;
+        /// <summary>
+        /// Parse the <paramref name="value"/> specified and returns a valid <typeparamref name="T"/> or else returns null.
+        /// </summary>
+        /// <param name="value">The string value representad by an instance of <typeparamref name="T"/>. Matches by string value, not by the member name.</param>
+        /// <param name="caseSensitive">If true, the strings must match case. False allows different case but is slower: O(n)</param>
+        public static T TryParse(string value, bool caseSensitive = true)
+        {
+            if (value == null) return null;
+            if (valueDict.Count == 0) System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(T).TypeHandle); // force static fields initialization
+            if (caseSensitive)
+            {
+                if (valueDict.TryGetValue(value, out T item))
+                    return item;
+                else
+                    return null;
             }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-                JsonSerializer serializer) {
-                JToken item = JToken.Load(reader);
-                string value = item.Value<string>();
-                return XENUM_BASE<T>.Parse(value);
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-                if (value is XENUM_BASE<T> v)
-                    JToken.FromObject(v.Value).WriteTo(writer);
+            else
+            {
+                // slower O(n) case insensitive search
+                return valueDict.FirstOrDefault(f => f.Key.Equals(value, StringComparison.OrdinalIgnoreCase)).Value;
+                // Why Ordinal? => https://esmithy.net/2007/10/15/why-stringcomparisonordinal-is-usually-the-right-choice/
             }
         }
-        #endregion
     }
 }

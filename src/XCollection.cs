@@ -237,7 +237,7 @@ namespace eXtensionSharp {
             
     }
     
-    public class ENUM_DATETIME_FOREACH_TYPE : XENUM_BASE<ENUM_DATETIME_FOREACH_TYPE> {
+    public class ENUM_DATETIME_FOREACH_TYPE : XEnumBase<ENUM_DATETIME_FOREACH_TYPE> {
         public static readonly ENUM_DATETIME_FOREACH_TYPE DAY = Define("Day");
         public static readonly ENUM_DATETIME_FOREACH_TYPE MONTH = Define("Month");
         public static readonly ENUM_DATETIME_FOREACH_TYPE YEAR = Define("Year");

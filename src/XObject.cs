@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml.Serialization;
 using Microsoft.VisualBasic;
 
@@ -93,6 +94,7 @@ namespace eXtensionSharp {
         
         public static T xSafe<T>(this object src, object @default = null) {
             if (src.xIsNull() && @default.xIsNull()) return default;
+            
             if (src.xIsNotNull()) {
                 return (T)Convert.ChangeType(src, typeof(T));
             }
@@ -104,21 +106,32 @@ namespace eXtensionSharp {
             return default;
         }
 
+        public static T xSafe<T>(this T src, T @default = null) where T : class, new() {
+            if (src.xIsNull() && @default.xIsNotNull()) {
+                return @default;
+            }
+            else if(src.xIsNull() && @default.xIsNull()) {
+                return new T();
+            }
+
+            return src;
+        }
+
         public static T xSafe<T>(this string src) where T : struct {
             return src.xStringToEnum<T>();
         }
         
-        public static string xSafe<T>(this XENUM_BASE<T> src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
+        public static string xSafe<T>(this XEnumBase<T> src, XEnumBase<T> defaultValue = null) where T : XEnumBase<T>, new() {
             if (defaultValue.xIsNotNull()) {
-                return src.Value.xIfNotNull(x => x, defaultValue.Value);    
+                return src.ToString().xIfNotNull(x => x, defaultValue.ToString());    
             }
 
-            return src.Value;
+            return src.ToString();
         }
 
-        public static XENUM_BASE<T> xSafe<T>(this string src, XENUM_BASE<T> defaultValue = null) where T : XENUM_BASE<T>, new() {
+        public static XEnumBase<T> xSafe<T>(this string src, XEnumBase<T> defaultValue = null) where T : XEnumBase<T>, new() {
             if (src.xIsNullOrEmpty()) {
-                return (XENUM_BASE<T>)src; 
+                return XEnumBase<T>.Parse(src); 
             }
             
             if (defaultValue.xIsNotNull()) {

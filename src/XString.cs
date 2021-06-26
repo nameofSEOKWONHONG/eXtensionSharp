@@ -145,5 +145,13 @@ namespace eXtensionSharp {
             stringBuilder.Release(out result);
             return result;
         }
+
+        public static byte[] xToBytes(this string str) {
+            return Encoding.UTF8.GetBytes(str);
+        }
+
+        public static string xToString(this byte[] bytes) {
+            return Encoding.UTF8.GetString(bytes);
+        }
     }
 }
