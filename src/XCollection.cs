@@ -215,6 +215,11 @@ namespace eXtensionSharp {
             }
         }
 
+        public static void xPararellForEach<T>(this IEnumerable<T> items, Action<T> action)
+        {
+            Parallel.ForEach(items, action);
+        }
+
         public static void xPararellForEach<T>(this IEnumerable<T> items, 
             Func<IEnumerable<T>, IEnumerable<IGrouping<string, T>>> groupby, 
             Func<string, IEnumerable<T>, IEnumerable<T>> filter,

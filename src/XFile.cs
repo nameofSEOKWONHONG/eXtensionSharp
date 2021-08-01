@@ -9,31 +9,33 @@ using System.Threading.Tasks;
 
 namespace eXtensionSharp {
     public static class XFile {
-        public static string xFileReadLine(this string fileName) {
-            if (fileName.xFileExists()) {
+        public static string xFileReadAllText(this string fileName)
+        {
+            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
+            if (fullFileName.xFileExists()) {
                 var line = File.ReadAllText(fileName);
                 return line;
             }
 
             return string.Empty;
         }
-        public static string[] xFileReadLines(this string fileName) {
+        public static string[] xFileReadAllLines(this string fileName) {
             if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
             var lines = File.ReadAllLines(fileName);
             return lines;
         }
 
-        public static async Task<string[]> xFileReadLineAsync(this string fileName) {
+        public static async Task<string[]> xFileReadAllLinesAsync(this string fileName) {
             if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
             return await File.ReadAllLinesAsync(fileName);
         }
 
-        public static byte[] xFileReadBytes(this string fileName) {
+        public static byte[] xFileReadAllBytes(this string fileName) {
             if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
             return File.ReadAllBytes(fileName);
         }
 
-        public static async Task<byte[]> xFileReadBytesAsync(this string fileName) {
+        public static async Task<byte[]> xFileReadAllBytesAsync(this string fileName) {
             if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
             return await File.ReadAllBytesAsync(fileName);
         }
