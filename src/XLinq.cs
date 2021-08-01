@@ -23,7 +23,7 @@ namespace eXtensionSharp {
 
         private static IEnumerable<T> xNullToNew<T>(IEnumerable<T> enumerable) {
             if (enumerable.xIsEmpty()) {
-                enumerable = new XList<T>();
+                enumerable = new List<T>();
                 return enumerable;
             }
 

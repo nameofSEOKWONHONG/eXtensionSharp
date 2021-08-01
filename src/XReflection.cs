@@ -20,7 +20,7 @@ namespace eXtensionSharp {
         }
         
         public static IEnumerable<T> CreateInstance<T>(this string assemblyPath, string[] containKeywords = null, string[] notContainKeywords = null) where T : class {
-            var list = new XList<T>();
+            var list = new List<T>();
             Assembly assembly = Assembly.LoadFrom(assemblyPath);  
             var types = assembly.GetTypes();
             types.xForEach(type => {

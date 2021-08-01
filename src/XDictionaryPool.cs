@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Protobuf.Collections;
 using Mapster;
 
 namespace eXtensionSharp {
@@ -185,14 +184,6 @@ namespace eXtensionSharp {
 
         public static IDictionary<string, object> xToDictionary<T>(this T entity) where T : class {
             return entity.Adapt<Dictionary<string, object>>();
-        }
-
-        public static MapField<TKey, TValue> xToMapField<TKey, TValue>(this Dictionary<TKey, TValue> maps) {
-            var mapField = new MapField<TKey, TValue>();
-            maps.xForEach(keyvalue => {
-                mapField.Add(keyvalue.Key, keyvalue.Value);
-            });
-            return mapField;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 namespace eXtensionSharp {
-    public class XCircleXList<T> : XList<T>
+    public class XCircleXList<T> : List<T>
         where T : class, new() {
         public XCircleXList() {
         }
@@ -11,7 +11,7 @@ namespace eXtensionSharp {
         }
 
         public XCircleXList(IEnumerable<T> enumerable) {
-            AddAll(enumerable);
+            this.AddRange(enumerable);
         }
 
         public int Index { get; private set; }

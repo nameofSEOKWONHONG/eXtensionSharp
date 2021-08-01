@@ -1,35 +1,31 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace eXtensionSharp {
     public static class XSerializer {
         public static T xToEntity<T>(this string jsonString) {
-            return JsonConvert.DeserializeObject<T>(jsonString);
+            return JsonSerializer.Deserialize<T>(jsonString);
         }
 
         public static IEnumerable<T> xToEntities<T>(this string jsonString) {
-            return JsonConvert.DeserializeObject<IEnumerable<T>>(jsonString);
+            return JsonSerializer.Deserialize<IEnumerable<T>>(jsonString);
         }
 
-        public static string xToJson<T>(this T entity, Formatting? formatting = null,
-            JsonSerializerSettings serializerSettings = null)
+        public static string xToJson<T>(this T entity, JsonSerializerOptions serializerOptions = null)
             where T : class {
-            if (formatting.xIsNotNull() && serializerSettings.xIsNotNull())
-                return JsonConvert.SerializeObject(entity, formatting.Value, serializerSettings);
-            if (formatting.xIsNotNull() && serializerSettings.xIsNull())
-                return JsonConvert.SerializeObject(entity, formatting.Value);
-            if (formatting.xIsNull() && serializerSettings.xIsNotNull())
-                return JsonConvert.SerializeObject(entity, serializerSettings);
-            return JsonConvert.SerializeObject(entity);
+            if (serializerOptions.xIsNotNull())
+                return JsonSerializer.Serialize(entity, serializerOptions);
+            return JsonSerializer.Serialize(entity);
         }
 
         public static string xToJson<TKey, TValue>(this XDictionaryPool<TKey, TValue> xDictionaryPool) {
             var dic = xDictionaryPool.ToDictionary();
-            return JsonConvert.SerializeObject(dic);
+            return JsonSerializer.Serialize(dic);
         }
 
         public static string xToJson(this object obj) {
-            return JsonConvert.SerializeObject(obj);
+            return JsonSerializer.Serialize(obj);
         }
     }
 }

@@ -5,8 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace eXtensionSharp {
     // ref : https://github.com/gerardog/StringEnum/blob/master/StringEnum/StringEnum.cs
