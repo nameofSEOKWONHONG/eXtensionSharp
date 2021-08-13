@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test {
@@ -8,7 +9,7 @@ namespace eXtensionSharp.test {
             var from = DateTime.Parse("2020-01-01");
             var to = DateTime.Parse("2021-12-31");
 
-            var list = new XList<DateTime>();
+            var list = new List<DateTime>();
             (from, to).xForEach(ENUM_DATETIME_FOREACH_TYPE.DAY, o => {
                 list.Add(o);
             });
@@ -22,7 +23,7 @@ namespace eXtensionSharp.test {
             var from = DateTime.Parse("2020-01-01");
             var to = DateTime.Parse("2021-12-31");
 
-            var list = new XList<DateTime>();
+            var list = new List<DateTime>();
             (from, to).xForEach(ENUM_DATETIME_FOREACH_TYPE.MONTH, o => {
                 list.Add(o);
             });
@@ -38,7 +39,7 @@ namespace eXtensionSharp.test {
             var from = DateTime.Parse("2020-01-01");
             var to = DateTime.Parse("2021-12-31");
 
-            var list = new XList<DateTime>();
+            var list = new List<DateTime>();
             (from, to).xForEach(ENUM_DATETIME_FOREACH_TYPE.YEAR, o => {
                 list.Add(o);
             });

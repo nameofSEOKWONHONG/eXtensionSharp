@@ -1,35 +1,42 @@
 using System.Collections.Generic;
 
-namespace eXtensionSharp {
+namespace eXtensionSharp
+{
     public class XCircleXList<T> : List<T>
-        where T : class, new() {
-        public XCircleXList() {
+        where T : class, new()
+    {
+        public XCircleXList()
+        {
         }
 
         public XCircleXList(int capacity)
-            : base(capacity) {
+            : base(capacity)
+        {
         }
 
-        public XCircleXList(IEnumerable<T> enumerable) {
-            this.AddRange(enumerable);
+        public XCircleXList(IEnumerable<T> enumerable)
+        {
+            AddRange(enumerable);
         }
 
         public int Index { get; private set; }
 
-        public T Next() {
+        public T Next()
+        {
             Index++;
-            if (Index > base.Count - 1)
+            if (Index > Count - 1)
                 Index = 0;
             else if (Index < 0) Index = 0;
 
             return base[Index];
         }
 
-        public T Previous() {
+        public T Previous()
+        {
             Index--;
             if (Index < 0)
                 Index = 0;
-            else if (Index > base.Count - 1) Index = 0;
+            else if (Index > Count - 1) Index = 0;
 
             return base[Index];
         }

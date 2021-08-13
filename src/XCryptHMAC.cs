@@ -2,15 +2,19 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace eXtensionSharp {
-    public static class XCryptHMAC {
+namespace eXtensionSharp
+{
+    public static class XCryptHMAC
+    {
         public static string xToHMAC(this string encData, string encKey,
-            DeconvertCipherFormat deconvertCipherFormat) {
+            DeconvertCipherFormat deconvertCipherFormat)
+        {
             var encoding = new UTF8Encoding();
             var keyBuff = encoding.GetBytes(encKey);
             byte[] hashMessage = null;
 
-            using (var hmacsha256 = new HMACSHA256(keyBuff)) {
+            using (var hmacsha256 = new HMACSHA256(keyBuff))
+            {
                 var dataBytes = encoding.GetBytes(encData);
                 hashMessage = hmacsha256.ComputeHash(dataBytes);
             }
@@ -18,9 +22,11 @@ namespace eXtensionSharp {
             return hashMessage.fromHexToString();
         }
 
-        public static byte[] xToHMAC(this string cipherText, DeconvertCipherFormat outputFormat) {
+        public static byte[] xToHMAC(this string cipherText, DeconvertCipherFormat outputFormat)
+        {
             byte[] decodeText = null;
-            switch (outputFormat) {
+            switch (outputFormat)
+            {
                 case DeconvertCipherFormat.HEX:
                     decodeText = fromHexToByte(cipherText);
                     break;
@@ -36,19 +42,23 @@ namespace eXtensionSharp {
             return decodeText;
         }
 
-        internal static byte[] fromHexToByte(this string hexString) {
-            try {
+        internal static byte[] fromHexToByte(this string hexString)
+        {
+            try
+            {
                 var bytes = new byte[hexString.Length / 2];
                 for (var i = 0; i < bytes.Length; i++) bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
 
                 return bytes;
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }
 
-        internal static string fromHexToString(this byte[] hashMessage) {
+        internal static string fromHexToString(this byte[] hashMessage)
+        {
             var sbinary = string.Empty;
 
             for (var i = 0; i < hashMessage.Length; i++) sbinary += hashMessage[i].ToString("X2");
@@ -57,7 +67,8 @@ namespace eXtensionSharp {
         }
     }
 
-    public enum DeconvertCipherFormat {
+    public enum DeconvertCipherFormat
+    {
         Base64,
         HEX
     }

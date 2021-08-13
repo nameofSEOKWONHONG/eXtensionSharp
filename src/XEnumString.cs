@@ -3,11 +3,13 @@ using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace eXtensionSharp {
+namespace eXtensionSharp
+{
     /// <summary>
-    /// enum string class, use attribute
+    ///     enum string class, use attribute
     /// </summary>
-    public class XEnumString {
+    public class XEnumString
+    {
         #region Instance implementation
 
         private static readonly Hashtable _stringValues = new();
@@ -16,7 +18,8 @@ namespace eXtensionSharp {
         ///     Creates a new <see cref="StringEnum" /> instance.
         /// </summary>
         /// <param name="enumType">Enum type.</param>
-        public XEnumString(Type enumType) {
+        public XEnumString(Type enumType)
+        {
             if (!typeof(Type).GetTypeInfo().IsEnum)
                 throw new ArgumentException($"Supplied type must be an Enum.  Type was {enumType}");
 
@@ -28,13 +31,16 @@ namespace eXtensionSharp {
         /// </summary>
         /// <param name="valueName">Name of the enum value.</param>
         /// <returns>String Value</returns>
-        public string GetStringValue(string valueName) {
+        public string GetStringValue(string valueName)
+        {
             string stringValue = null;
-            try {
+            try
+            {
                 var enumType = (Enum) Enum.Parse(EnumType, valueName);
                 stringValue = GetStringValue(enumType);
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 // ignored
             } //Swallow!
 
@@ -45,11 +51,13 @@ namespace eXtensionSharp {
         ///     Gets the string values associated with the enum.
         /// </summary>
         /// <returns>String value array</returns>
-        public Array GetStringValues() {
+        public Array GetStringValues()
+        {
             var values = new ArrayList();
             //Look for our string value associated with fields in this enum
             foreach (var fi in EnumType.GetFields()) //Check for our custom attribute
-                if (fi.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[] attrs &&
+                if (fi.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[]
+                        attrs &&
                     attrs.Length > 0)
                     values.Add(attrs[0].Value);
 
@@ -60,12 +68,14 @@ namespace eXtensionSharp {
         ///     Gets the values as a 'bindable' list datasource.
         /// </summary>
         /// <returns>IList for data binding</returns>
-        public IList GetListValues() {
+        public IList GetListValues()
+        {
             var underlyingType = Enum.GetUnderlyingType(EnumType);
             var values = new ArrayList();
             //Look for our string value associated with fields in this enum
             foreach (var fi in EnumType.GetFields()) //Check for our custom attribute
-                if (fi.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[] attrs &&
+                if (fi.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[]
+                        attrs &&
                     attrs.Length > 0)
                     values.Add(new DictionaryEntry(Convert.ChangeType(Enum.Parse(EnumType, fi.Name), underlyingType),
                         attrs[0].Value));
@@ -78,7 +88,8 @@ namespace eXtensionSharp {
         /// </summary>
         /// <param name="stringValue">String value.</param>
         /// <returns>Existence of the string value</returns>
-        public bool IsStringDefined(string stringValue) {
+        public bool IsStringDefined(string stringValue)
+        {
             return Parse(EnumType, stringValue) != null;
         }
 
@@ -88,7 +99,8 @@ namespace eXtensionSharp {
         /// <param name="stringValue">String value.</param>
         /// <param name="ignoreCase">Denotes whether to conduct a case-insensitive match on the supplied string value</param>
         /// <returns>Existence of the string value</returns>
-        public bool IsStringDefined(string stringValue, bool ignoreCase) {
+        public bool IsStringDefined(string stringValue, bool ignoreCase)
+        {
             return Parse(EnumType, stringValue, ignoreCase) != null;
         }
 
@@ -107,18 +119,23 @@ namespace eXtensionSharp {
         /// </summary>
         /// <param name="value">Value.</param>
         /// <returns>String Value associated via a <see cref="XEnumStringValueAttribute" /> attribute, or null if not found.</returns>
-        public static string GetStringValue(Enum value) {
+        public static string GetStringValue(Enum value)
+        {
             string output = null;
             var type = value.GetType();
 
-            if (_stringValues.ContainsKey(value)) {
+            if (_stringValues.ContainsKey(value))
+            {
                 output = (_stringValues[value] as XEnumStringValueAttribute)?.Value;
             }
-            else {
+            else
+            {
                 //Look for our 'XEnumStringValueAttribute' in the field's custom attributes
                 var fi = type.GetField(value.ToString());
-                if (fi?.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[] attrs &&
-                    attrs.Length > 0) {
+                if (fi?.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[]
+                        attrs &&
+                    attrs.Length > 0)
+                {
                     _stringValues.Add(value, attrs[0]);
                     output = attrs[0].Value;
                 }
@@ -133,7 +150,8 @@ namespace eXtensionSharp {
         /// <param name="type">Type.</param>
         /// <param name="stringValue">String value.</param>
         /// <returns>Enum value associated with the string value, or null if not found.</returns>
-        public static object Parse(Type type, string stringValue) {
+        public static object Parse(Type type, string stringValue)
+        {
             return Parse(type, stringValue, false);
         }
 
@@ -144,7 +162,8 @@ namespace eXtensionSharp {
         /// <param name="stringValue">String value.</param>
         /// <param name="ignoreCase">Denotes whether to conduct a case-insensitive match on the supplied string value</param>
         /// <returns>Enum value associated with the string value, or null if not found.</returns>
-        public static object Parse(Type type, string stringValue, bool ignoreCase) {
+        public static object Parse(Type type, string stringValue, bool ignoreCase)
+        {
             object output = null;
             string enumStringValue = null;
 
@@ -152,14 +171,17 @@ namespace eXtensionSharp {
                 throw new ArgumentException(string.Format("Supplied type must be an Enum.  Type was {0}", type));
 
             //Look for our string value associated with fields in this enum
-            foreach (var fi in type.GetFields()) {
+            foreach (var fi in type.GetFields())
+            {
                 //Check for our custom attribute
-                if (fi.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[] attrs &&
+                if (fi.GetCustomAttributes(typeof(XEnumStringValueAttribute), false) is XEnumStringValueAttribute[]
+                        attrs &&
                     attrs.Length > 0)
                     enumStringValue = attrs[0].Value;
 
                 //Check for equality then select actual enum value.
-                if (string.Compare(enumStringValue, stringValue, ignoreCase) == 0) {
+                if (string.Compare(enumStringValue, stringValue, ignoreCase) == 0)
+                {
                     output = Enum.Parse(type, fi.Name);
                     break;
                 }
@@ -174,7 +196,8 @@ namespace eXtensionSharp {
         /// <param name="stringValue">String value.</param>
         /// <param name="enumType">Type of enum</param>
         /// <returns>Existence of the string value</returns>
-        public static bool IsStringDefined(Type enumType, string stringValue) {
+        public static bool IsStringDefined(Type enumType, string stringValue)
+        {
             return Parse(enumType, stringValue) != null;
         }
 
@@ -185,25 +208,28 @@ namespace eXtensionSharp {
         /// <param name="enumType">Type of enum</param>
         /// <param name="ignoreCase">Denotes whether to conduct a case-insensitive match on the supplied string value</param>
         /// <returns>Existence of the string value</returns>
-        public static bool IsStringDefined(Type enumType, string stringValue, bool ignoreCase) {
+        public static bool IsStringDefined(Type enumType, string stringValue, bool ignoreCase)
+        {
             return Parse(enumType, stringValue, ignoreCase) != null;
         }
 
         #endregion Static implementation
     }
-    
+
     #region Class XEnumStringValueAttribute
 
     /// <summary>
     ///     Simple attribute class for storing String Values
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]
-    public class XEnumStringValueAttribute : Attribute {
+    public class XEnumStringValueAttribute : Attribute
+    {
         /// <summary>
         ///     Creates a new <see cref="XEnumStringValueAttribute" /> instance.
         /// </summary>
         /// <param name="value">Value.</param>
-        public XEnumStringValueAttribute(string value) {
+        public XEnumStringValueAttribute(string value)
+        {
             Value = value;
         }
 
@@ -217,16 +243,21 @@ namespace eXtensionSharp {
     #endregion Class XEnumStringValueAttribute
 
     #region [static enum util]
-    public static class XEnumStringUtil {
-        public static T xStringToEnum<T>(this string value) where T : struct {
+
+    public static class XEnumStringUtil
+    {
+        public static T xStringToEnum<T>(this string value) where T : struct
+        {
             return Enum.TryParse(value, true, out T result) ? result : default;
         }
 
-        public static string xEnumToString(this Enum value) {
+        public static string xEnumToString(this Enum value)
+        {
             var da = (DescriptionAttribute[]) value.GetType().GetField(value.ToString())
                 ?.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return da != null && da.Length > 0 ? da[0].Description : value.ToString();
         }
     }
+
     #endregion
 }

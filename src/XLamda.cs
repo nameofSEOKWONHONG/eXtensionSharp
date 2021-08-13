@@ -2,10 +2,14 @@
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
-namespace eXtensionSharp {
-    public static class XLamda {
-        private static string xToString(Expression expr) {
-            switch (expr.NodeType) {
+namespace eXtensionSharp
+{
+    public static class XLamda
+    {
+        private static string xToString(Expression expr)
+        {
+            switch (expr.NodeType)
+            {
                 case ExpressionType.Lambda:
                     //x => (Something), return only (Something), the Body
                     return xToString(((LambdaExpression) expr).Body);
@@ -16,25 +20,30 @@ namespace eXtensionSharp {
                 case ExpressionType.Call:
                     //method call can be an Indexer (get_Item),
                     var callExpr = (MethodCallExpression) expr;
-                    if (callExpr.Method.Name == "get_Item") {
+                    if (callExpr.Method.Name == "get_Item")
+                    {
                         //indexer call
                         return xToString(callExpr.Object) + "[" +
                                string.Join(",", callExpr.Arguments.Select(xToString)) + "]";
                     }
-                    else {
+                    else
+                    {
                         //method call
                         var arguments = callExpr.Arguments.Select(xToString).ToArray();
                         string target;
-                        if (callExpr.Method.IsDefined(typeof(ExtensionAttribute), false)) {
+                        if (callExpr.Method.IsDefined(typeof(ExtensionAttribute), false))
+                        {
                             //extension method
                             target = string.Join(".", arguments[0], callExpr.Method.Name);
                             arguments = arguments.Skip(1).ToArray();
                         }
-                        else if (callExpr.Object == null) {
+                        else if (callExpr.Object == null)
+                        {
                             //static method
                             target = callExpr.Method.Name;
                         }
-                        else {
+                        else
+                        {
                             //instance method
                             target = string.Join(".", xToString(callExpr.Object), callExpr.Method.Name);
                         }

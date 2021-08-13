@@ -63,7 +63,7 @@ namespace eXtensionSharp.test {
             });
 
             maps.xForEach(item => {
-                Console.WriteLine(item.xObjectToJson());
+                Console.WriteLine(item.xToJson());
             });            
         }
 
@@ -78,7 +78,7 @@ namespace eXtensionSharp.test {
                 return datas.Where(m => m.COM_CODE == key);
             }, (data, i) => {
                 data.FORM_SEQ = i + 1;
-                Console.WriteLine(data.xObjectToJson());
+                Console.WriteLine(data.xToJson());
             });
         }
 
