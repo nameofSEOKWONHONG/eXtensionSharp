@@ -88,12 +88,12 @@ namespace eXtensionSharp
             return !obj.xIsEmpty();
         }
 
-        public static string xSafe(this string src, string @default = null)
+        public static string xGetValue(this string src, string @default = null)
         {
             return src.xIfNullOrEmpty(x => @default).xTrim();
         }
 
-        public static string xSafe(this object src, object @default = null)
+        public static string xGetValue(this object src, object @default = null)
         {
             if (src.xIsNull() && @default.xIsNull()) return string.Empty;
             if (src.xIsNotNull()) return Convert.ToString(src).xTrim();
@@ -103,7 +103,7 @@ namespace eXtensionSharp
             return string.Empty;
         }
 
-        public static T xSafe<T>(this object src, object @default = null)
+        public static T xGetValue<T>(this object src, object @default = null)
         {
             if (src.xIsNull() && @default.xIsNull()) return default;
 
@@ -114,7 +114,7 @@ namespace eXtensionSharp
             return default;
         }
 
-        public static T xSafe<T>(this T src, T @default = null) where T : class, new()
+        public static T xGetValue<T>(this T src, T @default = null) where T : class, new()
         {
             if (src.xIsNull() && @default.xIsNotNull())
                 return @default;
@@ -123,12 +123,12 @@ namespace eXtensionSharp
             return src;
         }
 
-        public static T xSafe<T>(this string src) where T : struct
+        public static T xGetValue<T>(this string src) where T : struct
         {
             return src.xStringToEnum<T>();
         }
 
-        public static string xSafe<T>(this XEnumBase<T> src, XEnumBase<T> defaultValue = null)
+        public static string xGetValue<T>(this XEnumBase<T> src, XEnumBase<T> defaultValue = null)
             where T : XEnumBase<T>, new()
         {
             if (defaultValue.xIsNotNull()) return src.ToString().xIfNotNull(x => x, defaultValue.ToString());
@@ -136,7 +136,7 @@ namespace eXtensionSharp
             return src.ToString();
         }
 
-        public static XEnumBase<T> xSafe<T>(this string src, XEnumBase<T> defaultValue = null)
+        public static XEnumBase<T> xGetValue<T>(this string src, XEnumBase<T> defaultValue = null)
             where T : XEnumBase<T>, new()
         {
             if (src.xIsNullOrEmpty()) return XEnumBase<T>.Parse(src);

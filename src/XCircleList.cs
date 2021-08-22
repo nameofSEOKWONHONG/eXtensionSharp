@@ -2,19 +2,19 @@ using System.Collections.Generic;
 
 namespace eXtensionSharp
 {
-    public class XCircleXList<T> : List<T>
+    public class CircleXList<T> : List<T>
         where T : class, new()
     {
-        public XCircleXList()
+        public CircleXList()
         {
         }
 
-        public XCircleXList(int capacity)
+        public CircleXList(int capacity)
             : base(capacity)
         {
         }
 
-        public XCircleXList(IEnumerable<T> enumerable)
+        public CircleXList(IEnumerable<T> enumerable)
         {
             AddRange(enumerable);
         }

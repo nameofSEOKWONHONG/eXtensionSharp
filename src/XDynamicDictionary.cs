@@ -42,7 +42,15 @@ namespace eXtensionSharp
 
         public T this[string key]
         {
-            get => _inner[key];
+            get
+            {
+                T v;
+                if (_inner.TryGetValue(key, out v))
+                {
+                    return v;
+                }
+                return default(T);
+            }
             set => _inner[key] = value;
         }
 

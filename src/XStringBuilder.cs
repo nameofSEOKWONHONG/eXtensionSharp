@@ -60,9 +60,9 @@ namespace eXtensionSharp
             _stringBuilder.AppendFormat(cultureInfo, format, objs);
         }
 
-        public void AppendJoin(string seperator, params object[] objs)
+        public void AppendJoin(string separator, params object[] objs)
         {
-            _stringBuilder.AppendJoin(seperator, objs);
+            _stringBuilder.AppendJoin(separator, objs);
         }
 
         public void Dispose()

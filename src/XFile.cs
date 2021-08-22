@@ -192,17 +192,17 @@ namespace eXtensionSharp
         {
             if (Directory.Exists(fullPathName))
             {
-                var files = Directory.GetFiles(fullPathName);
-                files.xForEach(file =>
-                {
-                    if (File.Exists(file)) File.Delete(file);
-                });
-                Directory.Delete(fullPathName);
+                Directory.Delete(fullPathName, true);
             }
         }
         
         public static void xCopy(this string sourceDir, string targetDir)
         {
+            if (Directory.Exists(targetDir))
+            {
+                Directory.Delete(targetDir, true);
+            }
+            
             Directory.CreateDirectory(targetDir);
 
             foreach(var file in Directory.GetFiles(sourceDir))
