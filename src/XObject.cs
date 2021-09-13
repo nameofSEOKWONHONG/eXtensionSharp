@@ -45,6 +45,11 @@ namespace eXtensionSharp
             return obj;
         }
 
+        public static void xIf<T>(this T obj, Action<T> predicate)
+        {
+            if (obj.xIsNotNull()) predicate(obj);
+        }
+
         public static T xIfNotNull<T>(this T obj, Func<T, T> predicate, T defaultValue)
         {
             if (obj.xIsNotNull()) return predicate(obj);
@@ -121,11 +126,6 @@ namespace eXtensionSharp
             if (src.xIsNull() && @default.xIsNull()) return new T();
 
             return src;
-        }
-
-        public static T xGetValue<T>(this string src) where T : struct
-        {
-            return src.xStringToEnum<T>();
         }
 
         public static string xGetValue<T>(this XEnumBase<T> src, XEnumBase<T> defaultValue = null)

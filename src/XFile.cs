@@ -72,6 +72,10 @@ namespace eXtensionSharp
             await File.WriteAllBytesAsync(fileName, bytes);
         }
 
+        public static bool xDirExists(this string dir)
+        {
+            return Directory.Exists(dir);
+        }
         public static bool xFileExists(this string fileName)
         {
             return File.Exists(fileName);
@@ -152,6 +156,24 @@ namespace eXtensionSharp
                 return true;
             });
             fileName.xFileCreate();
+        }
+
+        public static void xDirCreate(this string path)
+        {
+            var isException = false;
+            try
+            {
+                Directory.CreateDirectory(path);
+            }
+            catch
+            {
+                isException = true;
+            }
+
+            if(isException)
+            {
+                xDirCreateAll(path);
+            }
         }
 
         public static void xDirCreateAll(this string path)
