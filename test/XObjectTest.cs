@@ -31,28 +31,28 @@ namespace eXtensionSharp.test {
         [Test]
         public void value_test() {
             var a = "A";
-            Assert.AreEqual("".xSafe(a), a);
+            Assert.AreEqual("".xGetValue(a), a);
         }
 
         [Test]
         public void value_test2() {
-            Assert.AreEqual(123.xSafe(), "123");
+            Assert.AreEqual(123.xGetValue(), "123");
         }
 
         [Test]
         public void value_test3() {
-            var s = DateTime.Now.xSafe();
+            var s = DateTime.Now.xGetValue();
             Console.WriteLine(s);
             Assert.AreEqual(s.GetType(), typeof(string));
         }
 
         [Test]
         public void value_test4() {
-            var x1 = ENUM_DATE_FORMAT.DEFAULT.xSafe(ENUM_DATE_FORMAT.HHMMSS);
+            var x1 = ENUM_DATE_FORMAT.DEFAULT.xGetValue(ENUM_DATE_FORMAT.HHMMSS);
             var x2 = ENUM_DATE_FORMAT.DEFAULT.ToString();
             Assert.AreEqual(x1, x2);
 
-            var x3 = "HHmmss".xSafe<ENUM_DATE_FORMAT>(ENUM_DATE_FORMAT.HHMMSS);
+            var x3 = "HHmmss".xGetValue<ENUM_DATE_FORMAT>(ENUM_DATE_FORMAT.HHMMSS);
             var x4 = ENUM_DATE_FORMAT.HHMMSS;
             Assert.AreEqual(x3, x4);
         }

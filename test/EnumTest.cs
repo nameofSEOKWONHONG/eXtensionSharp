@@ -5,7 +5,7 @@ namespace eXtensionSharp.test {
     public class EnumTest {
         [Test]
         public void enum_static_class_test() {
-            Assert.AreEqual(ENUM_USE_YN.Y.xSafe(), "Y");
+            Assert.AreEqual(ENUM_USE_YN.Y.xGetValue(), "Y");
             Assert.AreNotEqual(ENUM_USE_YN.N, ENUM_USE_YN.Y);
         }
 
@@ -16,7 +16,7 @@ namespace eXtensionSharp.test {
 
         [Test]
         public void enum_attribute_test2() {
-            Assert.AreEqual("Y".xSafe<EnumUseYn>(), EnumUseYn.Y);
+            Assert.AreEqual("Y".xGetValue<EnumUseYn>(), EnumUseYn.Y);
         }
     }
 
