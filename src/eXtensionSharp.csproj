@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
     <PackageTags>#eXtensionSharp</PackageTags>
     <PackageReleaseNotes>first release</PackageReleaseNotes>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

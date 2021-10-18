@@ -1,8 +1,9 @@
+using System;
 using System.Runtime.InteropServices;
 
 namespace eXtensionSharp
 {
-    public class XOS
+    public class XEnvironmentInfomation
     {
         public static bool xIsWindows()
         {
@@ -18,5 +19,11 @@ namespace eXtensionSharp
         {
             return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         }
+
+        public static int xCpuCoreCount()
+        {
+            return Environment.ProcessorCount;
+        }
+
     }
 }

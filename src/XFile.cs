@@ -132,9 +132,9 @@ namespace eXtensionSharp
         {
             List<string> paths = null;
 
-            if (XOS.xIsWindows())
+            if (XEnvironmentInfomation.xIsWindows())
                 paths = fileName.xSplit('\\').xToList();
-            else if (XOS.xIsLinux() || XOS.xIsMac()) paths = fileName.xSplit('/').xToList();
+            else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsMac()) paths = fileName.xSplit('/').xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>
@@ -146,9 +146,9 @@ namespace eXtensionSharp
                 }
                 else
                 {
-                    if (XOS.xIsWindows())
+                    if (XEnvironmentInfomation.xIsWindows())
                         dir += $"{"\\"}{path}";
-                    else if (XOS.xIsLinux() || XOS.xIsLinux()) dir += $"{"/"}{path}";
+                    else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsLinux()) dir += $"{"/"}{path}";
                 }
 
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -180,9 +180,9 @@ namespace eXtensionSharp
         {
             List<string> paths = null;
 
-            if (XOS.xIsWindows())
+            if (XEnvironmentInfomation.xIsWindows())
                 paths = path.xSplit('\\').xToList();
-            else if (XOS.xIsLinux() || XOS.xIsMac()) paths = path.xSplit('/').xToList();
+            else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsMac()) paths = path.xSplit('/').xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>
@@ -194,9 +194,9 @@ namespace eXtensionSharp
                 }
                 else
                 {
-                    if (XOS.xIsWindows())
+                    if (XEnvironmentInfomation.xIsWindows())
                         dir += $"{"\\"}{path}";
-                    else if (XOS.xIsLinux() || XOS.xIsLinux()) dir += $"{"/"}{path}";
+                    else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsLinux()) dir += $"{"/"}{path}";
                 }
 
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
