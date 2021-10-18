@@ -81,6 +81,12 @@ namespace eXtensionSharp
             return File.Exists(fileName);
         }
 
+        public static bool xIsFile(this string pathName)
+        {
+            var extension = Path.GetExtension(pathName);
+            return !string.IsNullOrEmpty(extension);
+        }
+
         public static string xFileUniqueId(this string fileName)
         {
             var ret = string.Empty;
