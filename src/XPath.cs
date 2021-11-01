@@ -19,7 +19,7 @@ namespace eXtensionSharp
             var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
             var appRoot = appPathMatcher.Match(exePath).Value;
-            if (!addPath.xIsNullOrEmpty())
+            if (!addPath.xIsEmpty())
                 appRoot = appRoot + @"\" + addPath;
             return Path.Combine(appRoot, fileName);
         }

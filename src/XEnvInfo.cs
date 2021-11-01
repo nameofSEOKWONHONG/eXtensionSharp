@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace eXtensionSharp
 {
-    public class XEnvironmentInfomation
+    public class XEnvInfo
     {
         public static bool xIsWindows()
         {
@@ -25,5 +25,9 @@ namespace eXtensionSharp
             return Environment.ProcessorCount;
         }
 
+        public static bool xIsX64()
+        {
+            return Environment.Is64BitOperatingSystem;
+        }
     }
 }

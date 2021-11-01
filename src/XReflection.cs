@@ -13,7 +13,7 @@ namespace eXtensionSharp
             where TAttribute : Attribute
         {
             var att = type.GetCustomAttributes(typeof(TAttribute), true).FirstOrDefault() as TAttribute;
-            if (att.xIsNotNull()) return valueSelector(att);
+            if (!att.xIsEmpty()) return valueSelector(att);
             return default;
         }
 

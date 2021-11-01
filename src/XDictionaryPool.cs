@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Mapster;
 
 namespace eXtensionSharp
 {
@@ -116,7 +115,7 @@ namespace eXtensionSharp
                 TValue v;
                 if (q.TryDequeue(out v))
                     return v;
-                if (creator.xIsNotNull())
+                if (!creator.xIsEmpty())
                     return creator();
             }
 
@@ -210,7 +209,13 @@ namespace eXtensionSharp
 
         public static IDictionary<string, object> xToDictionary<T>(this T entity) where T : class
         {
-            return entity.Adapt<Dictionary<string, object>>();
+            var result = new Dictionary<string, object>();
+            var props = entity.GetType().GetProperties();
+            props.xForEach(prop =>
+            {
+                result.Add(prop.Name, prop.GetValue(entity, null));
+            });
+            return result;
         }
     }
 }

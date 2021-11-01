@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace eXtensionSharp.test {
     public class XStringTest {
@@ -7,6 +8,27 @@ namespace eXtensionSharp.test {
             var chars ="a,b,c,d,e".xSplit(',');
             Assert.AreEqual(chars.xFirst(), "a");
             Assert.AreEqual(chars.xLast(), "e");
+        }
+
+        [Test]
+        public void string_hash_test()
+        {
+            var text1 = "abcdef";
+            var text2 = "abcdef";
+
+            Assert.AreEqual(text1.xGetHashCode(), text2.xGetHashCode());
+        }
+
+        [Test]
+        public void string_find_word_test()
+        {
+            var text = "hello world";
+            var splits = text.xTruncate().ToCharArray();
+            splits.xForEach(c =>
+            {
+                Console.Write(c);
+                Console.WriteLine(text.xCountWord(c));    
+            });
         }
     }
 }

@@ -44,7 +44,7 @@ namespace eXtensionSharp
                 if (!reader.IsDBNull(i))
                 {
                     var property = properties.Where(m => m.Name.Equals(reader.GetName(i))).xFirst();
-                    if (property.xIsNotNull())
+                    if (!property.xIsEmpty())
                         if (reader.GetFieldType(i).Equals(property.PropertyType))
                             property.SetValue(newItem, reader[i]);
                 }

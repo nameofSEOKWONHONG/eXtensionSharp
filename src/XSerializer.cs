@@ -18,7 +18,7 @@ namespace eXtensionSharp
         public static string xToJson<T>(this T entity, JsonSerializerOptions serializerOptions = null)
             where T : class
         {
-            if (serializerOptions.xIsNotNull())
+            if (!serializerOptions.xIsEmpty())
                 return JsonSerializer.Serialize(entity, serializerOptions);
             return JsonSerializer.Serialize(entity);
         }

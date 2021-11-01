@@ -47,19 +47,16 @@ namespace eXtensionSharp
             if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
             return await File.ReadAllBytesAsync(fileName);
         }
-
+        
         public static void xFileWriteAllLines(this string fileName, string[] lines, Encoding encoding = null)
         {
-            File.WriteAllLines(fileName, lines, encoding.xIfNotNull(x => x, Encoding.Default));
+            File.WriteAllLines(fileName, lines, encoding);
         }
 
         public static async Task
             xFileWriteAllLinesAsync(this string fileName, string[] lines, Encoding encoding = null)
         {
-            if (encoding.xIsNotNull())
-                await File.WriteAllLinesAsync(fileName, lines, encoding);
-
-            await File.WriteAllLinesAsync(fileName, lines);
+            await File.WriteAllLinesAsync(fileName, lines, encoding);
         }
 
         public static void xFileWriteBytes(this string fileName, byte[] bytes)
@@ -100,6 +97,20 @@ namespace eXtensionSharp
             }
         }
 
+        public static void xFileLock(this string fileName)
+        {
+            if (!XEnvInfo.xIsWindows()) throw new NotSupportedException("windows only");
+            if (!File.Exists(fileName)) throw new Exception("file not exists");
+            File.Encrypt(fileName);
+        }
+
+        public static void xFileUnLock(this string fileName)
+        {
+            if (!XEnvInfo.xIsWindows()) throw new NotSupportedException("windows only");
+            if (!File.Exists(fileName)) throw new Exception("file not exists");            
+            File.Decrypt(fileName);
+        }
+
         public static bool xIsFileExtension(this string fileName,
             string pattern = @"^.*\.(zip|ZIP|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF)$")
         {
@@ -138,23 +149,23 @@ namespace eXtensionSharp
         {
             List<string> paths = null;
 
-            if (XEnvironmentInfomation.xIsWindows())
+            if (XEnvInfo.xIsWindows())
                 paths = fileName.xSplit('\\').xToList();
-            else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsMac()) paths = fileName.xSplit('/').xToList();
+            else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsMac()) paths = fileName.xSplit('/').xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>
             {
-                if (Path.GetExtension(path).xIsNotEmpty()) return false;
+                if (!Path.GetExtension(path).xIsEmpty()) return false;
                 if (path.xContains(new[] {":"}))
                 {
                     dir += path;
                 }
                 else
                 {
-                    if (XEnvironmentInfomation.xIsWindows())
+                    if (XEnvInfo.xIsWindows())
                         dir += $"{"\\"}{path}";
-                    else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsLinux()) dir += $"{"/"}{path}";
+                    else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsLinux()) dir += $"{"/"}{path}";
                 }
 
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -186,23 +197,23 @@ namespace eXtensionSharp
         {
             List<string> paths = null;
 
-            if (XEnvironmentInfomation.xIsWindows())
+            if (XEnvInfo.xIsWindows())
                 paths = path.xSplit('\\').xToList();
-            else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsMac()) paths = path.xSplit('/').xToList();
+            else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsMac()) paths = path.xSplit('/').xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>
             {
-                if (Path.GetExtension(path).xIsNotEmpty()) return false;
+                if (!Path.GetExtension(path).xIsEmpty()) return false;
                 if (path.xContains(new[] {":"}))
                 {
                     dir += path;
                 }
                 else
                 {
-                    if (XEnvironmentInfomation.xIsWindows())
+                    if (XEnvInfo.xIsWindows())
                         dir += $"{"\\"}{path}";
-                    else if (XEnvironmentInfomation.xIsLinux() || XEnvironmentInfomation.xIsLinux()) dir += $"{"/"}{path}";
+                    else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsLinux()) dir += $"{"/"}{path}";
                 }
 
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -57,8 +58,8 @@ namespace eXtensionSharp
 
         public static IEnumerable<string> xSplit(this string str, char splitChar)
         {
-            if (str.xIsNullOrEmpty()) return new List<string>();
-            return str.Split(splitChar);
+            if (str.xIsEmpty()) return new List<string>();
+            return str.Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public static int xCount(this string str)
@@ -66,16 +67,11 @@ namespace eXtensionSharp
             return str.xIsNull() ? 0 : str.Length;
         }
 
-        public static bool xIsNullOrEmpty(this string str)
+        public static bool xIsEmpty(this string str)
         {
             return string.IsNullOrEmpty(str);
         }
-
-        public static bool xIsNotNullOrEmpty(this string str)
-        {
-            return !string.IsNullOrEmpty(str);
-        }
-
+        
         public static string xReplace(this string text, string oldValue, string newValue)
         {
             return text.xIfNullOrEmpty(x => string.Empty).Replace(oldValue, newValue);
@@ -129,25 +125,25 @@ namespace eXtensionSharp
 
         public static int xIndexOf(this string src, string value)
         {
-            if (value.xIsNullOrEmpty()) return -1;
+            if (value.xIsEmpty()) return -1;
             return src.IndexOf(value);
         }
 
         public static int xIndexOfAny(this string src, string value)
         {
-            if (value.xIsNullOrEmpty()) return -1;
+            if (value.xIsEmpty()) return -1;
             return src.IndexOfAny(value.ToCharArray());
         }
 
         public static int xLastIndexOf(this string src, string value)
         {
-            if (value.xIsNullOrEmpty()) return -1;
+            if (value.xIsEmpty()) return -1;
             return src.LastIndexOf(value);
         }
 
         public static int xLastIndexOfAny(this string src, string value)
         {
-            if (value.xIsNullOrEmpty()) return -1;
+            if (value.xIsEmpty()) return -1;
             return src.LastIndexOfAny(value.ToCharArray());
         }
 
@@ -178,6 +174,25 @@ namespace eXtensionSharp
         public static string xToString(this byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
+        }
+
+        public static int xCountWord(this string str, char word)
+        {
+            return str.Where(x => x == word).Count();
+        }
+
+        public static string xTruncate(this string str)
+        {
+            var hash = new HashSet<char>();
+            str.xForEach(item =>
+            {
+                if (!hash.Contains(item))
+                {
+                    hash.Add(item);
+                }
+            });
+
+            return string.Join("", hash);
         }
     }
 }

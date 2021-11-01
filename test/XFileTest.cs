@@ -12,5 +12,19 @@ namespace eXtensionSharp.test {
             
             Assert.IsTrue(File.Exists(fileName));
         }
+
+        [Test]
+        public void unique_file_test()
+        {
+            var file = "D:\\오류테스트폴더.zip";
+            Console.WriteLine(file.xFileUniqueId());
+        }
+
+        [Test]
+        public void file_lock_test()
+        {
+            var file = "D:\\오류테스트폴더.zip";
+            file.xFileLock();
+        }
     }
 }
