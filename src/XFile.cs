@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -47,27 +48,6 @@ namespace eXtensionSharp
             if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
             return await File.ReadAllBytesAsync(fileName);
         }
-        
-        public static void xFileWriteAllLines(this string fileName, string[] lines, Encoding encoding = null)
-        {
-            File.WriteAllLines(fileName, lines, encoding);
-        }
-
-        public static async Task
-            xFileWriteAllLinesAsync(this string fileName, string[] lines, Encoding encoding = null)
-        {
-            await File.WriteAllLinesAsync(fileName, lines, encoding);
-        }
-
-        public static void xFileWriteBytes(this string fileName, byte[] bytes)
-        {
-            File.WriteAllBytes(fileName, bytes);
-        }
-
-        public static async Task xFileWriteBytesAsync(this string fileName, byte[] bytes)
-        {
-            await File.WriteAllBytesAsync(fileName, bytes);
-        }
 
         public static bool xDirExists(this string dir)
         {
@@ -95,6 +75,15 @@ namespace eXtensionSharp
                     return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", string.Empty);
                 }
             }
+        }
+
+        public static string xFileUniqueIdByFileInfo(this string fileName)
+        {
+            var fileInfo = new FileInfo(fileName);
+            if(!fileInfo.Exists) throw new FileNotFoundException();
+            return
+                $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}|{fileInfo.LastWriteTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}"
+                    .xGetHashCode();
         }
 
         public static void xFileLock(this string fileName)
@@ -249,6 +238,26 @@ namespace eXtensionSharp
 
             foreach(var directory in Directory.GetDirectories(sourceDir))
                 xCopy(directory, Path.Combine(targetDir, Path.GetFileName(directory)));
+        }
+
+        public static Dictionary<string, string> xGetFileExtensionProperties(this string fileName)
+        {
+            var dictionary = new Dictionary<string, string>();
+            if (!File.Exists(fileName)) throw new FileNotFoundException();
+            Process process = new Process();
+            process.StartInfo.FileName = "wmic.exe";
+            process.StartInfo.Arguments = $"datafile where Name=\"{fileName}\"";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.Start();
+            //* Read the output (or the error)
+            string output = process.StandardOutput.ReadToEnd();
+            string err = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+
+            //0~32, 33 delete, 34~
+            return dictionary;
         }
     }
 }

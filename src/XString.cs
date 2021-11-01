@@ -74,7 +74,7 @@ namespace eXtensionSharp
         
         public static string xReplace(this string text, string oldValue, string newValue)
         {
-            return text.xIfNullOrEmpty(x => string.Empty).Replace(oldValue, newValue);
+            return text.xIfEmpty(() => string.Empty).Replace(oldValue, newValue);
         }
 
         private static void xCopyTo(Stream src, Stream dest)
@@ -181,7 +181,7 @@ namespace eXtensionSharp
             return str.Where(x => x == word).Count();
         }
 
-        public static string xTruncate(this string str)
+        public static string xDistinct(this string str)
         {
             var hash = new HashSet<char>();
             str.xForEach(item =>

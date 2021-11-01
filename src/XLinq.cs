@@ -8,7 +8,7 @@ namespace eXtensionSharp
     {
         public static int xCount<T>(this IEnumerable<T> enumerable)
         {
-            if (enumerable.xIsNull()) return 0;
+            if (enumerable.xIsEmpty()) return 0;
             return enumerable.Count();
         }
 
@@ -28,8 +28,7 @@ namespace eXtensionSharp
         {
             if (enumerable.xIsEmpty())
             {
-                enumerable = new List<T>();
-                return enumerable;
+                return new List<T>();
             }
 
             return enumerable;

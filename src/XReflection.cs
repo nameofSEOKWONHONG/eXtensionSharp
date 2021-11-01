@@ -17,12 +17,12 @@ namespace eXtensionSharp
             return default;
         }
 
-        public static IEnumerable<PropertyInfo> GetProperties<T>(this T obj)
+        public static IEnumerable<PropertyInfo> xGetProperties<T>(this T obj)
         {
-            return obj.GetProperties();
+            return obj.GetType().GetProperties();
         }
 
-        public static IEnumerable<T> CreateInstance<T>(this string assemblyPath, string[] containKeywords = null,
+        public static IEnumerable<T> xCreateInstance<T>(this string assemblyPath, string[] containKeywords = null,
             string[] notContainKeywords = null) where T : class
         {
             var list = new List<T>();

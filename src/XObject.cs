@@ -27,33 +27,10 @@ namespace eXtensionSharp
             return obj.Equals(false);
         }
 
-        public static string xIfNullOrEmpty(this string str, Func<string, string> func)
+        public static string xIfEmpty(this string str, Func<string> func)
         {
-            if (str.xIsNullOrEmpty()) return func(str);
+            if (str.xIsEmpty()) return func();
             return str;
-        }
-
-        public static string xIfNotNullOrEmpty(this string str, Func<string, string> func)
-        {
-            if (!str.xIsNullOrEmpty()) return func(str);
-            return str;
-        }
-
-        public static T xIfNull<T>(this T obj, Func<T, T> predicate)
-        {
-            if (predicate.xIsNull()) return predicate(obj);
-            return obj;
-        }
-
-        public static void xIf<T>(this T obj, Action<T> predicate)
-        {
-            if (obj.xIsNotNull()) predicate(obj);
-        }
-
-        public static T xIfNotNull<T>(this T obj, Func<T, T> predicate, T defaultValue)
-        {
-            if (obj.xIsNotNull()) return predicate(obj);
-            return defaultValue;
         }
 
         public static bool xIsNull(this object obj)
@@ -77,7 +54,7 @@ namespace eXtensionSharp
 
             if (obj is string)
             {
-                if ((obj as string).xIsNullOrEmpty()) return true;
+                if ((obj as string).xIsEmpty()) return true;
             }
             else if (obj is ICollection)
             {
@@ -93,62 +70,9 @@ namespace eXtensionSharp
             return !obj.xIsEmpty();
         }
 
-        public static string xGetValue(this string src, string @default = null)
-        {
-            return src.xIfNullOrEmpty(x => @default).xTrim();
-        }
-
-        public static string xGetValue(this object src, object @default = null)
-        {
-            if (src.xIsNull() && @default.xIsNull()) return string.Empty;
-            if (src.xIsNotNull()) return Convert.ToString(src).xTrim();
-
-            if (@default.xIsNotNull()) return Convert.ToString(@default).xTrim();
-
-            return string.Empty;
-        }
-
-        public static T xGetValue<T>(this object src, object @default = null)
-        {
-            if (src.xIsNull() && @default.xIsNull()) return default;
-
-            if (src.xIsNotNull()) return (T) Convert.ChangeType(src, typeof(T));
-
-            if (@default.xIsNotNull()) return (T) Convert.ChangeType(@default, typeof(T));
-
-            return default;
-        }
-
-        public static T xGetValue<T>(this T src, T @default = null) where T : class, new()
-        {
-            if (src.xIsNull() && @default.xIsNotNull())
-                return @default;
-            if (src.xIsNull() && @default.xIsNull()) return new T();
-
-            return src;
-        }
-
-        public static string xGetValue<T>(this XEnumBase<T> src, XEnumBase<T> defaultValue = null)
-            where T : XEnumBase<T>, new()
-        {
-            if (defaultValue.xIsNotNull()) return src.ToString().xIfNotNull(x => x, defaultValue.ToString());
-
-            return src.ToString();
-        }
-
-        public static XEnumBase<T> xGetValue<T>(this string src, XEnumBase<T> defaultValue = null)
-            where T : XEnumBase<T>, new()
-        {
-            if (src.xIsNullOrEmpty()) return XEnumBase<T>.Parse(src);
-
-            if (defaultValue.xIsNotNull()) return defaultValue;
-
-            return null;
-        }
-
         public static string xTrim(this string src)
         {
-            return src.xIsNullOrEmpty() ? string.Empty : src.Trim();
+            return src.xIsEmpty() ? string.Empty : src.Trim();
         }
 
         public static bool xIsEquals<T>(this T src, T compare)
@@ -213,12 +137,7 @@ namespace eXtensionSharp
 
         public static string xToHash(this string str)
         {
-            return str.GetHashCode().ToString();
-        }
-
-        public static string xToName(this Type type)
-        {
-            return type.Name;
+            return str.xGetHashCode();
         }
     }
 }

@@ -210,7 +210,7 @@ namespace eXtensionSharp
         public static IDictionary<string, object> xToDictionary<T>(this T entity) where T : class
         {
             var result = new Dictionary<string, object>();
-            var props = entity.GetType().GetProperties();
+            var props = entity.xGetProperties();
             props.xForEach(prop =>
             {
                 result.Add(prop.Name, prop.GetValue(entity, null));

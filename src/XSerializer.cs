@@ -23,10 +23,9 @@ namespace eXtensionSharp
             return JsonSerializer.Serialize(entity);
         }
 
-        public static string xToJson<TKey, TValue>(this XDictionaryPool<TKey, TValue> xDictionaryPool)
+        public static string xToJson<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
         {
-            var dic = xDictionaryPool.ToDictionary();
-            return JsonSerializer.Serialize(dic);
+            return JsonSerializer.Serialize(dictionary);
         }
 
         public static string xToJson(this object obj)

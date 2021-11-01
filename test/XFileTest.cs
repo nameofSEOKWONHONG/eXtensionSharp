@@ -26,5 +26,17 @@ namespace eXtensionSharp.test {
             var file = "D:\\오류테스트폴더.zip";
             file.xFileLock();
         }
+
+        [Test]
+        public void file_extension_test()
+        {
+            var file = "d:\\\\D2 - 복사본.zip";
+
+            var properties = file.xGetFileExtensionProperties();
+            if (properties != null)
+            {
+                
+            }
+        }
     }
 }

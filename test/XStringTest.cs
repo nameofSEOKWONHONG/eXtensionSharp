@@ -23,7 +23,7 @@ namespace eXtensionSharp.test {
         public void string_find_word_test()
         {
             var text = "hello world";
-            var splits = text.xTruncate().ToCharArray();
+            var splits = text.xDistinct().ToCharArray();
             splits.xForEach(c =>
             {
                 Console.Write(c);
