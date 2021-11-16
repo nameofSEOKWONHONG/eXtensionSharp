@@ -1,10 +1,12 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace eXtensionSharp
 {
     public static class XCryptAES256
     {
+        [Obsolete("no more use method", true)]
         public static string xToEncAES256(this string plainText, string cipherKey, string cipherIV,
             CipherMode cipherMode, PaddingMode paddingMode)
         {
@@ -31,6 +33,7 @@ namespace eXtensionSharp
             }
         }
 
+        [Obsolete("no more use method", true)]
         public static string xToDecAES256(this string cipherText, string cipherKey, string cipherIV,
             CipherMode cipherMode, PaddingMode paddingMode, DeconvertCipherFormat format)
         {

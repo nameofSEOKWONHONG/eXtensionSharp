@@ -156,7 +156,7 @@ namespace eXtensionSharp
 
         public static string xGetHashCode(this string text)
         {
-            SHA256 sha = new SHA256Managed();
+            var sha = SHA256.Create();
             var hash = sha.ComputeHash(Encoding.ASCII.GetBytes(text));
             var stringBuilder = new XStringBuilder();
             foreach (var b in hash) stringBuilder.AppendFormat("{0:x2}", b);

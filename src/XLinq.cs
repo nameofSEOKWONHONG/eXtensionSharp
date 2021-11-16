@@ -15,16 +15,16 @@ namespace eXtensionSharp
         public static IEnumerable<T> xWhere<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
             where T : class
         {
-            return xNullToNew(enumerable).Where(predicate);
+            return CreateNew(enumerable).Where(predicate);
         }
 
         public static IEnumerable<T> xSelect<T>(this IEnumerable<T> enumerable, Func<T, T> predicate)
             where T : class
         {
-            return xNullToNew(enumerable).Select(predicate);
+            return CreateNew(enumerable).Select(predicate);
         }
 
-        private static IEnumerable<T> xNullToNew<T>(IEnumerable<T> enumerable)
+        private static IEnumerable<T> CreateNew<T>(IEnumerable<T> enumerable)
         {
             if (enumerable.xIsEmpty())
             {

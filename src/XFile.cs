@@ -88,6 +88,7 @@ namespace eXtensionSharp
 
         public static void xFileLock(this string fileName)
         {
+            #pragma warning disable CA1416
             if (!XEnvInfo.xIsWindows()) throw new NotSupportedException("windows only");
             if (!File.Exists(fileName)) throw new Exception("file not exists");
             File.Encrypt(fileName);

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace eXtensionSharp
@@ -31,6 +33,22 @@ namespace eXtensionSharp
         public static string xToJson(this object obj)
         {
             return JsonSerializer.Serialize(obj);
+        }
+
+        //TODO:NOT TEST
+        public static T xToClone<T>(this T obj) where T : class
+        {
+            var target = JsonSerializer.Serialize(obj);
+            var result = JsonSerializer.Deserialize<T>(target);
+            return result;
+        }
+        
+        //TODO:NOT TEST
+        public static T xToClone<T>(this T obj, Func<T, T> func) where T : class
+        {
+            var result = obj.xToClone();
+            result = func(result);
+            return result;
         }
     }
 }
