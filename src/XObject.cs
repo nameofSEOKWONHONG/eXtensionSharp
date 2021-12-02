@@ -33,6 +33,12 @@ namespace eXtensionSharp
             return str;
         }
 
+        public static string xIfNotEmpty(this string str, Func<string> func)
+        {
+            if (str.xIsNotEmpty()) return func();
+            return str;
+        }
+
         public static bool xIsNull(this object obj)
         {
             if (obj == null) return true;

@@ -168,12 +168,18 @@ namespace eXtensionSharp
 
         public static byte[] xToBytes(this string str)
         {
-            return Encoding.UTF8.GetBytes(str);
+            return Encoding.ASCII.GetBytes(str);
+        }
+
+        public static byte[] xToBytes(this object obj)
+        {
+            var objToString = System.Text.Json.JsonSerializer.Serialize(obj);
+            return System.Text.Encoding.ASCII.GetBytes(objToString);
         }
 
         public static string xToString(this byte[] bytes)
         {
-            return Encoding.UTF8.GetString(bytes);
+            return Encoding.ASCII.GetString(bytes);
         }
 
         public static int xCountWord(this string str, char word)
