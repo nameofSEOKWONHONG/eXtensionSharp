@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -110,6 +111,25 @@ namespace eXtensionSharp
         {
             for (var i = fromTo.Item2; i >= fromTo.Item1; i--) action(i);
         }
+
+        public static void xForEachReverse<T>(this IEnumerable<T> itorator, Action<T> action)
+        {
+            var reverseItems = itorator.Reverse();
+            reverseItems.xForEach(item =>
+            {
+                action(item);
+            });
+        }
+
+        public static void xForEachReverse<T>(this IEnumerable<T> itorator, Func<T, bool> func)
+        {
+            var reverseItems = itorator.Reverse();
+            reverseItems.xForEach(item =>
+            {
+                return func(item);
+            });
+        }
+
 
         public static void xPararellForEach<T>(this IEnumerable<T> items, Action<T> action)
         {
