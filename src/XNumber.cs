@@ -101,28 +101,28 @@ namespace eXtensionSharp
 
         public static bool xIsNumber(this string str)
         {
-            str = str.xIfEmpty(() => string.Empty);
+            str.xIfEmpty(() => str = string.Empty);
             var regex = new Regex("^[0-9]*$", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
             return regex.Match(str).Success;
         }
 
         public static bool xIsAlphabet(this string str)
         {
-            str = str.xIfEmpty(() => string.Empty);
+            str.xIfEmpty(() => str = string.Empty);
             var regex = new Regex(@"^[a-zA-Z\-_]+$", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
             return regex.Match(str).Success;
         }
 
         public static bool xIsAlphabetAndNumber(this string str)
         {
-            str = str.xIfEmpty(() => string.Empty);
+            str.xIfEmpty(() => str = string.Empty);
             var regex = new Regex(@"^[a-zA-Z0-9]+$", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
             return regex.Match(str).Success;
         }
 
         public static bool xIsNumeric(this string str)
         {
-            str = str.xIfEmpty(() => string.Empty);
+            str.xIfEmpty(() => str = string.Empty);
             var regex = new Regex(@"^(?<digit>-?\d+)(\.(?<scale>\d*))?$",
                 RegexOptions.ExplicitCapture | RegexOptions.Compiled);
             return regex.Match(str).Success;

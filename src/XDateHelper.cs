@@ -13,14 +13,23 @@ namespace eXtensionSharp
 
         public static string xToDate(this DateTime date, ENUM_DATE_FORMAT format = null)
         {
-            if (!format.xIsEmpty()) date.ToString(format.ToString());
-            return date.ToString(ENUM_DATE_FORMAT.DEFAULT.ToString());
+            if (!format.xIsEmpty()) format = ENUM_DATE_FORMAT.YYYY_MM_DD;
+            return date.ToString(format);
         }
 
-        public static string xToDate(this DateTime date, string format = null)
+        public static string xToDate(this DateTime date, string format = "yyyy-MM-dd")
         {
-            if (format.xIsEmpty()) format = "yyyy-MM-dd";
             return date.ToString(format);
+        }
+
+        public static DateTime xToMin(this DateTime date)
+        {
+            return DateTime.Parse(date.ToShortDateString());
+        }
+
+        public static DateTime xToMax(this DateTime date)
+        {
+            return DateTime.Parse($"{date.AddDays(1).ToShortDateString()}");
         }
     }
 

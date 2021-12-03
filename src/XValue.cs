@@ -6,7 +6,8 @@ namespace eXtensionSharp
     {
         public static string xValue(this string src, string @default = null)
         {
-            return src.xIfEmpty(() => @default).xTrim();
+            src.xIfEmpty(() => src = @default);
+            return src.xTrim();
         }
 
         public static string xValue(this object src, object @default = null)
@@ -42,9 +43,11 @@ namespace eXtensionSharp
         public static string xValue<T>(this XEnumBase<T> src, XEnumBase<T> defaultValue = null)
             where T : XEnumBase<T>, new()
         {
-            if (defaultValue.xIsNotNull()) 
-                return src.ToString().xIfEmpty(() => defaultValue.ToString());
-
+            if (defaultValue.xIsNotNull())
+            {
+                src.ToString().xIfEmpty(() => src = defaultValue);
+                return src.ToString();
+            }
             return src.ToString();
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 
 namespace eXtensionSharp
 {
@@ -27,10 +28,20 @@ namespace eXtensionSharp
             return obj.Equals(false);
         }
 
+        public static void xIfEmpty(this string str, Action action)
+        {
+            if (str.xIsEmpty()) action();
+        }
+
         public static string xIfEmpty(this string str, Func<string> func)
         {
             if (str.xIsEmpty()) return func();
             return str;
+        }
+
+        public static void xIfNotEmpty(this string str, Action action)
+        {
+            if (str.xIsNotEmpty()) action();
         }
 
         public static string xIfNotEmpty(this string str, Func<string> func)
