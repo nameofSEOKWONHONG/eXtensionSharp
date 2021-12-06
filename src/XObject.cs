@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Threading.Tasks;
 
 namespace eXtensionSharp
 {
@@ -39,6 +40,11 @@ namespace eXtensionSharp
             return str;
         }
 
+        public static void xIfEmpty<T>(this T obj, Action action)
+        {
+            if (obj.xIsEmpty()) action();
+        }
+
         public static void xIfNotEmpty(this string str, Action action)
         {
             if (str.xIsNotEmpty()) action();
@@ -49,6 +55,17 @@ namespace eXtensionSharp
             if (str.xIsNotEmpty()) return func();
             return str;
         }
+
+        public static async Task xIfNotEmptyAsync<T>(this T obj, Func<Task> func)
+        {
+            if (obj.xIsNotEmpty()) await func();   
+        }
+
+        public static async Task xIfEmptyAsync<T>(this T obj, Func<Task> func)
+        {
+            if (obj.xIsNotEmpty()) await func();
+        }
+            
 
         public static bool xIsNull(this object obj)
         {
