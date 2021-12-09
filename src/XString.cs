@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -56,10 +57,15 @@ namespace eXtensionSharp
             return str.AsSpan()[startIndex..str.Length].ToString();
         }
 
-        public static IEnumerable<string> xSplit(this string str, char splitChar)
+        public static IEnumerable<string> xSplit(this string str, char splitChar = ',')
         {
             if (str.xIsEmpty()) return new List<string>();
             return str.Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static string xJoin<T>(this IEnumerable<T> src, char joinChar = ',')
+        {
+            return string.Join(joinChar, src);
         }
 
         public static int xCount(this string str)

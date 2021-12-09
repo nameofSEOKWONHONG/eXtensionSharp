@@ -130,14 +130,33 @@ namespace eXtensionSharp
         {
             return compare.xIsEquals(srcs);
         }
+        
 
         public static bool xContains(this string src, IEnumerable<string> compares)
         {
-            var isContain = false;
+            var isContain = true;
             compares.xForEach(compare =>
             {
                 isContain = src.Contains(compare);
-                if (isContain) return false;
+                if (!isContain) return false;
+                return true;
+            });
+
+            return isContain;
+        }
+
+        public static bool xContains<T>(this T src, IEnumerable<T> compares)
+        {
+            return compares.Contains(src);
+        }
+
+        public static bool xContains<T>(this IEnumerable<T> src, IEnumerable<T> compares)
+        {
+            var isContain = true;
+            src.xForEach(item =>
+            {
+                isContain = item.xContains(compares);
+                if (!isContain) return false;
                 return true;
             });
 
