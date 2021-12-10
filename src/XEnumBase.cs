@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace eXtensionSharp
 {
@@ -117,6 +120,20 @@ namespace eXtensionSharp
             // slower O(n) case insensitive search
             return valueDict.FirstOrDefault(f => f.Key.Equals(value, StringComparison.OrdinalIgnoreCase)).Value;
             // Why Ordinal? => https://esmithy.net/2007/10/15/why-stringcomparisonordinal-is-usually-the-right-choice/
+        }
+    }
+    
+    public class XEnumBaseJsonConverter<T> : JsonConverter<T> where T : XEnumBase<T>, new()
+    {
+        public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var s = reader.GetString();
+            return XEnumBase<T>.Parse(s);
+        }
+
+        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
         }
     }
 }
