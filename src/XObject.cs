@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
@@ -59,6 +60,11 @@ namespace eXtensionSharp
         public static async Task xIfNotEmptyAsync<T>(this T obj, Func<Task> func)
         {
             if (obj.xIsNotEmpty()) await func();   
+        }
+
+        public static void xIfNotEmpty<T>(this T obj, Action action)
+        {
+            if (obj.xIsNotEmpty()) action();
         }
 
         public static async Task xIfEmptyAsync<T>(this T obj, Func<Task> func)
@@ -191,6 +197,43 @@ namespace eXtensionSharp
         public static string xToHash(this string str)
         {
             return str.xGetHashCode();
+        }
+
+        public static T xDatabaseTry<T>(this IDbConnection connection, Func<IDbConnection, T> dbConnection)
+        {
+            T result = default;
+            if(connection.State != ConnectionState.Open)
+                connection.Open();
+            try
+            {
+                result = dbConnection(connection);
+                return result;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return default;
+        }
+
+        public static async Task<T> xDatabaseTryAsync<T>(this IDbConnection connection,
+            Func<IDbConnection, Task<T>> dbConnection)
+        {
+            T result = default;
+            if(connection.State != ConnectionState.Open)
+                connection.Open();
+            try
+            {
+                result = await dbConnection(connection);
+                return result;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return result;
         }
     }
 }
