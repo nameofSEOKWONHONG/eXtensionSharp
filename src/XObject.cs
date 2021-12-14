@@ -46,6 +46,34 @@ namespace eXtensionSharp
             if (obj.xIsEmpty()) action();
         }
 
+        /// <summary>
+        /// 일반 예외
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="func"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <exception cref="Exception"></exception>
+        public static void xIfEmptyThrow<T>(this T obj, Func<string> func)
+        {
+            if (obj.xIsEmpty())
+            {
+                var msg = func();
+                throw new Exception(msg);
+            }
+        }
+
+        /// <summary>
+        /// 지정 예외
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="func"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TException"></typeparam>
+        public static void xIfEmptyThorw<T, TException>(this T obj, Func<TException> func) where TException : Exception
+        {
+            obj.xIfEmpty(() => func());
+        }
+
         public static void xIfNotEmpty(this string str, Action action)
         {
             if (str.xIsNotEmpty()) action();

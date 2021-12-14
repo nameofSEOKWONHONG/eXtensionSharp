@@ -92,36 +92,85 @@ namespace eXtensionSharp
             while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0) dest.Write(bytes, 0, cnt);
         }
 
-        public static byte[] xToCompress(this string str)
+        /// <summary>
+        /// compression gzip
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public static byte[] xToGZip(this string str, CompressionLevel level = CompressionLevel.Fastest)
+        {
+            var bytes = Encoding.Unicode.GetBytes(str);
+            using var input = new MemoryStream(bytes);
+            using var output = new MemoryStream();
+            using var stream = new GZipStream(output, level);
+
+            input.CopyTo(stream);
+            output.Flush();
+        
+            var result = output.ToArray();
+            return result;
+        }
+
+        /// <summary>
+        /// uncompression gzip
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string XFromGZip(this string value)
+        {
+            var bytes = Convert.FromBase64String(value);
+            using var input = new MemoryStream(bytes);
+            using var output = new MemoryStream();
+            using var stream = new GZipStream(input, CompressionMode.Decompress);
+
+            stream.CopyTo(output);
+            stream.Flush();
+        
+            return Encoding.Unicode.GetString(output.ToArray());
+        }
+        
+        /// <summary>
+        /// compression brotli
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public static byte[] xToBrotli(this string str, CompressionLevel level = CompressionLevel.Fastest)
         {
             var bytes = Encoding.UTF8.GetBytes(str);
 
             using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
             {
-                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+                using (var mso = new MemoryStream())
                 {
-                    //msi.CopyTo(gs);
-                    xCopyTo(msi, gs);
-                }
+                    using(var stream = new BrotliStream(mso, level))
+                    {
+                        msi.CopyTo(stream);
+                        mso.Flush();
 
-                return mso.ToArray();
+                        var result = mso.ToArray();
+                        return result;
+                    }                    
+                }
             }
         }
 
-        public static string xToUnCompress(this byte[] bytes)
+        /// <summary>
+        /// uncompression brotli
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string xFromBrotli(this string value)
         {
-            using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
-            {
-                using (var gs = new GZipStream(msi, CompressionMode.Decompress))
-                {
-                    //gs.CopyTo(mso);
-                    xCopyTo(gs, mso);
-                }
+            var bytes = Convert.FromBase64String(value);
+            using var input = new MemoryStream(bytes);
+            using var output = new MemoryStream();
+            using var stream = new BrotliStream(input, CompressionMode.Decompress);
 
-                return Encoding.UTF8.GetString(mso.ToArray());
-            }
+            stream.CopyTo(output);
+        
+            return Encoding.Unicode.GetString(output.ToArray());
         }
 
         public static string xJoin(this string[] value, string separator)
