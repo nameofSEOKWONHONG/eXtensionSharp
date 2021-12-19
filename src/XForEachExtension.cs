@@ -18,11 +18,12 @@ namespace eXtensionSharp
         public static void xForEach<T>(this IEnumerable<T> iterator, Action<T> action)
         {
             if (iterator.xIsEmpty()) return;
-            if (iterator.xCount() > XConst.LOOP_WARNING_COUNT)
-                Debug.WriteLine($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
+            var enumerable = iterator as T[] ?? iterator.ToArray();
+            if (enumerable.xCount() > XConst.LOOP_WARNING_COUNT)
+                Debug.WriteLine($"Too much items : ({XConst.LOOP_WARNING_COUNT})");
 
-            var index = 0;
-            foreach (var item in iterator)
+            var index = 1;
+            foreach (var item in enumerable)
             {
                 action(item);
                 if (index % XConst.LOOP_WARNING_COUNT == 0)
@@ -32,24 +33,19 @@ namespace eXtensionSharp
         }
         
         /// <summary>
-        ///     for loop
+        ///     foreach loop
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="iterator"></param>
         /// <param name="action"></param>
-        /// <typeparam name="T"></typeparam>
-        public static void xFor<T>(this IEnumerable<T> iterator, Action<T> action)
+        public static void xForEach<T>(this IEnumerable<T> iterator, Action<T, int> action)
         {
-            if (iterator.xIsEmpty()) return;
-            if (iterator.xCount() > XConst.LOOP_WARNING_COUNT)
-                Trace.TraceInformation($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
-
-            var srcs = iterator.ToArray();
-            for (var i = 0; i < srcs.Length; i++)
+            var index = 0;
+            iterator.xForEach(item =>
             {
-                action(srcs[i]);
-                if (i % XConst.LOOP_WARNING_COUNT == 0)
-                    XConst.SetInterval(XConst.SLEEP_INTERVAL);
-            }
+                action(item, index);
+                index++;
+            });
         }
         
         /// <summary>
@@ -61,11 +57,12 @@ namespace eXtensionSharp
         public static void xForEach<T>(this IEnumerable<T> iterator, Func<T, bool> func)
         {
             if (iterator.xIsEmpty()) return;
-            if (iterator.xCount() > XConst.LOOP_WARNING_COUNT)
+            var enumerable = iterator as T[] ?? iterator.ToArray();
+            if (enumerable.xCount() > XConst.LOOP_WARNING_COUNT)
                 Trace.TraceInformation($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
 
-            var index = 0;
-            foreach (var item in iterator)
+            var index = 1;
+            foreach (var item in enumerable)
             {
                 var isBreak = !func(item);
                 if (isBreak) break;
@@ -74,6 +71,30 @@ namespace eXtensionSharp
                     XConst.SetInterval(XConst.SLEEP_INTERVAL);
 
                 index++;
+            }
+        }
+        
+        public static void xForEach<T>(this IEnumerable<T> iterator, Func<T, int, bool> func)
+        {
+            var index = 0;
+            iterator.xForEach(item =>
+            {
+                var isBreak = !func(item, index);
+                if (isBreak) return false;
+                return true;
+            });
+        }
+        
+        public static void xForEach<T>(this T[] enumerable, Action<T> action)
+        {
+            if (enumerable.xIsEmpty()) return;
+            if(enumerable.xCount() > XConst.LOOP_WARNING_COUNT) Debug.WriteLine($"Too much items : ({XConst.LOOP_WARNING_COUNT})");
+
+            for (var i = 0; i < enumerable.Length; i++)
+            {
+                action(enumerable[i]);
+                if (i % XConst.LOOP_WARNING_COUNT == 0)
+                    XConst.SetInterval(XConst.SLEEP_INTERVAL);
             }
         }
         
@@ -86,28 +107,18 @@ namespace eXtensionSharp
             else if (type.xIsEquals(ENUM_DATETIME_FOREACH_TYPE.MONTH))
                 for (var i = fromToDate.@from; i <= fromToDate.to; i = i.AddMonths(1))
                     action(i);
-            else
+            else if (type.xIsEquals(ENUM_DATETIME_FOREACH_TYPE.YEAR))
                 for (var i = fromToDate.@from; i <= fromToDate.to; i = i.AddYears(1))
                     action(i);
-        }
-        
-        public static void xForEach(this IEnumerable<string> itorator, 
-            string split, 
-            Action<string, string> action)
-        {
-            itorator.xForEach((item, i) =>
-            {
-                if (itorator.Count() - 1 == i) split = "";
-                action(item, split);
-            });
+            else throw new NotImplementedException();
         }
 
-        public static void xFor(this ValueTuple<int, int> fromTo, Action<int> action)
+        public static void xForEach(this ValueTuple<int, int> fromTo, Action<int> action)
         {
             for (var i = fromTo.Item1; i <= fromTo.Item2; i++) action(i);
         }
 
-        public static void xReverseFor(this ValueTuple<int, int> fromTo, Action<int> action)
+        public static void xForEachReverve(this ValueTuple<int, int> fromTo, Action<int> action)
         {
             for (var i = fromTo.Item2; i >= fromTo.Item1; i--) action(i);
         }
@@ -129,7 +140,6 @@ namespace eXtensionSharp
                 return func(item);
             });
         }
-
 
         public static void xPararellForEach<T>(this IEnumerable<T> items, Action<T> action)
         {
@@ -158,72 +168,6 @@ namespace eXtensionSharp
                     i++;
                 });
             });
-        }
-
-        /// <summary>
-        ///     foreach loop
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="iterator"></param>
-        /// <param name="action"></param>
-        public static void xForEach<T>(this IEnumerable<T> iterator, Action<T, int> action)
-        {
-            if (iterator.xCount() > XConst.LOOP_WARNING_COUNT)
-                Trace.TraceInformation($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
-
-            var index = 0;
-            iterator.xForEach(item =>
-            {
-                action(item, index);
-                index++;
-            });
-        }
-
-        public static void xFor<T>(this IEnumerable<T> iterator, Action<T, int> action)
-        {
-            if (iterator.xCount() > XConst.LOOP_WARNING_COUNT)
-                Trace.TraceInformation($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
-
-            var index = 0;
-            iterator.xFor(item =>
-            {
-                action(item, index);
-                index++;
-            });
-        }
-        
-        public static void xForEach<T>(this IEnumerable<T> iterator, Func<T, int, bool> func)
-        {
-            if (iterator.xCount() > XConst.LOOP_WARNING_COUNT)
-                Trace.TraceInformation($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
-
-            var index = 0;
-            iterator.xForEach(item =>
-            {
-                var isBreak = !func(item, index);
-                if (isBreak) return false;
-
-                if (index % XConst.LOOP_WARNING_COUNT == 0)
-                    XConst.SetInterval(XConst.SLEEP_INTERVAL);
-
-                return true;
-            });
-        }
-
-        public static void xFor<T>(this IEnumerable<T> iterator, Func<T, int, bool> func)
-        {
-            if (iterator.xCount() > XConst.LOOP_WARNING_COUNT)
-                Trace.TraceInformation($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
-
-            var srcs = iterator.ToArray();
-            for (var i = 0; i < srcs.Length; i++)
-            {
-                var isBreak = !func(srcs[i], i);
-                if (isBreak) break;
-
-                if (i % XConst.LOOP_WARNING_COUNT == 0)
-                    XConst.SetInterval(XConst.SLEEP_INTERVAL);
-            }
         }
 
         public static async Task xForEachAsync<T>(this IEnumerable<T> iterator, Func<T, Task> func)

@@ -8,11 +8,12 @@ using System.Text.Json.Serialization;
 
 namespace eXtensionSharp
 {
-    // ref : https://github.com/gerardog/StringEnum/blob/master/StringEnum/StringEnum.cs
-    // For Newtonsoft.Json support check /StringEnum.Sample.NewtonsoftSerialization/StringEnum.cs .</remarks>
     /// <summary>
     ///     Base class for creating string-valued enums in .NET.<br />
     ///     Provides static Parse() and TryParse() methods and implicit cast to string.
+    /// <see href="https://github.com/gerardog/StringEnum/blob/master/StringEnum/StringEnum.cs"/>
+    /// <remarks>For Newtonsoft.Json support check /StringEnum.Sample.NewtonsoftSerialization/StringEnum.cs .</remarks>
+    /// <see href="https://github.com/ardalis/SmartEnum"/>
     /// </summary>
     /// <example>
     ///     <code>
@@ -125,7 +126,7 @@ namespace eXtensionSharp
     
     public class XEnumBaseJsonConverter<T> : JsonConverter<T> where T : XEnumBase<T>, new()
     {
-        public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var s = reader.GetString();
             return XEnumBase<T>.Parse(s);
