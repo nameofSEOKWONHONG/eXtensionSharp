@@ -72,7 +72,7 @@ namespace eXtensionSharp.test {
         /// </summary>
         [Test]
         public void Parallel_loop_extension_test() {
-            _list.xPararellForEach(items => {
+            _list.xForEachParallel(items => {
                 return items.GroupBy(m => m.COM_CODE);
             }, (key, datas) => {
                 return datas.Where(m => m.COM_CODE == key);

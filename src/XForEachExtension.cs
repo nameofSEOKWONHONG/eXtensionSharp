@@ -118,15 +118,14 @@ namespace eXtensionSharp
             for (var i = fromTo.Item1; i <= fromTo.Item2; i++) action(i);
         }
 
-        public static void xForEachReverve(this ValueTuple<int, int> fromTo, Action<int> action)
+        public static void xForEachReverse(this ValueTuple<int, int> fromTo, Action<int> action)
         {
             for (var i = fromTo.Item2; i >= fromTo.Item1; i--) action(i);
         }
 
         public static void xForEachReverse<T>(this IEnumerable<T> itorator, Action<T> action)
         {
-            var reverseItems = itorator.Reverse();
-            reverseItems.xForEach(item =>
+            itorator.Reverse().xForEach(item =>
             {
                 action(item);
             });
@@ -134,19 +133,18 @@ namespace eXtensionSharp
 
         public static void xForEachReverse<T>(this IEnumerable<T> itorator, Func<T, bool> func)
         {
-            var reverseItems = itorator.Reverse();
-            reverseItems.xForEach(item =>
+            itorator.Reverse().xForEach(item =>
             {
                 return func(item);
             });
         }
 
-        public static void xPararellForEach<T>(this IEnumerable<T> items, Action<T> action)
+        public static void xForEachParallel<T>(this IEnumerable<T> items, Action<T> action)
         {
             Parallel.ForEach(items, action);
         }
 
-        public static void xPararellForEach<T>(this IEnumerable<T> items,
+        public static void xForEachParallel<T>(this IEnumerable<T> items,
             Func<IEnumerable<T>, IEnumerable<IGrouping<string, T>>> groupby,
             Func<string, IEnumerable<T>, IEnumerable<T>> filter,
             Action<T, int> action) where T : class
@@ -158,8 +156,8 @@ namespace eXtensionSharp
                 var filterResult = filter(group.Key, items);
                 maps.Add(group.Key, filterResult);
             });
-
-            Parallel.ForEach(maps, item =>
+            
+            maps.xForEachParallel(item =>
             {
                 var i = 0;
                 item.Value.xForEach(item2 =>

@@ -52,14 +52,14 @@ namespace eXtensionSharp.test {
 
         [Test]
         public void number_from_to_test() {
-            (1, 10).xFor(num => {
+            (1, 10).xForEach(num => {
                 Console.WriteLine(num);
             });
         }
 
         [Test]
         public void reverse_number_from_to_test() {
-            (1, 10).xReverseFor(i => {
+            (1, 10).xForEachReverse(i => {
                 Console.WriteLine(i);
             });
         }
