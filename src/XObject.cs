@@ -241,8 +241,6 @@ namespace eXtensionSharp
             {
                 connection.Close();
             }
-
-            return default;
         }
 
         public static async Task<T> xDatabaseTryAsync<T>(this IDbConnection connection,
@@ -260,8 +258,6 @@ namespace eXtensionSharp
             {
                 connection.Close();
             }
-
-            return result;
         }
     }
 }
