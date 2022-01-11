@@ -175,4 +175,11 @@ namespace eXtensionSharp
             foreach (var value in iterator) await func(value);
         }
     }
+    
+    public class ENUM_DATETIME_FOREACH_TYPE : XEnumBase<ENUM_DATETIME_FOREACH_TYPE>
+    {
+        public static readonly ENUM_DATETIME_FOREACH_TYPE DAY = Define("DAY");
+        public static readonly ENUM_DATETIME_FOREACH_TYPE MONTH = Define("MONTH");
+        public static readonly ENUM_DATETIME_FOREACH_TYPE YEAR = Define("YEAR");
+    }
 }
