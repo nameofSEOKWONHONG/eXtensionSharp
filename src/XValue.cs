@@ -13,7 +13,7 @@ namespace eXtensionSharp
         public static string xValue(this object src, object @default = null)
         {
             if (src.xIsNull() && @default.xIsNull()) return string.Empty;
-            if (src.xIsNotNull()) return Convert.ToString(src).xTrim();
+            else if (src.xIsNotNull()) return Convert.ToString(src).xTrim();
 
             if (@default.xIsNotNull()) return Convert.ToString(@default).xTrim();
 
@@ -23,8 +23,7 @@ namespace eXtensionSharp
         public static T xValue<T>(this object src, object @default = null)
         {
             if (src.xIsNull() && @default.xIsNull()) return default;
-
-            if (src.xIsNotNull()) return (T) Convert.ChangeType(src, typeof(T));
+            else if (src.xIsNotNull()) return (T) Convert.ChangeType(src, typeof(T));
 
             if (@default.xIsNotNull()) return (T) Convert.ChangeType(@default, typeof(T));
 

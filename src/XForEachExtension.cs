@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace eXtensionSharp
@@ -171,6 +172,15 @@ namespace eXtensionSharp
         public static async Task xForEachAsync<T>(this IEnumerable<T> iterator, Func<T, Task> func)
         {
             foreach (var value in iterator) await func(value);
+        }
+        
+        public static async Task xForEachParallelAsync<T>(this IEnumerable<T> items,  Func<T, CancellationToken, Task> func, ParallelOptions parallelOptions = null)
+        {
+            if (parallelOptions.xIsEmpty()) parallelOptions = new ParallelOptions();
+            await Parallel.ForEachAsync(items, parallelOptions, async (item, token) =>
+            {
+                await func(item, token);
+            });
         }
     }
     

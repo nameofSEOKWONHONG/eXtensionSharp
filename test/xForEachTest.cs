@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test {
@@ -62,6 +64,31 @@ namespace eXtensionSharp.test {
             (1, 10).xForEachReverse(i => {
                 Console.WriteLine(i);
             });
+        }
+
+        [Test]
+        public async Task foreach_async_test()
+        {
+            // await Enumerable.Range(1, 100).ToList().xForEachAsync(async v =>
+            // {
+            //     await simple(v);
+            // });
+            //
+            // Console.WriteLine("===================================================");
+
+            await Enumerable.Range(2, 20).ToList().xForEachParallelAsync(
+                async (v, token) =>
+                {
+                    await simple(v);
+                }
+                , new ParallelOptions() { MaxDegreeOfParallelism = 5 }
+                );
+        }
+
+        public async Task simple(int v)
+        {
+            await Task.Delay(100);
+            Console.WriteLine(v);
         }
     }
 }

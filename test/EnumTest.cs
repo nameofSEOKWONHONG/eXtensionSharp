@@ -4,7 +4,9 @@ using NUnit.Framework;
 namespace eXtensionSharp.test {
     public class EnumTest {
         [Test]
-        public void enum_static_class_test() {
+        public void enum_static_class_test()
+        {
+            var v = "Y".xValue(ENUM_USE_YN.N.xValue());
             Assert.AreEqual(ENUM_USE_YN.Y.xValue(), "Y");
             Assert.AreNotEqual(ENUM_USE_YN.N, ENUM_USE_YN.Y);
         }
@@ -16,7 +18,7 @@ namespace eXtensionSharp.test {
 
         [Test]
         public void enum_attribute_test2() {
-            Assert.AreEqual("Y".xValue<EnumUseYn>(), EnumUseYn.Y);
+            Assert.AreEqual("Y".xValue<EnumUseYn>(EnumUseYn.Y), EnumUseYn.Y);
         }
     }
 
