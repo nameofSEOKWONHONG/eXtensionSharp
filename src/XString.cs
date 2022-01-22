@@ -255,5 +255,10 @@ namespace eXtensionSharp
 
             return string.Join("", hash);
         }
+
+        public static string xToMySqlRLikeString(this IEnumerable<string> items)
+        {
+            return string.Join('|', items.ToArray());
+        }
     }
 }
