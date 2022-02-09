@@ -12,9 +12,14 @@ namespace eXtensionSharp
 {
     public static class XFile
     {
-        public static string xFileReadAllText(this string fileName)
+        public static string xFileReadAllText(this string fileName, string baseDir = "")
         {
             var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
+            if (baseDir.xIsNotEmpty())
+            {
+                fullFileName = Path.Combine(baseDir, fileName);
+            }
+            
             if (fullFileName.xFileExists())
             {
                 var line = File.ReadAllText(fileName);
@@ -24,38 +29,59 @@ namespace eXtensionSharp
             return string.Empty;
         }
 
-        public static string[] xFileReadAllLines(this string fileName)
+        public static string[] xFileReadAllLines(this string fileName, string baseDir = "")
         {
-            if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
-            var lines = File.ReadAllLines(fileName);
+            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
+            if (baseDir.xIsNotEmpty())
+            {
+                fullFileName = Path.Combine(baseDir, fileName);
+            }
+            var lines = File.ReadAllLines(fullFileName);
             return lines;
         }
 
-        public static async Task<string[]> xFileReadAllLinesAsync(this string fileName)
+        public static async Task<string[]> xFileReadAllLinesAsync(this string fileName, string baseDir = "")
         {
-            if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
-            return await File.ReadAllLinesAsync(fileName);
+            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
+            if (baseDir.xIsNotEmpty())
+            {
+                fullFileName = Path.Combine(baseDir, fileName);
+            }
+            return await File.ReadAllLinesAsync(fullFileName);
         }
 
-        public static byte[] xFileReadAllBytes(this string fileName)
+        public static byte[] xFileReadAllBytes(this string fileName, string baseDir = "")
         {
-            if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
-            return File.ReadAllBytes(fileName);
+            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
+            if (baseDir.xIsNotEmpty())
+            {
+                fullFileName = Path.Combine(baseDir, fileName);
+            }
+            return File.ReadAllBytes(fullFileName);
         }
 
-        public static async Task<byte[]> xFileReadAllBytesAsync(this string fileName)
+        public static async Task<byte[]> xFileReadAllBytesAsync(this string fileName, string baseDir = "")
         {
-            if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
-            return await File.ReadAllBytesAsync(fileName);
+            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
+            if (baseDir.xIsNotEmpty())
+            {
+                fullFileName = Path.Combine(baseDir, fileName);
+            }
+            return await File.ReadAllBytesAsync(fullFileName);
         }
 
         public static bool xDirExists(this string dir)
         {
             return Directory.Exists(dir);
         }
-        public static bool xFileExists(this string fileName)
+        public static bool xFileExists(this string fileName, string baseDir = "")
         {
-            return File.Exists(fileName);
+            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
+            if (baseDir.xIsNotEmpty())
+            {
+                fullFileName = Path.Combine(baseDir, fileName);
+            }
+            return File.Exists(fullFileName);
         }
 
         public static bool xIsFile(this string pathName)
@@ -67,7 +93,7 @@ namespace eXtensionSharp
         public static string xFileUniqueId(this string fileName)
         {
             var ret = string.Empty;
-            if (!File.Exists(fileName)) throw new Exception($"not exists {fileName}");
+            if (!File.Exists(fileName)) return string.Empty;
             using (var md5 = MD5.Create())
             {
                 using (var stream = File.OpenRead(fileName))
@@ -137,11 +163,7 @@ namespace eXtensionSharp
         /// <param name="fileName"></param>
         public static void xFileCreateAll(this string fileName)
         {
-            List<string> paths = null;
-
-            if (XEnvInfo.xIsWindows())
-                paths = fileName.xSplit('\\').xToList();
-            else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsMac()) paths = fileName.xSplit('/').xToList();
+            List<string> paths = fileName.xSplit(Path.DirectorySeparatorChar).xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>
@@ -153,9 +175,7 @@ namespace eXtensionSharp
                 }
                 else
                 {
-                    if (XEnvInfo.xIsWindows())
-                        dir += $"{"\\"}{path}";
-                    else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsLinux()) dir += $"{"/"}{path}";
+                    dir += $"{Path.DirectorySeparatorChar}{path}";
                 }
 
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -185,11 +205,7 @@ namespace eXtensionSharp
 
         public static void xDirCreateAll(this string path)
         {
-            List<string> paths = null;
-
-            if (XEnvInfo.xIsWindows())
-                paths = path.xSplit('\\').xToList();
-            else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsMac()) paths = path.xSplit('/').xToList();
+            List<string> paths = path.xSplit(Path.DirectorySeparatorChar).xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>
@@ -201,9 +217,7 @@ namespace eXtensionSharp
                 }
                 else
                 {
-                    if (XEnvInfo.xIsWindows())
-                        dir += $"{"\\"}{path}";
-                    else if (XEnvInfo.xIsLinux() || XEnvInfo.xIsLinux()) dir += $"{"/"}{path}";
+                    dir += $"{Path.DirectorySeparatorChar}{path}";
                 }
 
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
