@@ -222,11 +222,6 @@ namespace eXtensionSharp
             return enumerable.ToArray();
         }
 
-        public static string xToHash(this string str)
-        {
-            return str.xGetHashCode();
-        }
-
         public static T xDatabaseTry<T>(this IDbConnection connection, Func<IDbConnection, T> dbConnection)
         {
             T result = default;

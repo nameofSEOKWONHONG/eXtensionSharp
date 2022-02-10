@@ -12,82 +12,100 @@ namespace eXtensionSharp
 {
     public static class XFile
     {
-        public static string xFileReadAllText(this string fileName, string baseDir = "")
+        public static string xGetFileName(this string fileName)
         {
-            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
-            if (baseDir.xIsNotEmpty())
+            try
             {
-                fullFileName = Path.Combine(baseDir, fileName);
+                return Path.GetFileName(fileName);
             }
-            
-            if (fullFileName.xFileExists())
+            catch (Exception e)
             {
-                var line = File.ReadAllText(fileName);
-                return line;
+                return string.Empty;
+            }
+        }
+
+        public static string xGetFileNameWithoutExtension(this string fileName)
+        {
+            try
+            {
+                return Path.GetFileNameWithoutExtension(fileName);
+            }
+            catch (Exception e)
+            {
+                return string.Empty;
+            }
+        }
+
+        public static string xGetFileNameWithBaseDir(this string fileName, string baseDir = "")
+        {
+            if (baseDir.xIsNotEmpty()) return Path.Combine(baseDir, fileName);
+            return Path.Combine(AppContext.BaseDirectory, fileName);
+        }
+        
+        public static string xFileReadAllText(this string fileName)
+        {
+            if (fileName.xFileExists())
+            {
+                return File.ReadAllText(fileName);
             }
 
             return string.Empty;
         }
 
-        public static string[] xFileReadAllLines(this string fileName, string baseDir = "")
+        public static string[] xFileReadAllLines(this string fileName)
         {
-            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
-            if (baseDir.xIsNotEmpty())
+            if (fileName.xFileExists())
             {
-                fullFileName = Path.Combine(baseDir, fileName);
+                return File.ReadAllLines(fileName);
             }
-            var lines = File.ReadAllLines(fullFileName);
-            return lines;
+
+            return new string[0];
         }
 
-        public static async Task<string[]> xFileReadAllLinesAsync(this string fileName, string baseDir = "")
+        public static async Task<string[]> xFileReadAllLinesAsync(this string fileName)
         {
-            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
-            if (baseDir.xIsNotEmpty())
+            if (fileName.xFileExists())
             {
-                fullFileName = Path.Combine(baseDir, fileName);
+                return await File.ReadAllLinesAsync(fileName);
             }
-            return await File.ReadAllLinesAsync(fullFileName);
+
+            return new string[0];
         }
 
-        public static byte[] xFileReadAllBytes(this string fileName, string baseDir = "")
+        public static byte[] xFileReadAllBytes(this string fileName)
         {
-            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
-            if (baseDir.xIsNotEmpty())
+            if (fileName.xFileExists())
             {
-                fullFileName = Path.Combine(baseDir, fileName);
+                return File.ReadAllBytes(fileName);    
             }
-            return File.ReadAllBytes(fullFileName);
+
+            return new byte[0];
         }
 
-        public static async Task<byte[]> xFileReadAllBytesAsync(this string fileName, string baseDir = "")
+        public static async Task<byte[]> xFileReadAllBytesAsync(this string fileName)
         {
-            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
-            if (baseDir.xIsNotEmpty())
+            if (fileName.xFileExists())
             {
-                fullFileName = Path.Combine(baseDir, fileName);
+                return await File.ReadAllBytesAsync(fileName);    
             }
-            return await File.ReadAllBytesAsync(fullFileName);
+
+            return new byte[0];
         }
 
         public static bool xDirExists(this string dir)
         {
             return Directory.Exists(dir);
         }
-        public static bool xFileExists(this string fileName, string baseDir = "")
+        
+        public static bool xFileExists(this string fileName)
         {
-            var fullFileName = Path.Combine(AppContext.BaseDirectory, fileName);
-            if (baseDir.xIsNotEmpty())
-            {
-                fullFileName = Path.Combine(baseDir, fileName);
-            }
-            return File.Exists(fullFileName);
+            return File.Exists(fileName);
         }
 
         public static bool xIsFile(this string pathName)
         {
             var extension = Path.GetExtension(pathName);
-            return !string.IsNullOrEmpty(extension);
+            return extension.xIsNotEmpty();
         }
 
         public static string xFileUniqueId(this string fileName)
@@ -130,8 +148,7 @@ namespace eXtensionSharp
         public static bool xIsFileExtension(this string fileName,
             string pattern = @"^.*\.(zip|ZIP|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF)$")
         {
-            var match = Regex.Match(fileName, pattern);
-            return match.Success;
+            return Regex.Match(fileName, pattern).Success;
         }
 
         public static void xFileZip(this string srcDir, string destZipFileName,
