@@ -10,21 +10,29 @@ namespace eXtensionSharp
             return src.xTrim();
         }
 
-        public static string xValue(this object src, object @default = null)
+        public static string xValue(this DateTime date, ENUM_DATE_FORMAT dateFormat)
         {
-            if (src.xIsNull() && @default.xIsNull()) return string.Empty;
-            else if (src.xIsNotNull()) return Convert.ToString(src).xTrim();
-
-            if (@default.xIsNotNull()) return Convert.ToString(@default).xTrim();
-
-            return string.Empty;
+            if (date.xIsEmpty()) return DateTime.MinValue.xToDate(dateFormat);
+            return date.xToDate(dateFormat);
         }
 
         public static T xValue<T>(this object src, object @default = null)
         {
-            if (src.xIsNull() && @default.xIsNull()) return default;
-            else if (src.xIsNotNull()) return (T) Convert.ChangeType(src, typeof(T));
-
+            if (src.xIsNull() && @default.xIsNull())
+            {
+                return default;
+            }
+            else if (src.xIsNotNull())
+            {
+                if (src is Guid) 
+                    return (T) Convert.ChangeType(src.ToString(), typeof(T));
+                else if (src is DateTime)
+                    return (T) Convert.ChangeType(((DateTime)src).xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS),
+                        typeof(T));
+                
+                return (T) Convert.ChangeType(src, typeof(T));
+            } 
+                
             if (@default.xIsNotNull()) return (T) Convert.ChangeType(@default, typeof(T));
 
             return default;

@@ -35,7 +35,6 @@ namespace eXtensionSharp
 
     public class ENUM_DATE_FORMAT : XEnumBase<ENUM_DATE_FORMAT>
     {
-        public static readonly ENUM_DATE_FORMAT DEFAULT = Define("yyyy-MM-dd");
         public static readonly ENUM_DATE_FORMAT YYYY_MM_DD = Define("yyyy-MM-dd");
         public static readonly ENUM_DATE_FORMAT YYYY_MM_DD_HH_MM_SS = Define("yyyy-MM-dd HH:mm:ss");
         public static readonly ENUM_DATE_FORMAT YYYYMMDD = Define("yyyyMMdd");

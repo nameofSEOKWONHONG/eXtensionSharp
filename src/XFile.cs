@@ -18,7 +18,7 @@ namespace eXtensionSharp
             {
                 return Path.GetFileName(fileName);
             }
-            catch (Exception e)
+            catch
             {
                 return string.Empty;
             }
@@ -30,7 +30,7 @@ namespace eXtensionSharp
             {
                 return Path.GetFileNameWithoutExtension(fileName);
             }
-            catch (Exception e)
+            catch
             {
                 return string.Empty;
             }

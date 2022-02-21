@@ -30,20 +30,28 @@ namespace eXtensionSharp
             return obj.Equals(false);
         }
 
-        public static void xIfEmpty(this string str, Action action)
+        public static void xIfEmpty(this string str, Action @if, Action @else = null)
         {
-            if (str.xIsEmpty()) action();
+            if (str.xIsEmpty()) @if();
+            else
+            {
+                if (@else.xIsNotEmpty()) @else();
+            }
         }
 
+        public static void xIfEmpty<T>(this T obj, Action @if, Action @else = null)
+        {
+            if (obj.xIsEmpty()) @if();
+            else
+            {
+                if (@else.xIsNotEmpty()) @else();
+            }
+        }
+        
         public static string xIfEmpty(this string str, Func<string> func)
         {
             if (str.xIsEmpty()) return func();
             return str;
-        }
-
-        public static void xIfEmpty<T>(this T obj, Action action)
-        {
-            if (obj.xIsEmpty()) action();
         }
 
         /// <summary>
@@ -74,9 +82,13 @@ namespace eXtensionSharp
             obj.xIfEmpty(() => func());
         }
 
-        public static void xIfNotEmpty(this string str, Action action)
+        public static void xIfNotEmpty(this string str, Action @if, Action @else = null)
         {
-            if (str.xIsNotEmpty()) action();
+            if (str.xIsNotEmpty()) @if();
+            else
+            {
+                if (@else.xIsNotEmpty()) @else();
+            }
         }
 
         public static string xIfNotEmpty(this string str, Func<string> func)
@@ -85,14 +97,18 @@ namespace eXtensionSharp
             return str;
         }
 
+        public static void xIfNotEmpty<T>(this T obj, Action @if, Action @else = null)
+        {
+            if (obj.xIsNotEmpty()) @if();
+            else
+            {
+                if (@else.xIsNotEmpty()) @else();
+            }
+        }
+        
         public static async Task xIfNotEmptyAsync<T>(this T obj, Func<Task> func)
         {
             if (obj.xIsNotEmpty()) await func();   
-        }
-
-        public static void xIfNotEmpty<T>(this T obj, Action action)
-        {
-            if (obj.xIsNotEmpty()) action();
         }
 
         public static async Task xIfEmptyAsync<T>(this T obj, Func<Task> func)
