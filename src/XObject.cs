@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
 
@@ -10,25 +11,67 @@ namespace eXtensionSharp
 {
     public static class XObject
     {
-        public static void xIfTrue(this bool obj, Action action)
+        public static bool xIsTrue(this bool state)
         {
-            if (obj) action();
+            return state is true;
         }
 
-        public static void xIfFalse(this bool obj, Action action)
+        public static bool xIsFalse(this bool state)
         {
-            if (!obj) action();
+            return state is false;
+        }
+        
+        public static void xIfTrue(this bool state, Action execute, Action elseExecute = null)
+        {
+            if (state) execute();
+            else
+            {
+                elseExecute.xIfNotEmpty(elseExecute);
+            }
         }
 
-        public static bool xIsTrue(this bool obj)
+        public static void xIfFalse(this bool state, Action execute, Action elseExecute = null)
         {
-            return obj.Equals(true);
+            if (!state) execute();
+            else
+            {
+                elseExecute.xIfNotEmpty(elseExecute);
+            }
         }
 
-        public static bool xIsFalse(this bool obj)
+        public static T xIfTrue<T>(this bool state, Func<T> execute, Func<T> elseExecute = null)
         {
-            return obj.Equals(false);
+            T t = default;
+            state.xIfTrue(() =>
+            {
+                t = execute();
+            }, () =>
+            {
+                elseExecute.xIfNotEmpty(() =>
+                {
+                    t = elseExecute();
+                });
+            });
+
+            return t;
         }
+        
+        public static T xIfFalse<T>(this bool state, Func<T> execute, Func<T> elseExecute = null)
+        {
+            T t = default;
+            state.xIfFalse(() =>
+            {
+                t = execute();
+            }, () =>
+            {
+                elseExecute.xIfNotEmpty(() =>
+                {
+                    t = elseExecute();
+                });
+            });
+
+            return t;
+        }        
 
         public static void xIfEmpty(this string str, Action @if, Action @else = null)
         {
@@ -81,29 +124,42 @@ namespace eXtensionSharp
         {
             obj.xIfEmpty(() => func());
         }
-
-        public static void xIfNotEmpty(this string str, Action @if, Action @else = null)
+        
+        public static void xIfNotEmpty<T>(this T obj, Action execute, Action elseExecute = null)
         {
-            if (str.xIsNotEmpty()) @if();
+            if (obj.xIsNotEmpty()) execute();
             else
             {
-                if (@else.xIsNotEmpty()) @else();
+                if (elseExecute.xIsNotEmpty()) elseExecute();
             }
         }
 
-        public static string xIfNotEmpty(this string str, Func<string> func)
+        public static T xIfNotEmpty<T>(this T obj, Func<T> execute, Func<T> elseExecute = null)
         {
-            if (str.xIsNotEmpty()) return func();
-            return str;
+            T t = default;
+            obj.xIfNotEmpty(() =>
+            {
+                t = execute();
+            }, () =>
+            {
+                elseExecute.xIfNotEmpty(() => t = elseExecute());
+            });
+
+            return t;
         }
 
-        public static void xIfNotEmpty<T>(this T obj, Action @if, Action @else = null)
+        public static T2 xIfNotEmpty<T1, T2>(this T1 obj, Func<T2> execute, Func<T2> elseExecute = null)
         {
-            if (obj.xIsNotEmpty()) @if();
-            else
+            T2 t = default;
+            obj.xIfNotEmpty(() =>
             {
-                if (@else.xIsNotEmpty()) @else();
-            }
+                t = execute();
+            }, () =>
+            {
+                elseExecute.xIfNotEmpty(() => { t = elseExecute(); });
+            });
+
+            return t;
         }
         
         public static async Task xIfNotEmptyAsync<T>(this T obj, Func<Task> func)
@@ -117,15 +173,15 @@ namespace eXtensionSharp
         }
             
 
-        public static bool xIsNull(this object obj)
+        public static bool xIsNull(this object? obj)
         {
-            if (obj == null) return true;
+            if (obj is null) return true;
             return false;
         }
 
-        public static bool xIsNotNull(this object obj)
+        public static bool xIsNotNull(this object? obj)
         {
-            if (obj == null) return false;
+            if (obj is not null) return false;
             return true;
         }
 
@@ -136,17 +192,14 @@ namespace eXtensionSharp
                 return true;
             }
 
-            if (obj is string)
+            switch (obj)
             {
-                if ((obj as string).xIsEmpty()) return true;
-            }
-            else if (obj is ICollection)
-            {
-                if ((obj as ICollection).Count <= 0)
+                case string s when s.xIsEmpty():
+                case ICollection {Count: <= 0}:
                     return true;
+                default:
+                    return false;
             }
-
-            return false;
         }
 
         public static bool xIsNotEmpty(this object obj)
@@ -154,7 +207,7 @@ namespace eXtensionSharp
             return !obj.xIsEmpty();
         }
 
-        public static string xTrim(this string src)
+        public static string? xTrim(this string src)
         {
             return src.xIsEmpty() ? string.Empty : src.Trim();
         }
@@ -238,7 +291,13 @@ namespace eXtensionSharp
             return enumerable.ToArray();
         }
 
-        public static T xDatabaseTry<T>(this IDbConnection connection, Func<IDbConnection, T> dbConnection)
+        public static bool IsNullableType<T>(T o)
+        {
+            var type = typeof(T);
+            return Nullable.GetUnderlyingType(type) != null;
+        }
+
+        public static T xDbExecute<T>(this IDbConnection connection, Func<IDbConnection, T> dbConnection)
         {
             T result = default;
             if(connection.State != ConnectionState.Open)
@@ -254,7 +313,7 @@ namespace eXtensionSharp
             }
         }
 
-        public static async Task<T> xDatabaseTryAsync<T>(this IDbConnection connection,
+        public static async Task<T> xDbExecuteAsync<T>(this IDbConnection connection,
             Func<IDbConnection, Task<T>> dbConnection)
         {
             T result = default;

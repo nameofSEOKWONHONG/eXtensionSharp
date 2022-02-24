@@ -6,7 +6,11 @@ namespace eXtensionSharp
     {
         public static string xValue(this string src, string @default = null)
         {
-            src.xIfEmpty(() => src = @default);
+            src.xIfEmpty(() =>
+            {
+                if (@default is { } val)
+                    src = val;
+            });
             return src.xTrim();
         }
 
@@ -15,7 +19,7 @@ namespace eXtensionSharp
             if (date.xIsEmpty()) return DateTime.MinValue.xToDate(dateFormat);
             return date.xToDate(dateFormat);
         }
-
+        
         public static T xValue<T>(this object src, object @default = null)
         {
             if (src.xIsNull() && @default.xIsNull())
@@ -24,16 +28,16 @@ namespace eXtensionSharp
             }
             else if (src.xIsNotNull())
             {
-                if (src is Guid) 
-                    return (T) Convert.ChangeType(src.ToString(), typeof(T));
-                else if (src is DateTime)
-                    return (T) Convert.ChangeType(((DateTime)src).xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS),
-                        typeof(T));
+                if (src is Guid guid) 
+                    return (T) Convert.ChangeType(guid.ToString(), typeof(T));
+                else if (src is DateTime time)
+                    return (T) Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS), typeof(T));
                 
                 return (T) Convert.ChangeType(src, typeof(T));
-            } 
+            }
                 
-            if (@default.xIsNotNull()) return (T) Convert.ChangeType(@default, typeof(T));
+            if (@default.xIsNotNull()) 
+                return (T) Convert.ChangeType(@default, typeof(T))!;
 
             return default;
         }
@@ -52,7 +56,13 @@ namespace eXtensionSharp
         {
             if (defaultValue.xIsNotNull())
             {
-                src.ToString().xIfEmpty(() => src = defaultValue);
+                src.ToString().xIfEmpty(() =>
+                {
+                    if (defaultValue is not null)
+                    {
+                        src = defaultValue;
+                    }
+                });
                 return src.ToString();
             }
             return src.ToString();

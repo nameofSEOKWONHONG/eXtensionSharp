@@ -209,7 +209,7 @@ namespace eXtensionSharp
 
         public static IDictionary<string, object> xToDictionary<T>(this T entity) where T : class
         {
-            var result = new Dictionary<string, object>();
+            var result = new DynamicDictionary<object>();
             var props = entity.xGetProperties();
             props.xForEach(prop =>
             {
