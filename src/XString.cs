@@ -73,7 +73,7 @@ namespace eXtensionSharp
             return str.xIsNull() ? 0 : str.Length;
         }
 
-        public static bool xIsEmpty(this string? str)
+        public static bool xIsEmpty(this string str)
         {
             return string.IsNullOrEmpty(str);
         }

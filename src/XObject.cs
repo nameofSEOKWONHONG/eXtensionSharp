@@ -71,17 +71,8 @@ namespace eXtensionSharp
             });
 
             return t;
-        }        
-
-        public static void xIfEmpty(this string str, Action @if, Action @else = null)
-        {
-            if (str.xIsEmpty()) @if();
-            else
-            {
-                if (@else.xIsNotEmpty()) @else();
-            }
         }
-
+        
         public static void xIfEmpty<T>(this T obj, Action @if, Action @else = null)
         {
             if (obj.xIsEmpty()) @if();
@@ -91,38 +82,19 @@ namespace eXtensionSharp
             }
         }
         
-        public static string xIfEmpty(this string str, Func<string> func)
+        public static T xIfEmpty<T>(this T obj, Func<T> execute, Func<T> elseExecute = null)
         {
-            if (str.xIsEmpty()) return func();
-            return str;
-        }
-
-        /// <summary>
-        /// 일반 예외
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="func"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <exception cref="Exception"></exception>
-        public static void xIfEmptyThrow<T>(this T obj, Func<string> func)
-        {
+            T t = default;
             if (obj.xIsEmpty())
             {
-                var msg = func();
-                throw new Exception(msg);
+                t = execute();
             }
-        }
+            else
+            {
+                elseExecute.xIfNotEmpty(() => t = elseExecute());
+            }
 
-        /// <summary>
-        /// 지정 예외
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="func"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TException"></typeparam>
-        public static void xIfEmptyThorw<T, TException>(this T obj, Func<TException> func) where TException : Exception
-        {
-            obj.xIfEmpty(() => func());
+            return t;
         }
         
         public static void xIfNotEmpty<T>(this T obj, Action execute, Action elseExecute = null)
@@ -142,7 +114,10 @@ namespace eXtensionSharp
                 t = execute();
             }, () =>
             {
-                elseExecute.xIfNotEmpty(() => t = elseExecute());
+                elseExecute.xIfNotEmpty(() =>
+                {
+                    t = elseExecute();
+                });
             });
 
             return t;
@@ -173,13 +148,13 @@ namespace eXtensionSharp
         }
             
 
-        public static bool xIsNull(this object? obj)
+        public static bool xIsNull(this object obj)
         {
             if (obj is null) return true;
             return false;
         }
 
-        public static bool xIsNotNull(this object? obj)
+        public static bool xIsNotNull(this object obj)
         {
             if (obj is not null) return false;
             return true;
@@ -207,7 +182,7 @@ namespace eXtensionSharp
             return !obj.xIsEmpty();
         }
 
-        public static string? xTrim(this string src)
+        public static string xTrim(this string src)
         {
             return src.xIsEmpty() ? string.Empty : src.Trim();
         }

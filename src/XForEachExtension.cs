@@ -169,9 +169,9 @@ namespace eXtensionSharp
             });
         }
 
-        public static async Task xForEachAsync<T>(this IEnumerable<T> iterator, Func<T, Task> func)
+        public static async Task xForEachAsync<T>(this IEnumerable<T> items, Func<T, Task> func)
         {
-            foreach (var value in iterator) await func(value);
+            foreach (var value in items) await func(value);
         }
         
         public static async Task xForEachParallelAsync<T>(this IEnumerable<T> items,  Func<T, CancellationToken, Task> func, ParallelOptions parallelOptions = null)
