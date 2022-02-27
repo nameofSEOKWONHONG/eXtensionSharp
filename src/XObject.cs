@@ -73,12 +73,12 @@ namespace eXtensionSharp
             return t;
         }
         
-        public static void xIfEmpty<T>(this T obj, Action @if, Action @else = null)
+        public static void xIfEmpty<T>(this T obj, Action execute, Action elseExecute = null)
         {
-            if (obj.xIsEmpty()) @if();
+            if (obj.xIsEmpty()) execute();
             else
             {
-                if (@else.xIsNotEmpty()) @else();
+                if (elseExecute.xIsNotEmpty()) elseExecute();
             }
         }
         
@@ -148,19 +148,17 @@ namespace eXtensionSharp
         }
             
 
-        public static bool xIsNull(this object obj)
+        public static bool xIsNull<T>(this T obj)
         {
-            if (obj is null) return true;
-            return false;
+            return obj is null;
         }
 
-        public static bool xIsNotNull(this object obj)
+        public static bool xIsNotNull<T>(this T obj)
         {
-            if (obj is not null) return false;
-            return true;
+            return obj is not null;
         }
 
-        public static bool xIsEmpty(this object obj)
+        public static bool xIsEmpty<T>(this T obj)
         {
             if (obj.xIsNull())
             {
@@ -176,8 +174,8 @@ namespace eXtensionSharp
                     return false;
             }
         }
-
-        public static bool xIsNotEmpty(this object obj)
+        
+        public static bool xIsNotEmpty<T>(this T obj)
         {
             return !obj.xIsEmpty();
         }
