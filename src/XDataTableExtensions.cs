@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace eXtensionSharp
 {
-    public static class XDataTable
+    public static class XDataTableExtensions
     {
         #region [Datatable & DataReader]
 

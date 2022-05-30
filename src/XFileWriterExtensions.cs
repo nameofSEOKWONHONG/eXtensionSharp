@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace eXtensionSharp
 {
-    public static class XFileWriter
+    public static class XFileWriterExtensions
     {
         public static void xFileWriteAllLines(this string fileName, string[] lines, Encoding encoding = null)
         {

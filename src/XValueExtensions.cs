@@ -2,7 +2,7 @@
 
 namespace eXtensionSharp
 {
-    public static class XValue
+    public static class XValueExtensions
     {
         public static string xValue(this string src, string @default = null)
         {

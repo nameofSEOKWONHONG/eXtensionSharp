@@ -59,8 +59,8 @@ namespace eXtensionSharp.test {
 
         [Test]
         public void xos_test() {
-            Assert.IsTrue(XEnvInfo.xIsWindows());
-            Assert.IsFalse(XEnvInfo.xIsLinux());
+            Assert.IsTrue(XEnvExtensions.xIsWindows());
+            Assert.IsFalse(XEnvExtensions.xIsLinux());
         }
 
         [Test]

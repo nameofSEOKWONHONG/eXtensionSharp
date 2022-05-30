@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace eXtensionSharp
 {
-    public static class XSerializer
+    public static class XSerializeExtensions
     {
         public static T xToEntity<T>(this string jsonString)
         {

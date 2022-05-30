@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace eXtensionSharp
 {
-    public static class XNumber
+    public static class XNumberExtensions
     {
         public static string xToNumber<T>(this T val, ENUM_NUMBER_FORMAT_TYPE type, ENUM_GET_ALLOW_TYPE allow)
         {

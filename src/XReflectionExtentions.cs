@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace eXtensionSharp
 {
-    public static class XReflection
+    public static class XReflectionExtentions
     {
         public static TValue xGetAttrValue<TAttribute, TValue>(
             this Type type,

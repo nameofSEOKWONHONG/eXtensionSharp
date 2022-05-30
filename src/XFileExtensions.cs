@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace eXtensionSharp
 {
-    public static class XFile
+    public static class XFileExtensions
     {
         public static string xGetFileName(this string fileName)
         {
@@ -133,14 +133,14 @@ namespace eXtensionSharp
         public static void xFileLock(this string fileName)
         {
             #pragma warning disable CA1416
-            if (!XEnvInfo.xIsWindows()) throw new NotSupportedException("windows only");
+            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows only");
             if (!File.Exists(fileName)) throw new Exception("file not exists");
             File.Encrypt(fileName);
         }
 
         public static void xFileUnLock(this string fileName)
         {
-            if (!XEnvInfo.xIsWindows()) throw new NotSupportedException("windows only");
+            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows only");
             if (!File.Exists(fileName)) throw new Exception("file not exists");            
             File.Decrypt(fileName);
         }

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace eXtensionSharp
 {
-    public class XEnvInfo
+    public class XEnvExtensions
     {
         public static bool xIsWindows()
         {

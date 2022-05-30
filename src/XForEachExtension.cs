@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace eXtensionSharp
 {
-    public static class XForEach
+    public static class XForEachExtensions
     {
         /// <summary>
         ///     foreach loop

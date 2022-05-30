@@ -2,7 +2,7 @@
 
 namespace eXtensionSharp
 {
-    public static class XDateHelper
+    public static class XDateExtensions
     {
         public static DateTime xToDate(this string date)
         {

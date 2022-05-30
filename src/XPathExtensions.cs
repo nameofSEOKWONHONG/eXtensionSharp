@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace eXtensionSharp
 {
-    public static class XPath
+    public static class XPathExtensions
     {
         /// <summary>
         ///     executable app root path

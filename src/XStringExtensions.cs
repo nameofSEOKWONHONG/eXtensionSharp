@@ -42,7 +42,7 @@ namespace eXtensionSharp
         }
     }
 
-    public static class XString
+    public static class XStringExtensions
     {
         /*
          * Span변환의 장점 : 스택에 메모리 할당되므로 GC가 발생하지 않도록 해줌.
