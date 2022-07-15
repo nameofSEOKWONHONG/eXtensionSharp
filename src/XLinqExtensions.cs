@@ -89,5 +89,69 @@ namespace eXtensionSharp
             if (enumerable.xIsNull()) return new T[0];
             return enumerable.ToArray();
         }
+
+        #region [between]
+
+        public static bool xBetween<T>(this Int16 value, Int16 from, Int16 to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }
+        
+        public static bool xBetween<T>(this Int32 value, Int32 from, Int32 to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }        
+        
+        public static bool xBetween<T>(this Int64 value, Int64 from, Int64 to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }       
+        
+        public static bool xBetween<T>(this double value, double from, double to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }            
+        
+        public static bool xBetween<T>(this float value, float from, float to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }          
+        
+        public static bool xBetween<T>(this decimal value, decimal from, decimal to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }                  
+
+        public static bool xBetween(this DateTime value, DateTime from, DateTime to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }
+
+        public static bool xBetween(this TimeSpan value, TimeSpan from, TimeSpan to)
+        {
+            if (from <= value && to >= value) return true;
+            return false;
+        }
+
+        public static bool xBetween(this char value, char from, char to, bool isStrict = true)
+        {
+            var v = Convert.ToByte(isStrict ? value : char.ToUpper(value));
+            var f = Convert.ToByte(isStrict ? from : char.ToUpper(from));
+            var t = Convert.ToByte(isStrict ? to : char.ToUpper(to));
+            if (f <= v && t >= v) return true;
+            return false;
+        }
+
+        #endregion
+        
+        
+        
     }
 }

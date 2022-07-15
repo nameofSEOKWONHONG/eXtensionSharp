@@ -20,16 +20,9 @@ namespace eXtensionSharp
         {
             if (iterator.xIsEmpty()) return;
             var enumerable = iterator as T[] ?? iterator.ToArray();
-            if (enumerable.xCount() > XConst.LOOP_WARNING_COUNT)
-                Debug.WriteLine($"Too much items : ({XConst.LOOP_WARNING_COUNT})");
-
-            var index = 1;
             foreach (var item in enumerable)
             {
                 action(item);
-                if (index % XConst.LOOP_WARNING_COUNT == 0)
-                    XConst.SetInterval(XConst.SLEEP_INTERVAL);
-                index++;
             }
         }
         
@@ -59,19 +52,10 @@ namespace eXtensionSharp
         {
             if (iterator.xIsEmpty()) return;
             var enumerable = iterator as T[] ?? iterator.ToArray();
-            if (enumerable.xCount() > XConst.LOOP_WARNING_COUNT)
-                Trace.TraceInformation($"OVER LOOP WARNING COUNT ({XConst.LOOP_WARNING_COUNT})");
-
-            var index = 1;
             foreach (var item in enumerable)
             {
                 var isBreak = !func(item);
                 if (isBreak) break;
-
-                if (index % XConst.LOOP_WARNING_COUNT == 0)
-                    XConst.SetInterval(XConst.SLEEP_INTERVAL);
-
-                index++;
             }
         }
         
@@ -91,27 +75,41 @@ namespace eXtensionSharp
             if (enumerable.xIsEmpty()) return;
             if(enumerable.xCount() > XConst.LOOP_WARNING_COUNT) Debug.WriteLine($"Too much items : ({XConst.LOOP_WARNING_COUNT})");
 
-            for (var i = 0; i < enumerable.Length; i++)
+            enumerable.AsEnumerable().xForEach(item =>
             {
-                action(enumerable[i]);
-                if (i % XConst.LOOP_WARNING_COUNT == 0)
-                    XConst.SetInterval(XConst.SLEEP_INTERVAL);
-            }
+                action(item);
+            });
         }
         
         public static void xForEach(this (DateTime from, DateTime to) fromToDate, ENUM_DATETIME_FOREACH_TYPE type,
             Action<DateTime> action)
         {
-            if (type.xIsEquals(ENUM_DATETIME_FOREACH_TYPE.DAY))
-                for (var i = fromToDate.@from; i <= fromToDate.to; i = i.AddDays(1))
-                    action(i);
-            else if (type.xIsEquals(ENUM_DATETIME_FOREACH_TYPE.MONTH))
-                for (var i = fromToDate.@from; i <= fromToDate.to; i = i.AddMonths(1))
-                    action(i);
-            else if (type.xIsEquals(ENUM_DATETIME_FOREACH_TYPE.YEAR))
-                for (var i = fromToDate.@from; i <= fromToDate.to; i = i.AddYears(1))
-                    action(i);
-            else throw new NotImplementedException();
+            var states = new Dictionary<ENUM_DATETIME_FOREACH_TYPE, Action<DateTime, DateTime>>()
+            {
+                {
+                    ENUM_DATETIME_FOREACH_TYPE.DAY, (from, to) =>
+                    {
+                        for (var i = from; i <= to; i = i.AddDays(1))
+                            action(i);
+                    }
+                },
+                {
+                    ENUM_DATETIME_FOREACH_TYPE.MONTH, (from, to) =>
+                    {
+                        for (var i = from; i <= to; i = i.AddMonths(1))
+                            action(i);
+                    }
+                },
+                {
+                    ENUM_DATETIME_FOREACH_TYPE.YEAR, (from, to) =>
+                    {
+                        for (var i = from; i <= to; i = i.AddYears(1))
+                            action(i);
+                    }
+                }
+            };
+
+            states[type](fromToDate.from, fromToDate.to);
         }
 
         public static void xForEach(this ValueTuple<int, int> fromTo, Action<int> action)
@@ -140,9 +138,9 @@ namespace eXtensionSharp
             });
         }
 
-        public static void xForEachParallel<T>(this IEnumerable<T> items, Action<T> action)
+        public static void xForEachParallel<T>(this IEnumerable<T> items, Action<T> action, ParallelOptions parallelOptions = null)
         {
-            Parallel.ForEach(items, action);
+            Parallel.ForEach(items, parallelOptions, action);
         }
 
         public static void xForEachParallel<T>(this IEnumerable<T> items,
