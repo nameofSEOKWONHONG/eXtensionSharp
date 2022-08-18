@@ -36,6 +36,8 @@ namespace eXtensionSharp
             }
         }
 
+        public static string xGetFileExtension(this string fileName) => Path.GetExtension(fileName);
+
         public static string xGetFileNameWithBaseDir(this string fileName, string baseDir = "")
         {
             if (baseDir.xIsNotEmpty()) return Path.Combine(baseDir, fileName);

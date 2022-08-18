@@ -136,6 +136,10 @@ namespace eXtensionSharp
 
         public static bool xBetween(this TimeSpan value, TimeSpan from, TimeSpan to)
         {
+            if (value <= TimeSpan.Zero) throw new Exception("value is zero.");
+            if (from <= TimeSpan.Zero) throw new Exception("from is zero.");
+            if (to <= TimeSpan.Zero) throw new Exception("to is zero.");
+            
             if (from <= value && to >= value) return true;
             return false;
         }
