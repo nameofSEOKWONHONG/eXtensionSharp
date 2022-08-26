@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -23,5 +24,7 @@ namespace eXtensionSharp
                 appRoot = appRoot + @"\" + addPath;
             return Path.Combine(appRoot, fileName);
         }
+
+        public static string xCurrentPath(this string path) => Path.Combine(AppContext.BaseDirectory, path);
     }
 }

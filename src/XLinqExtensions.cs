@@ -92,6 +92,8 @@ namespace eXtensionSharp
 
         #region [between]
 
+        #region [.net 7에서 inumber를 사용하여 하나의 function으로 변경할 예정]
+
         public static bool xBetween<T>(this Int16 value, Int16 from, Int16 to)
         {
             if (from <= value && to >= value) return true;
@@ -126,7 +128,9 @@ namespace eXtensionSharp
         {
             if (from <= value && to >= value) return true;
             return false;
-        }                  
+        }                
+
+        #endregion
 
         public static bool xBetween(this DateTime value, DateTime from, DateTime to)
         {

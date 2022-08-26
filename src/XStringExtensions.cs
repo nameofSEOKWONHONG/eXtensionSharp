@@ -57,10 +57,10 @@ namespace eXtensionSharp
             return str.AsSpan()[startIndex..str.Length].ToString();
         }
 
-        public static IEnumerable<string> xSplit(this string str, char splitChar = ',')
+        public static IEnumerable<string> xSplit(this string str, char splitChar = '§')
         {
             if (str.xIsEmpty()) return new List<string>();
-            return str.Split(splitChar, StringSplitOptions.RemoveEmptyEntries);
+            return str.Split(splitChar);
         }
 
         public static string xJoin<T>(this IEnumerable<T> src, char joinChar = ',')

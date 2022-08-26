@@ -12,31 +12,11 @@ namespace eXtensionSharp
 {
     public static class XFileExtensions
     {
-        public static string xGetFileName(this string fileName)
-        {
-            try
-            {
-                return Path.GetFileName(fileName);
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
+        public static string xGetFileName(this string fileName) => Path.GetFileName(fileName);
 
-        public static string xGetFileNameWithoutExtension(this string fileName)
-        {
-            try
-            {
-                return Path.GetFileNameWithoutExtension(fileName);
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        public static string xGetFileExtension(this string fileName) => Path.GetExtension(fileName);
+        public static string xGetFileNameWithoutExtension(this string fileName) => Path.GetFileNameWithoutExtension(fileName);
+        
+        public static string xGetExtension(this string fileName) => Path.GetExtension(fileName);
 
         public static string xGetFileNameWithBaseDir(this string fileName, string baseDir = "")
         {
@@ -81,7 +61,7 @@ namespace eXtensionSharp
                 return File.ReadAllBytes(fileName);    
             }
 
-            return new byte[0];
+            return null;
         }
 
         public static async Task<byte[]> xFileReadAllBytesAsync(this string fileName)
@@ -91,7 +71,7 @@ namespace eXtensionSharp
                 return await File.ReadAllBytesAsync(fileName);    
             }
 
-            return new byte[0];
+            return null;
         }
 
         public static bool xDirExists(this string dir)

@@ -97,7 +97,7 @@ namespace eXtensionSharp
             if (state) execute();
             else
             {
-                elseExecute.xIfNotEmpty(elseExecute);
+                if (elseExecute.xIsNotEmpty()) elseExecute();    
             }
         }
 
@@ -106,106 +106,64 @@ namespace eXtensionSharp
             if (!state) execute();
             else
             {
-                elseExecute.xIfNotEmpty(elseExecute);
+                if(elseExecute.xIsNotEmpty()) elseExecute();
             }
         }
         
-        public static T xIfTrue<T>(this bool state, Func<T> execute, Func<T> elseExecute = null)
+        public static void xIfEmpty(this object obj, Action action, Action elseAction = null)
         {
-            T t = default;
-            state.xIfTrue(() =>
-            {
-                t = execute();
-            }, () =>
-            {
-                elseExecute.xIfNotEmpty(() =>
-                {
-                    t = elseExecute();
-                });
-            });
-
-            return t;
-        }
-        
-        public static T xIfFalse<T>(this bool state, Func<T> execute, Func<T> elseExecute = null)
-        {
-            T t = default;
-            state.xIfFalse(() =>
-            {
-                t = execute();
-            }, () =>
-            {
-                elseExecute.xIfNotEmpty(() =>
-                {
-                    t = elseExecute();
-                });
-            });
-
-            return t;
-        }
-        
-        public static void xIfEmpty<T>(this T obj, Action execute, Action elseExecute = null)
-        {
-            if (obj.xIsEmpty()) execute();
+            if (obj.xIsEmpty()) action();
             else
             {
-                if (elseExecute.xIsNotEmpty()) elseExecute();
+                if (elseAction.xIsNotEmpty()) elseAction(); 
             }
         }
         
         public static T xIfEmpty<T>(this T obj, Func<T> execute, Func<T> elseExecute = null)
         {
-            T t = default;
-            if (obj.xIsEmpty())
-            {
-                t = execute();
-            }
+            if (obj.xIsEmpty()) return execute();
             else
             {
-                elseExecute.xIfNotEmpty(() => t = elseExecute());
+                if (elseExecute.xIsNotEmpty()) 
+                    return elseExecute();
             }
 
-            return t;
+            return default;
         }
         
-        public static void xIfNotEmpty<T>(this T obj, Action execute, Action elseExecute = null)
+        public static void xIfNotEmpty(this object obj, Action action, Action elseAction = null)
         {
-            if (obj.xIsNotEmpty()) execute();
-            else
-            {
-                if (elseExecute.xIsNotEmpty()) elseExecute();
+            if (obj.xIsNotEmpty()) action();
+            else {
+                if(elseAction.xIsNotEmpty())
+                {
+                    elseAction();
+                }
             }
         }
-
+        
         public static T xIfNotEmpty<T>(this T obj, Func<T> execute, Func<T> elseExecute = null)
         {
-            T t = default;
-            obj.xIfNotEmpty(() =>
-            {
-                t = execute();
-            }, () =>
-            {
-                elseExecute.xIfNotEmpty(() =>
+            if (obj.xIsNotEmpty()) return execute();
+            else {
+                if(elseExecute.xIsNotEmpty())
                 {
-                    t = elseExecute();
-                });
-            });
+                    return elseExecute();
+                }
+            }
 
-            return t;
+            return default;
         }
-
+        
         public static T2 xIfNotEmpty<T1, T2>(this T1 obj, Func<T2> execute, Func<T2> elseExecute = null)
         {
-            T2 t = default;
-            obj.xIfNotEmpty(() =>
+            if (obj.xIsNotEmpty()) return execute();
+            else
             {
-                t = execute();
-            }, () =>
-            {
-                elseExecute.xIfNotEmpty(() => { t = elseExecute(); });
-            });
+                if (elseExecute.xIsNotEmpty()) return elseExecute();
+            };
 
-            return t;
+            return default;
         }
         
         public static async Task xIfNotEmptyAsync<T>(this T obj, Func<Task> func)
