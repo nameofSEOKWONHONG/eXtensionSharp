@@ -25,6 +25,6 @@ namespace eXtensionSharp
             return Path.Combine(appRoot, fileName);
         }
 
-        public static string xCurrentPath(this string path) => Path.Combine(AppContext.BaseDirectory, path);
+        public static string xCurrentPath(this string path) => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, path));
     }
 }

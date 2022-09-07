@@ -32,6 +32,13 @@ namespace eXtensionSharp
             return result;
         }
 
+        /// <summary>
+        /// 추후에 https://github.com/twcclegg/libphonenumber-csharp 쪽으로 변경.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="allow"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         private static string MakePhoneString<T>(T val, ENUM_GET_ALLOW_TYPE allow)
         {
             if (allow == ENUM_GET_ALLOW_TYPE.Allow)
@@ -99,33 +106,37 @@ namespace eXtensionSharp
             return value.Substring(value.Length - length, length);
         }
 
+        //ref : https://medium.com/@mohsen_rajabi/how-to-write-a-regex-very-fast-in-c-best-practice-875d386c0485
+        private static Regex _numberRegex =
+            new Regex(@"^[a-zA-Z\-_]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         public static bool xIsNumber(this string str)
         {
             str.xIfEmpty(() => str = string.Empty);
-            var regex = new Regex("^[0-9]*$", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
-            return regex.Match(str).Success;
+            return _numberRegex.IsMatch(str);
         }
 
+        private static Regex _alphabetRegex =
+            new Regex(@"^[a-zA-Z\-_]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         public static bool xIsAlphabet(this string str)
         {
             str.xIfEmpty(() => str = string.Empty);
-            var regex = new Regex(@"^[a-zA-Z\-_]+$", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
-            return regex.Match(str).Success;
+            return _alphabetRegex.IsMatch(str);
         }
 
+        private static Regex _alphabetAndNumberRegex =
+            new Regex(@"^[a-zA-Z0-9]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         public static bool xIsAlphabetAndNumber(this string str)
         {
             str.xIfEmpty(() => str = string.Empty);
-            var regex = new Regex(@"^[a-zA-Z0-9]+$", RegexOptions.ExplicitCapture | RegexOptions.Compiled);
-            return regex.Match(str).Success;
+            return _alphabetAndNumberRegex.IsMatch(str);
         }
 
+        private static Regex _numericRegex = new Regex(@"^(?<digit>-?\d+)(\.(?<scale>\d*))?$",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
         public static bool xIsNumeric(this string str)
         {
             str.xIfEmpty(() => str = string.Empty);
-            var regex = new Regex(@"^(?<digit>-?\d+)(\.(?<scale>\d*))?$",
-                RegexOptions.ExplicitCapture | RegexOptions.Compiled);
-            return regex.Match(str).Success;
+            return _numericRegex.IsMatch(str);
         }
     }
 
