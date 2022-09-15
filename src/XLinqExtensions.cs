@@ -34,36 +34,22 @@ namespace eXtensionSharp
             return enumerable;
         }
         
-        public static bool xContains(this string src, IEnumerable<string> compares)
+        public static bool xContains(this string src, string compare)
         {
-            var isContain = true;
-            compares.xForEach(compare =>
-            {
-                isContain = src.Contains(compare);
-                if (!isContain) return false;
-                return true;
-            });
-
-            return isContain;
+            if (src.xIsEmpty()) return false;
+            return src.Contains(compare);
         }
 
-        public static bool xContains<T>(this T src, IEnumerable<T> compares)
+        public static bool xContains(this string src, string[] compares)
         {
-            return compares.Contains(src);
+            return compares.FirstOrDefault(m => m.Contains(src)).xIsNotEmpty();
         }
 
         public static bool xContains<T>(this IEnumerable<T> src, IEnumerable<T> compares)
         {
-            var isContain = true;
-            src.xForEach(item =>
-            {
-                isContain = item.xContains(compares);
-                if (!isContain) return false;
-                return true;
-            });
-
-            return isContain;
+            return src.FirstOrDefault(compares.Contains).xIsNotEmpty();
         }
+
 
         public static T xFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
@@ -81,7 +67,7 @@ namespace eXtensionSharp
 
         public static List<T> xToList<T>(this IEnumerable<T> enumerable)
         {
-            return enumerable == null ? new List<T>() : new List<T>(enumerable);
+            return enumerable is null ? new List<T>() : new List<T>(enumerable);
         }
 
         public static T[] xToArray<T>(this IEnumerable<T> enumerable) where T : new()

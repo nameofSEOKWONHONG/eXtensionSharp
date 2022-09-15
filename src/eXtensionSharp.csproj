@@ -13,6 +13,7 @@
     <PackageTags>#eXtensionSharp</PackageTags>
     <PackageReleaseNotes>first release</PackageReleaseNotes>
     <Platforms>AnyCPU;x86</Platforms>
+    <LangVersion>11</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

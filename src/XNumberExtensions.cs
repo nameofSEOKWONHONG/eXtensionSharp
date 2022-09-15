@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace eXtensionSharp
@@ -16,16 +17,16 @@ namespace eXtensionSharp
                 ENUM_NUMBER_FORMAT_TYPE.Rate => string.Format("{0:##.##}", val),
                 ENUM_NUMBER_FORMAT_TYPE.Mobile => allow switch
                 {
-                    ENUM_GET_ALLOW_TYPE.Allow => string.Format("{0}-{1}-{2}", val.ToString().xGetFirst(3),
-                        val.ToString().xGetMiddle(3, 4),
-                        val.ToString().xGetLast(4)),
-                    _ => string.Format("{0}-{1}-****", val.ToString().xGetFirst(3),
-                        val.ToString().xGetMiddle(3, 4))
+                    ENUM_GET_ALLOW_TYPE.Allow => string.Format("{0}-{1}-{2}", val.ToString().xSubstringFirst(3),
+                        val.ToString().xSubstringMiddle(3, 4),
+                        val.ToString().xSubstringLast(4)),
+                    _ => string.Format("{0}-{1}-****", val.ToString().xSubstringFirst(3),
+                        val.ToString().xSubstringMiddle(3, 4))
                 },
                 ENUM_NUMBER_FORMAT_TYPE.Phone => MakePhoneString(val, allow),
                 ENUM_NUMBER_FORMAT_TYPE.RRN => MakeRRNString(val, allow),
-                ENUM_NUMBER_FORMAT_TYPE.CofficePrice => string.Format("{0}.{1}", val.ToString().xGetFirst(1),
-                    val.ToString().xGetMiddle(1, 1)),
+                ENUM_NUMBER_FORMAT_TYPE.CofficePrice => string.Format("{0}.{1}", val.ToString().xSubstringFirst(1),
+                    val.ToString().xSubstringMiddle(1, 1)),
                 _ => throw new NotSupportedException("do not convert value")
             };
 
@@ -44,64 +45,64 @@ namespace eXtensionSharp
             if (allow == ENUM_GET_ALLOW_TYPE.Allow)
             {
                 var temp = val.ToString();
-                if (temp.xGetFirst(2) == "02")
+                if (temp.xSubstringFirst(2) == "02")
                 {
                     if (temp.Length == 10)
-                        return string.Format("{0}-{1}-{2}", temp.xGetFirst(2),
-                            temp.xGetMiddle(2, 4),
-                            temp.xGetLast(4));
-                    return string.Format("{0}-{1}-{2}", temp.xGetFirst(2),
-                        temp.xGetMiddle(2, 3),
-                        temp.xGetLast(4));
+                        return string.Format("{0}-{1}-{2}", temp.xSubstringFirst(2),
+                            temp.xSubstringMiddle(2, 4),
+                            temp.xSubstringLast(4));
+                    return string.Format("{0}-{1}-{2}", temp.xSubstringFirst(2),
+                        temp.xSubstringMiddle(2, 3),
+                        temp.xSubstringLast(4));
                 }
 
                 if (temp.Length == 11)
-                    return string.Format("{0}-{1}-{2}", temp.xGetFirst(3),
-                        temp.xGetMiddle(3, 4),
-                        temp.xGetLast(4));
-                return string.Format("{0}-{1}-{2}", temp.xGetFirst(3),
-                    temp.xGetMiddle(3, 3),
-                    temp.xGetLast(4));
+                    return string.Format("{0}-{1}-{2}", temp.xSubstringFirst(3),
+                        temp.xSubstringMiddle(3, 4),
+                        temp.xSubstringLast(4));
+                return string.Format("{0}-{1}-{2}", temp.xSubstringFirst(3),
+                    temp.xSubstringMiddle(3, 3),
+                    temp.xSubstringLast(4));
             }
             else
             {
                 var temp = val.ToString();
-                if (temp.xGetFirst(2) == "02")
+                if (temp.xSubstringFirst(2) == "02")
                 {
                     if (temp.Length == 10)
-                        return string.Format("{0}-{1}-****", temp.xGetFirst(2),
-                            temp.xGetMiddle(2, 4));
-                    return string.Format("{0}-{1}-****", temp.xGetFirst(2),
-                        temp.xGetMiddle(2, 3));
+                        return string.Format("{0}-{1}-****", temp.xSubstringFirst(2),
+                            temp.xSubstringMiddle(2, 4));
+                    return string.Format("{0}-{1}-****", temp.xSubstringFirst(2),
+                        temp.xSubstringMiddle(2, 3));
                 }
 
                 if (temp.Length == 11)
-                    return string.Format("{0}-{1}-****", temp.xGetFirst(3),
-                        temp.xGetMiddle(3, 4));
-                return string.Format("{0}-{1}-****", temp.xGetFirst(3),
-                    temp.xGetMiddle(3, 3));
+                    return string.Format("{0}-{1}-****", temp.xSubstringFirst(3),
+                        temp.xSubstringMiddle(3, 4));
+                return string.Format("{0}-{1}-****", temp.xSubstringFirst(3),
+                    temp.xSubstringMiddle(3, 3));
             }
         }
 
         private static string MakeRRNString<T>(T val, ENUM_GET_ALLOW_TYPE allow)
         {
             if (allow == ENUM_GET_ALLOW_TYPE.Allow)
-                return string.Format("{0}-{1}", val.ToString().xGetFirst(6),
-                    val.ToString().xGetLast(7));
-            return string.Format("{0}-*******", val.ToString().xGetFirst(6));
+                return string.Format("{0}-{1}", val.ToString().xSubstringFirst(6),
+                    val.ToString().xSubstringLast(7));
+            return string.Format("{0}-*******", val.ToString().xSubstringFirst(6));
         }
 
-        public static string xGetMiddle(this string value, int fromLen, int getLen)
+        public static string xSubstringMiddle(this string value, int fromLen, int getLen)
         {
             return value.Substring(fromLen, getLen);
         }
 
-        public static string xGetFirst(this string value, int length)
+        public static string xSubstringFirst(this string value, int length)
         {
             return value.Substring(0, length);
         }
 
-        public static string xGetLast(this string value, int length)
+        public static string xSubstringLast(this string value, int length)
         {
             return value.Substring(value.Length - length, length);
         }
@@ -138,6 +139,19 @@ namespace eXtensionSharp
             str.xIfEmpty(() => str = string.Empty);
             return _numericRegex.IsMatch(str);
         }
+
+        // .net 7 feature
+        // public static T ToSum<T>(this IEnumerable<T> arg) where T : INumber<T>
+        // {
+        //     T sum = T.Zero;
+        //
+        //     foreach (T item in arg)
+        //     {
+        //         sum = sum + item;
+        //     }
+        //
+        //     return sum;
+        // }
     }
 
     public enum ENUM_GET_ALLOW_TYPE
