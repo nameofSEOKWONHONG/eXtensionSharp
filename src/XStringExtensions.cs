@@ -260,5 +260,8 @@ namespace eXtensionSharp
         {
             return string.Join('|', items.ToArray());
         }
+        
+        public static Guid xToGuid(this string str) => Guid.Parse(str);
+        public static string xToString(this Guid guid) => guid.ToString("N");
     }
 }

@@ -44,25 +44,15 @@ namespace eXtensionSharp
 
         internal static byte[] fromHexToByte(this string hexString)
         {
-            try
-            {
-                var bytes = new byte[hexString.Length / 2];
-                for (var i = 0; i < bytes.Length; i++) bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-
-                return bytes;
-            }
-            catch
-            {
-                return null;
-            }
+            var bytes = new byte[hexString.Length / 2];
+            bytes.xForEach((@byte, i) => bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16));
+            return bytes;
         }
 
         internal static string fromHexToString(this byte[] hashMessage)
         {
             var sbinary = string.Empty;
-
-            for (var i = 0; i < hashMessage.Length; i++) sbinary += hashMessage[i].ToString("X2");
-
+            hashMessage.xForEach((message, i) => sbinary += hashMessage[i].ToString("X2"));
             return sbinary;
         }
     }

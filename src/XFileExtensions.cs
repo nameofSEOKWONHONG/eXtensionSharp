@@ -254,8 +254,12 @@ namespace eXtensionSharp
                 xCopy(directory, Path.Combine(targetDir, Path.GetFileName(directory)));
         }
 
+        public static void xWriteFile(this byte[] buffer, string fileName) => File.WriteAllBytes(fileName, buffer);
+
         public static Dictionary<string, string> xGetFileExtensionProperties(this string fileName)
         {
+            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("Support Windows only.");
+
             var dictionary = new Dictionary<string, string>();
             if (!File.Exists(fileName)) throw new FileNotFoundException();
             Process process = new Process();
