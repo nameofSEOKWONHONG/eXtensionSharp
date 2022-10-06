@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>disable</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>seokwon hong</Authors>
     <Description>c# extension methods</Description>
     <Copyright>MIT</Copyright>
@@ -12,8 +11,6 @@
     <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
     <PackageTags>#eXtensionSharp</PackageTags>
     <PackageReleaseNotes>first release</PackageReleaseNotes>
-    <Platforms>AnyCPU;x86</Platforms>
-    <LangVersion>11</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
