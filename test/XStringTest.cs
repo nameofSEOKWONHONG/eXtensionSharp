@@ -27,7 +27,7 @@ namespace eXtensionSharp.test {
             splits.xForEach(c =>
             {
                 Console.Write(c);
-                Console.WriteLine(text.xCountWord(c));    
+                Console.WriteLine(text.xCount(c));    
             });
         }
     }

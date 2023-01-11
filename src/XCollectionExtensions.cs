@@ -135,24 +135,6 @@ namespace eXtensionSharp
         /// 계증구조는 지원안함.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static IDictionary<string, object> xToDictionary<T>(this T value) where T : class
-        {
-            var result = new DynamicDictionary<object>();
-            var props = value.GetType().GetProperties();
-            foreach (var prop in props)
-            {
-                result.Add(prop.Name, prop.GetValue(value, null));
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 객체간 값 복사 (UI 갱신용 아님), Inner Class는 복사안됨.
-        /// 계증구조는 지원안함.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="values"></param>
         /// <returns></returns>
         public static IEnumerable<IDictionary<string, object>> xToDictionary<T>(this IEnumerable<T> values) where T : class
