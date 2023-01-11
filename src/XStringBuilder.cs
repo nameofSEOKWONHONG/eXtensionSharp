@@ -1,7 +1,7 @@
-﻿using System;
+using Microsoft.Extensions.ObjectPool;
+using System;
 using System.Globalization;
 using System.Text;
-using Microsoft.Extensions.ObjectPool;
 
 namespace eXtensionSharp
 {

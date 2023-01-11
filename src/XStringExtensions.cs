@@ -1,46 +1,41 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace eXtensionSharp
 {
-    [Obsolete("test code, do not use", true)]
-    internal ref struct SplitSpanEnumerator
-    {
-        private ReadOnlySpan<char> text;
-        private readonly char splitChar;
+    //[Obsolete("test code, do not use", true)]
+    //internal ref struct SplitSpanEnumerator
+    //{
+    //    private ReadOnlySpan<char> text;
+    //    private readonly char splitChar;
 
-        public ReadOnlySpan<char> Current { get; private set; }
+    //    public ReadOnlySpan<char> Current { get; private set; }
 
-        public SplitSpanEnumerator(ReadOnlySpan<char> text, char splitChar)
-        {
-            this.text = text;
-            this.splitChar = splitChar;
-            Current = default;
-        }
+    //    public SplitSpanEnumerator(ReadOnlySpan<char> text, char splitChar)
+    //    {
+    //        this.text = text;
+    //        this.splitChar = splitChar;
+    //        Current = default;
+    //    }
 
-        public SplitSpanEnumerator GetEnumerator()
-        {
-            return this;
-        }
+    //    public SplitSpanEnumerator GetEnumerator()
+    //    {
+    //        return this;
+    //    }
 
-        public bool MoveNext()
-        {
-            var index = text.IndexOf(splitChar);
-            if (index == -1)
-                return false;
+    //    public bool MoveNext()
+    //    {
+    //        var index = text.IndexOf(splitChar);
+    //        if (index == -1)
+    //            return false;
 
-            Current = text[..index];
-            text = text[(index + 1)..];
+    //        Current = text[..index];
+    //        text = text[(index + 1)..];
 
-            return true;
-        }
-    }
+    //        return true;
+    //    }
+    //}
 
     public static class XStringExtensions
     {
@@ -50,10 +45,12 @@ namespace eXtensionSharp
          * new 대신 stackalloc 사용할 경우 GC 압력이 줄어듬.(struct type에 대하여, int, char, byte 등등)
          * windows stack 최대 할당 용량은 1MB
          */
+
         public static string xSubstring(this string str, int startIndex, int length = 0)
         {
+            if (str.xIsEmpty()) return string.Empty;
+            if (str.Length <= 0) return string.Empty;
             if (length > 0) return str.AsSpan()[startIndex..(startIndex + length)].ToString();
-
             return str.AsSpan()[startIndex..str.Length].ToString();
         }
 
@@ -75,12 +72,12 @@ namespace eXtensionSharp
 
         public static bool xIsEmpty(this string str)
         {
-            return string.IsNullOrEmpty(str);
+            return string.IsNullOrWhiteSpace(str);
         }
-        
+
         public static string xReplace(this string text, string oldValue, string newValue)
         {
-            return text.xIfEmpty(() => string.Empty).Replace(oldValue, newValue);
+            return text.xIsEmpty() ? string.Empty : text.Replace(oldValue, newValue);
         }
 
         private static void xCopyTo(Stream src, Stream dest)
@@ -98,7 +95,7 @@ namespace eXtensionSharp
         /// <param name="str"></param>
         /// <param name="level"></param>
         /// <returns></returns>
-        public static byte[] xToGZip(this string str, CompressionLevel level = CompressionLevel.Fastest)
+        public static byte[] xCompressGZip(this string str, CompressionLevel level = CompressionLevel.Fastest)
         {
             var bytes = Encoding.Unicode.GetBytes(str);
             using var input = new MemoryStream(bytes);
@@ -107,7 +104,7 @@ namespace eXtensionSharp
 
             input.CopyTo(stream);
             output.Flush();
-        
+
             var result = output.ToArray();
             return result;
         }
@@ -117,7 +114,7 @@ namespace eXtensionSharp
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string XFromGZip(this string value)
+        public static string xUnCompressGZip(this string value)
         {
             var bytes = Convert.FromBase64String(value);
             using var input = new MemoryStream(bytes);
@@ -126,17 +123,17 @@ namespace eXtensionSharp
 
             stream.CopyTo(output);
             stream.Flush();
-        
+
             return Encoding.Unicode.GetString(output.ToArray());
         }
-        
+
         /// <summary>
         /// compression brotli
         /// </summary>
         /// <param name="str"></param>
         /// <param name="level"></param>
         /// <returns></returns>
-        public static byte[] xToBrotli(this string str, CompressionLevel level = CompressionLevel.Fastest)
+        public static byte[] xCompressBrotli(this string str, CompressionLevel level = CompressionLevel.Fastest)
         {
             var bytes = Encoding.UTF8.GetBytes(str);
 
@@ -144,14 +141,14 @@ namespace eXtensionSharp
             {
                 using (var mso = new MemoryStream())
                 {
-                    using(var stream = new BrotliStream(mso, level))
+                    using (var stream = new BrotliStream(mso, level))
                     {
                         msi.CopyTo(stream);
                         mso.Flush();
 
                         var result = mso.ToArray();
                         return result;
-                    }                    
+                    }
                 }
             }
         }
@@ -161,7 +158,7 @@ namespace eXtensionSharp
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string xFromBrotli(this string value)
+        public static string xUnCompressBrotli(this string value)
         {
             var bytes = Convert.FromBase64String(value);
             using var input = new MemoryStream(bytes);
@@ -169,7 +166,7 @@ namespace eXtensionSharp
             using var stream = new BrotliStream(input, CompressionMode.Decompress);
 
             stream.CopyTo(output);
-        
+
             return Encoding.Unicode.GetString(output.ToArray());
         }
 
@@ -200,6 +197,11 @@ namespace eXtensionSharp
         {
             if (value.xIsEmpty()) return -1;
             return src.LastIndexOfAny(value.ToCharArray());
+        }
+
+        public static string xTrim(this string src)
+        {
+            return src.xIsEmpty() ? string.Empty : src.Trim();
         }
 
         public static string xValue(this XStringBuilder xsb)
@@ -237,7 +239,7 @@ namespace eXtensionSharp
             return Encoding.ASCII.GetString(bytes);
         }
 
-        public static int xCountWord(this string str, char word)
+        public static int xCount(this string str, char word)
         {
             return str.Where(x => x == word).Count();
         }
@@ -260,8 +262,39 @@ namespace eXtensionSharp
         {
             return string.Join('|', items.ToArray());
         }
-        
+
         public static Guid xToGuid(this string str) => Guid.Parse(str);
+
         public static string xToString(this Guid guid, string format = "") => guid.ToString();
+
+        public static T xToNumber<T>(this string value) where T : struct
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
+
+        public static string xToString<T>(this T value) where T : struct
+        {
+            return value.ToString();
+        }
+
+        public static string xToJoin(this string[] values, string separator = ",")
+        {
+            return string.Join(separator, values);
+        }
+
+        public static string[] xToSplit(this string value, string separator = ",")
+        {
+            return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        }
+
+        public static string xDisplayRequired(this string value)
+        {
+            return $"* {value}";
+        }
+
+        public static string xDisplaySearch(this string value)
+        {
+            return $"{value} : ";
+        }
     }
 }

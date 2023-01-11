@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Numerics;
 
 namespace eXtensionSharp
 {
@@ -15,25 +13,21 @@ namespace eXtensionSharp
         public static IEnumerable<T> xWhere<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
             where T : class
         {
-            return CreateNew(enumerable).Where(predicate);
+            return CreateOrEnumerable(enumerable).Where(predicate);
         }
 
         public static IEnumerable<T> xSelect<T>(this IEnumerable<T> enumerable, Func<T, T> predicate)
             where T : class
         {
-            return CreateNew(enumerable).Select(predicate);
+            return CreateOrEnumerable(enumerable).Select(predicate);
         }
 
-        private static IEnumerable<T> CreateNew<T>(IEnumerable<T> enumerable)
+        private static IEnumerable<T> CreateOrEnumerable<T>(IEnumerable<T> enumerable)
         {
-            if (enumerable.xIsEmpty())
-            {
-                return new List<T>();
-            }
-
+            if (enumerable.xIsEmpty()) return Enumerable.Empty<T>();
             return enumerable;
         }
-        
+
         public static bool xContains(this string src, string compare)
         {
             if (src.xIsEmpty()) return false;
@@ -50,24 +44,21 @@ namespace eXtensionSharp
             return src.FirstOrDefault(compares.Contains).xIsNotEmpty();
         }
 
-
         public static T xFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
             if (predicate.xIsNotNull()) return enumerable.FirstOrDefault(predicate);
-
             return enumerable.FirstOrDefault();
         }
 
         public static T xLast<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
             if (predicate.xIsNotNull()) return enumerable.LastOrDefault(predicate);
-
             return enumerable.LastOrDefault();
         }
 
         public static List<T> xToList<T>(this IEnumerable<T> enumerable)
         {
-            return enumerable is null ? new List<T>() : new List<T>(enumerable);
+            return enumerable.xIsNull() ? new List<T>() : new List<T>(enumerable);
         }
 
         public static T[] xToArray<T>(this IEnumerable<T> enumerable) where T : new()
@@ -78,63 +69,35 @@ namespace eXtensionSharp
 
         #region [between]
 
-        #region [.net 7에서 inumber를 사용하여 하나의 function으로 변경할 예정]
+        #region [.net 7에서 inumber를 사용하여 하나의 function으로 변경됨.]
 
-        public static bool xBetween<T>(this Int16 value, Int16 from, Int16 to)
+        public static bool xIsBetween<T>(this T value, T from, T to)
+            where T : INumber<T>
         {
+            if (from > to) throw new Exception("from value is greater than to value.");
             if (from <= value && to >= value) return true;
             return false;
         }
-        
-        public static bool xBetween<T>(this Int32 value, Int32 from, Int32 to)
-        {
-            if (from <= value && to >= value) return true;
-            return false;
-        }        
-        
-        public static bool xBetween<T>(this Int64 value, Int64 from, Int64 to)
-        {
-            if (from <= value && to >= value) return true;
-            return false;
-        }       
-        
-        public static bool xBetween<T>(this double value, double from, double to)
-        {
-            if (from <= value && to >= value) return true;
-            return false;
-        }            
-        
-        public static bool xBetween<T>(this float value, float from, float to)
-        {
-            if (from <= value && to >= value) return true;
-            return false;
-        }          
-        
-        public static bool xBetween<T>(this decimal value, decimal from, decimal to)
-        {
-            if (from <= value && to >= value) return true;
-            return false;
-        }                
 
-        #endregion
+        #endregion [.net 7에서 inumber를 사용하여 하나의 function으로 변경됨.]
 
-        public static bool xBetween(this DateTime value, DateTime from, DateTime to)
+        public static bool xIsBetween(this DateTime value, DateTime from, DateTime to)
         {
             if (from <= value && to >= value) return true;
             return false;
         }
 
-        public static bool xBetween(this TimeSpan value, TimeSpan from, TimeSpan to)
+        public static bool xIsBetween(this TimeSpan value, TimeSpan from, TimeSpan to)
         {
-            if (value <= TimeSpan.Zero) throw new Exception("value is zero.");
-            if (from <= TimeSpan.Zero) throw new Exception("from is zero.");
-            if (to <= TimeSpan.Zero) throw new Exception("to is zero.");
-            
+            if (value <= TimeSpan.Zero) throw new Exception("not allow value");
+            if (from <= TimeSpan.Zero) throw new Exception("not allow from value");
+            if (to <= TimeSpan.Zero) throw new Exception("not allow to value");
+
             if (from <= value && to >= value) return true;
             return false;
         }
 
-        public static bool xBetween(this char value, char from, char to, bool isStrict = true)
+        public static bool xIsBetween(this char value, char from, char to, bool isStrict = true)
         {
             var v = Convert.ToByte(isStrict ? value : char.ToUpper(value));
             var f = Convert.ToByte(isStrict ? from : char.ToUpper(from));
@@ -143,9 +106,6 @@ namespace eXtensionSharp
             return false;
         }
 
-        #endregion
-        
-        
-        
+        #endregion [between]
     }
 }

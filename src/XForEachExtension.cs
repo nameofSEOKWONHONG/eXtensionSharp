@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +8,8 @@ namespace eXtensionSharp
 {
     public static class XForEachExtensions
     {
+        #region [정규목록]
+
         /// <summary>
         ///     foreach loop
         /// </summary>
@@ -19,13 +19,12 @@ namespace eXtensionSharp
         public static void xForEach<T>(this IEnumerable<T> iterator, Action<T> action)
         {
             if (iterator.xIsEmpty()) return;
-            var enumerable = iterator as T[] ?? iterator.ToArray();
-            foreach (var item in enumerable)
+            foreach (var item in iterator)
             {
                 action(item);
             }
         }
-        
+
         /// <summary>
         ///     foreach loop
         /// </summary>
@@ -41,7 +40,7 @@ namespace eXtensionSharp
                 index++;
             });
         }
-        
+
         /// <summary>
         ///     use class, allow break;
         /// </summary>
@@ -51,14 +50,13 @@ namespace eXtensionSharp
         public static void xForEach<T>(this IEnumerable<T> iterator, Func<T, bool> func)
         {
             if (iterator.xIsEmpty()) return;
-            var enumerable = iterator as T[] ?? iterator.ToArray();
-            foreach (var item in enumerable)
+            foreach (var item in iterator)
             {
                 var isBreak = !func(item);
                 if (isBreak) break;
             }
         }
-        
+
         public static void xForEach<T>(this IEnumerable<T> iterator, Func<T, int, bool> func)
         {
             var index = 0;
@@ -69,18 +67,7 @@ namespace eXtensionSharp
                 return true;
             });
         }
-        
-        public static void xForEach<T>(this T[] enumerable, Action<T> action)
-        {
-            if (enumerable.xIsEmpty()) return;
-            if(enumerable.xCount() > XConst.LOOP_WARNING_COUNT) Debug.WriteLine($"Too much items : ({XConst.LOOP_WARNING_COUNT})");
 
-            enumerable.AsEnumerable().xForEach(item =>
-            {
-                action(item);
-            });
-        }
-        
         public static void xForEach(this (DateTime from, DateTime to) fromToDate, ENUM_DATETIME_FOREACH_TYPE type,
             Action<DateTime> action)
         {
@@ -116,6 +103,10 @@ namespace eXtensionSharp
         {
             for (var i = fromTo.Item1; i <= fromTo.Item2; i++) action(i);
         }
+
+        #endregion [정규목록]
+
+        #region [확장목록]
 
         public static void xForEachReverse(this ValueTuple<int, int> fromTo, Action<int> action)
         {
@@ -155,7 +146,7 @@ namespace eXtensionSharp
                 var filterResult = filter(group.Key, items);
                 maps.Add(group.Key, filterResult);
             });
-            
+
             maps.xForEachParallel(item =>
             {
                 var i = 0;
@@ -171,8 +162,8 @@ namespace eXtensionSharp
         {
             foreach (var value in items) await func(value);
         }
-        
-        public static async Task xForEachParallelAsync<T>(this IEnumerable<T> items,  Func<T, CancellationToken, Task> func, ParallelOptions parallelOptions = null)
+
+        public static async Task xForEachParallelAsync<T>(this IEnumerable<T> items, Func<T, CancellationToken, Task> func, ParallelOptions parallelOptions = null)
         {
             if (parallelOptions.xIsEmpty()) parallelOptions = new ParallelOptions();
             await Parallel.ForEachAsync(items, parallelOptions, async (item, token) =>
@@ -180,8 +171,10 @@ namespace eXtensionSharp
                 await func(item, token);
             });
         }
+
+        #endregion [확장목록]
     }
-    
+
     public class ENUM_DATETIME_FOREACH_TYPE : XEnumBase<ENUM_DATETIME_FOREACH_TYPE>
     {
         public static readonly ENUM_DATETIME_FOREACH_TYPE DAY = Define("DAY");

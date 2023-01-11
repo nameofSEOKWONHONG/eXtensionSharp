@@ -1,12 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.AccessControl;
-using System.Threading.Tasks;
 
 namespace eXtensionSharp
 {
@@ -23,7 +17,7 @@ namespace eXtensionSharp
         {
             return obj is not null;
         }
-        
+
         public static bool xIsTrue(this bool state)
         {
             return state is true;
@@ -33,36 +27,33 @@ namespace eXtensionSharp
         {
             return state is false;
         }
-        
+
         public static bool xIsEmpty<T>(this T obj)
         {
             if (obj.xIsNull())
             {
                 return true;
             }
-
-            switch (obj)
-            {
-                case string s when s.xIsEmpty():
-                case ICollection {Count: <= 0}:
+            switch (obj) {
+                case null: return true;
+                case string s when string.IsNullOrWhiteSpace(s):
+                case ICollection {Count: 0}:
+                case Array {Length: 0}:
+                case IEnumerable e when !e.GetEnumerator().MoveNext():
                     return true;
-                default:
-                    return false;
+                default: return false;
             }
         }
-        
+
         public static bool xIsNotEmpty<T>(this T obj)
         {
             return !obj.xIsEmpty();
         }
 
-        public static string xTrim(this string src)
-        {
-            return src.xIsEmpty() ? string.Empty : src.Trim();
-        }
-
         public static bool xIsEquals<T>(this T src, T compare)
         {
+            if (src.xIsEmpty()) return false;
+            if (compare.xIsEmpty()) return false;
             return src.Equals(compare);
         }
 
@@ -80,6 +71,8 @@ namespace eXtensionSharp
 
         public static bool xIsEquals<T>(this IEnumerable<T> srcs, T compare)
         {
+            if (srcs.xIsEmpty()) return false;
+            if (compare.xIsEmpty()) return false;
             return compare.xIsEquals(srcs);
         }
 
@@ -88,97 +81,7 @@ namespace eXtensionSharp
             var type = typeof(T);
             return Nullable.GetUnderlyingType(type) != null;
         }
-        #endregion
 
-        #region [xIf Series]
-
-        public static void xIfTrue(this bool state, Action execute, Action elseExecute = null)
-        {
-            if (state) execute();
-            else
-            {
-                if (elseExecute.xIsNotEmpty()) elseExecute();    
-            }
-        }
-
-        public static void xIfFalse(this bool state, Action execute, Action elseExecute = null)
-        {
-            if (!state) execute();
-            else
-            {
-                if(elseExecute.xIsNotEmpty()) elseExecute();
-            }
-        }
-        
-        public static void xIfEmpty(this object obj, Action action, Action elseAction = null)
-        {
-            if (obj.xIsEmpty()) action();
-            else
-            {
-                if (elseAction.xIsNotEmpty()) elseAction(); 
-            }
-        }
-        
-        public static T xIfEmpty<T>(this T obj, Func<T> execute, Func<T> elseExecute = null)
-        {
-            if (obj.xIsEmpty()) return execute();
-            else
-            {
-                if (elseExecute.xIsNotEmpty()) 
-                    return elseExecute();
-            }
-
-            return default;
-        }
-        
-        public static void xIfNotEmpty(this object obj, Action action, Action elseAction = null)
-        {
-            if (obj.xIsNotEmpty()) action();
-            else {
-                if(elseAction.xIsNotEmpty())
-                {
-                    elseAction();
-                }
-            }
-        }
-        
-        public static T xIfNotEmpty<T>(this T obj, Func<T> execute, Func<T> elseExecute = null)
-        {
-            if (obj.xIsNotEmpty()) return execute();
-            else {
-                if(elseExecute.xIsNotEmpty())
-                {
-                    return elseExecute();
-                }
-            }
-
-            return default;
-        }
-        
-        public static T2 xIfNotEmpty<T1, T2>(this T1 obj, Func<T2> execute, Func<T2> elseExecute = null)
-        {
-            if (obj.xIsNotEmpty()) return execute();
-            else
-            {
-                if (elseExecute.xIsNotEmpty()) return elseExecute();
-            };
-
-            return default;
-        }
-        
-        public static async Task xIfNotEmptyAsync<T>(this T obj, Func<Task> func)
-        {
-            if (obj.xIsNotEmpty()) await func();   
-        }
-
-        public static async Task xIfEmptyAsync<T>(this T obj, Func<Task> func)
-        {
-            if (obj.xIsNotEmpty()) await func();
-        }
-
-        #endregion
-
-
-        
+        #endregion [xIs Series]
     }
 }

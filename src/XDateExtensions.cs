@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Globalization;
 
 namespace eXtensionSharp
 {
@@ -30,6 +31,23 @@ namespace eXtensionSharp
         public static DateTime xToMax(this DateTime date)
         {
             return DateTime.Parse($"{date.AddDays(1).ToShortDateString()}");
+        }
+
+        public static string xToShortYear(this DateTime date)
+        {
+            return date.ToString("yyyy").xSubstring(2, 2);
+        }
+
+        public static string xToMonthName(this DateTime dateTime, string cultureName = "en-US")
+        {
+            var culture = new CultureInfo(cultureName);
+            return culture.DateTimeFormat.GetMonthName(dateTime.Month);
+        }
+
+        public static string xToShortMonthName(this DateTime dateTime, string cultureName = "en-US")
+        {
+            var culture = new CultureInfo(cultureName);
+            return culture.DateTimeFormat.GetAbbreviatedMonthName(dateTime.Month);
         }
     }
 

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -51,9 +52,9 @@ namespace eXtensionSharp
                 return Encoding.UTF8.GetString(dec);
             }
         }
-        
+
         [Obsolete("no more use method", true)]
-        public static string xToEncryptString(this string plainText, [StringLength(32)]string key)
+        public static string xToEncryptString(this string plainText, [StringLength(32)] string key)
         {
             byte[] iv = new byte[16];
             byte[] array;
@@ -75,10 +76,10 @@ namespace eXtensionSharp
                 }
             }
             return Convert.ToBase64String(array);
-        }       
-        
+        }
+
         [Obsolete("no more use method", true)]
-        public static string xToEncryptNumber(this string encryptString, [StringLength(36)]string key)
+        public static string xToEncryptNumber(this string encryptString, [StringLength(36)] string key)
         {
             byte[] clearBytes = Encoding.Unicode.GetBytes(encryptString);
             using (Aes encryptor = Aes.Create())
@@ -99,10 +100,10 @@ namespace eXtensionSharp
                 }
             }
             return encryptString;
-        } 
-        
+        }
+
         [Obsolete("no more use method", true)]
-        public static string xToDecryptString(this string cipherText, [StringLength(32)]string key)
+        public static string xToDecryptString(this string cipherText, [StringLength(32)] string key)
         {
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);
@@ -123,9 +124,9 @@ namespace eXtensionSharp
                 }
             }
         }
-        
+
         [Obsolete("no more use method", true)]
-        public static string xToDecryptNumber(this string cipherText, [StringLength(36)]string key)
+        public static string xToDecryptNumber(this string cipherText, [StringLength(36)] string key)
         {
             cipherText = cipherText.Replace(" ", "+");
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
@@ -149,12 +150,19 @@ namespace eXtensionSharp
             return cipherText;
         }
 
-        public static string xToAES256Encrypt(this string text, string key = "")
+        /// <summary>
+        /// AES256 암호화, 블레이저 지원 안함.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static string xToAES256Encrypt(this string text, string key)
         {
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentException("Key must have valid value.", nameof(key));
-            if (string.IsNullOrEmpty(text))
-                throw new ArgumentException("The text must have valid value.", nameof(text));
 
             var buffer = Encoding.UTF8.GetBytes(text);
             var hash = SHA512.Create();
@@ -186,12 +194,20 @@ namespace eXtensionSharp
                 }
             }
         }
+
+        /// <summary>
+        /// AES256 복호화, 블레이저 지원 안함.
+        /// </summary>
+        /// <param name="encryptedText"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public static string xToAES256Decrypt(this string encryptedText, string key)
         {
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentException("Key must have valid value.", nameof(key));
             if (string.IsNullOrEmpty(encryptedText))
-                throw new ArgumentException("The encrypted text must have valid value.", nameof(encryptedText));
+                return string.Empty;
 
             var combined = Convert.FromBase64String(encryptedText);
             var buffer = new byte[combined.Length];
@@ -226,6 +242,62 @@ namespace eXtensionSharp
                     return Encoding.UTF8.GetString(resultStream.ToArray());
                 }
             }
+        }
+        
+        public static string xToBase64(this string input)
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static string xFromBase64(this string input)
+        {
+            var bytes = Convert.FromBase64String(input);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        /// <summary>
+        /// base64 암호화 인코딩
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string xToEncBase64(this string str)
+        {
+            if (str.xIsEmpty()) return string.Empty;
+            var bytes = Encoding.UTF8.GetBytes(str);
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = (byte)(0xff & (bytes[i] << 1));
+            }
+            return Convert.ToBase64String(bytes);
+        }
+
+        /// <summary>
+        /// base64 복호화 인코딩
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string xToDecBase64(this string str)
+        {
+            if (str.xIsEmpty()) return string.Empty;
+            var bytes = Convert.FromBase64String(str);
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = (byte)(0xff & (bytes[i] >> 1));
+            }
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        /// <summary>
+        /// base64 복호화 인코딩 (스트림용)
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static async Task<string> xToDecBase64Async(this Stream stream)
+        {
+            StreamReader reader = new StreamReader(stream);
+            string base64 = await reader.ReadToEndAsync();
+            return base64.xToDecBase64();
         }
     }
 }

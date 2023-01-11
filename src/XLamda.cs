@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
@@ -12,14 +12,16 @@ namespace eXtensionSharp
             {
                 case ExpressionType.Lambda:
                     //x => (Something), return only (Something), the Body
-                    return xToString(((LambdaExpression) expr).Body);
+                    return xToString(((LambdaExpression)expr).Body);
+
                 case ExpressionType.Convert:
                 case ExpressionType.ConvertChecked:
                     //type casts are not important
-                    return xToString(((UnaryExpression) expr).Operand);
+                    return xToString(((UnaryExpression)expr).Operand);
+
                 case ExpressionType.Call:
                     //method call can be an Indexer (get_Item),
-                    var callExpr = (MethodCallExpression) expr;
+                    var callExpr = (MethodCallExpression)expr;
                     if (callExpr.Method.Name == "get_Item")
                     {
                         //indexer call
@@ -52,7 +54,7 @@ namespace eXtensionSharp
                     }
                 case ExpressionType.MemberAccess:
                     //property or field access
-                    var memberExpr = (MemberExpression) expr;
+                    var memberExpr = (MemberExpression)expr;
                     if (memberExpr.Expression.Type.Name.Contains("<>")) //closure type, don't show it.
                         return memberExpr.Member.Name;
                     else

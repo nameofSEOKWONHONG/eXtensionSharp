@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -9,7 +9,7 @@ namespace eXtensionSharp;
 public class InMemoryFile
 {
     public string FileName { get; set; }
-    public byte[] Content { get; set; }
+    public byte[] Buffer { get; set; }
 }
 
 public static class XArchiveExtentions
@@ -28,9 +28,9 @@ public static class XArchiveExtentions
                     {
                         if (func.xIsNotEmpty())
                         {
-                            file.Content = func(file.Content);
+                            file.Buffer = func(file.Buffer);
                         }
-                        await zipStream.WriteAsync(file.Content, 0, file.Content.Length);
+                        await zipStream.WriteAsync(file.Buffer, 0, file.Buffer.Length);
                     }
                 }
             }
@@ -40,7 +40,7 @@ public static class XArchiveExtentions
 
         return archiveFile;
     }
-    
+
     public static InMemoryFile xLoadFromFile(this string path)
     {
         using var fs = File.OpenRead(path);
@@ -49,6 +49,6 @@ public static class XArchiveExtentions
 
         memFile.Seek(0, SeekOrigin.Begin);
 
-        return new InMemoryFile() { Content = memFile.ToArray(), FileName = Path.GetFileName(path) };
-    } 
+        return new InMemoryFile() { Buffer = memFile.ToArray(), FileName = Path.GetFileName(path) };
+    }
 }

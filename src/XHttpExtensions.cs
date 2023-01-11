@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace eXtensionSharp
             if (File.Exists(outputPath))
                 throw new Exception("File already exists.");
 
-            using(var httpClient = new HttpClient())
+            using (var httpClient = new HttpClient())
             {
                 byte[] fileBytes = await httpClient.GetByteArrayAsync(uri);
                 File.WriteAllBytes(outputPath, fileBytes);

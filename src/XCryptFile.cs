@@ -1,4 +1,4 @@
-﻿/*
+/*
  * refer from : http://h5bak.tistory.com/148
  */
 
@@ -29,7 +29,7 @@ namespace eXtensionSharp
                     {
                         int data;
                         while ((data = fsIn.ReadByte()) != -1)
-                            cs.WriteByte((byte) data);
+                            cs.WriteByte((byte)data);
 
                         fsIn.Close();
                     }
@@ -57,7 +57,7 @@ namespace eXtensionSharp
                     {
                         int data;
                         while ((data = cs.ReadByte()) != -1)
-                            fsOut.WriteByte((byte) data);
+                            fsOut.WriteByte((byte)data);
 
                         fsOut.Close();
                     }

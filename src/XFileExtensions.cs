@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,7 +15,7 @@ namespace eXtensionSharp
         public static string xGetFileName(this string fileName) => Path.GetFileName(fileName);
 
         public static string xGetFileNameWithoutExtension(this string fileName) => Path.GetFileNameWithoutExtension(fileName);
-        
+
         public static string xGetExtension(this string fileName) => Path.GetExtension(fileName);
 
         public static string xGetFileNameWithBaseDir(this string fileName, string baseDir = "")
@@ -23,12 +23,22 @@ namespace eXtensionSharp
             if (baseDir.xIsNotEmpty()) return Path.Combine(baseDir, fileName);
             return Path.Combine(AppContext.BaseDirectory, fileName);
         }
-        
+
         public static string xFileReadAllText(this string fileName)
         {
             if (fileName.xFileExists())
             {
                 return File.ReadAllText(fileName);
+            }
+
+            return string.Empty;
+        }
+
+        public static async Task<string> xFileReadAllTextAsync(this string fileName)
+        {
+            if (fileName.xFileExists())
+            {
+                return await File.ReadAllTextAsync(fileName);
             }
 
             return string.Empty;
@@ -58,7 +68,7 @@ namespace eXtensionSharp
         {
             if (fileName.xFileExists())
             {
-                return File.ReadAllBytes(fileName);    
+                return File.ReadAllBytes(fileName);
             }
 
             return null;
@@ -68,7 +78,7 @@ namespace eXtensionSharp
         {
             if (fileName.xFileExists())
             {
-                return await File.ReadAllBytesAsync(fileName);    
+                return await File.ReadAllBytesAsync(fileName);
             }
 
             return null;
@@ -78,7 +88,7 @@ namespace eXtensionSharp
         {
             return Directory.Exists(dir);
         }
-        
+
         public static bool xFileExists(this string fileName)
         {
             return File.Exists(fileName);
@@ -106,7 +116,7 @@ namespace eXtensionSharp
         public static string xFileUniqueIdByFileInfo(this string fileName)
         {
             var fileInfo = new FileInfo(fileName);
-            if(!fileInfo.Exists) throw new FileNotFoundException();
+            if (!fileInfo.Exists) throw new FileNotFoundException();
             return
                 $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}|{fileInfo.LastWriteTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}"
                     .xGetHashCode();
@@ -114,7 +124,7 @@ namespace eXtensionSharp
 
         public static void xFileLock(this string fileName)
         {
-            #pragma warning disable CA1416
+#pragma warning disable CA1416
             if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows only");
             if (!File.Exists(fileName)) throw new Exception("file not exists");
             File.Encrypt(fileName);
@@ -123,7 +133,7 @@ namespace eXtensionSharp
         public static void xFileUnLock(this string fileName)
         {
             if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows only");
-            if (!File.Exists(fileName)) throw new Exception("file not exists");            
+            if (!File.Exists(fileName)) throw new Exception("file not exists");
             File.Decrypt(fileName);
         }
 
@@ -168,7 +178,7 @@ namespace eXtensionSharp
             paths.xForEach((path, i) =>
             {
                 if (!Path.GetExtension(path).xIsEmpty()) return false;
-                if (path.xContains(new[] {":"}))
+                if (path.xContains(new[] { ":" }))
                 {
                     dir += path;
                 }
@@ -196,7 +206,7 @@ namespace eXtensionSharp
                 isException = true;
             }
 
-            if(isException)
+            if (isException)
             {
                 xDirCreateAll(path);
             }
@@ -210,7 +220,7 @@ namespace eXtensionSharp
             paths.xForEach((path, i) =>
             {
                 if (!Path.GetExtension(path).xIsEmpty()) return false;
-                if (path.xContains(new[] {":"}))
+                if (path.xContains(new[] { ":" }))
                 {
                     dir += path;
                 }
@@ -237,24 +247,29 @@ namespace eXtensionSharp
                 Directory.Delete(fullPathName, true);
             }
         }
-        
+
         public static void xCopy(this string sourceDir, string targetDir)
         {
             if (Directory.Exists(targetDir))
             {
                 Directory.Delete(targetDir, true);
             }
-            
+
             Directory.CreateDirectory(targetDir);
 
-            foreach(var file in Directory.GetFiles(sourceDir))
+            foreach (var file in Directory.GetFiles(sourceDir))
                 File.Copy(file, Path.Combine(targetDir, Path.GetFileName(file)));
 
-            foreach(var directory in Directory.GetDirectories(sourceDir))
+            foreach (var directory in Directory.GetDirectories(sourceDir))
                 xCopy(directory, Path.Combine(targetDir, Path.GetFileName(directory)));
         }
 
         public static void xWriteFile(this byte[] buffer, string fileName) => File.WriteAllBytes(fileName, buffer);
+
+        public static void xWriteFile(this string fileName, string fileContents)
+        {
+            File.WriteAllText(fileName, fileContents, Encoding.UTF8);
+        }
 
         public static Dictionary<string, string> xGetFileExtensionProperties(this string fileName)
         {

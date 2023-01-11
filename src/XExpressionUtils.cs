@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -20,20 +20,27 @@ public static partial class XExpressionUtils
         {
             case "==":
                 return MakeBinary(ExpressionType.Equal, left, value);
+
             case "!=":
                 return MakeBinary(ExpressionType.NotEqual, left, value);
+
             case ">":
                 return MakeBinary(ExpressionType.GreaterThan, left, value);
+
             case ">=":
                 return MakeBinary(ExpressionType.GreaterThanOrEqual, left, value);
+
             case "<":
                 return MakeBinary(ExpressionType.LessThan, left, value);
+
             case "<=":
                 return MakeBinary(ExpressionType.LessThanOrEqual, left, value);
+
             case "Contains":
             case "StartsWith":
             case "EndsWith":
                 return Expression.Call(MakeString(left), comparison, Type.EmptyTypes, Expression.Constant(value, typeof(string)));
+
             default:
                 throw new NotSupportedException($"Invalid comparison operator '{comparison}'.");
         }
@@ -67,7 +74,7 @@ public static partial class XExpressionUtils
         return Expression.MakeBinary(type, left, right);
     }
 }
-    
+
 public static partial class QueryableExtensions
 {
     public static IQueryable<T> Where<T>(this IQueryable<T> source, string propertyName, string comparison, string value)

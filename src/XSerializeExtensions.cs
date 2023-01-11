@@ -1,20 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace eXtensionSharp
 {
     public static class XSerializeExtensions
     {
-        public static T xToEntity<T>(this string jsonString)
+        public static T xToEntity<T>(this string jsonString, JsonSerializerOptions options = null)
         {
-            return JsonSerializer.Deserialize<T>(jsonString);
+            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
+            return JsonSerializer.Deserialize<T>(jsonString, options);
         }
 
-        public static IEnumerable<T> xToEntities<T>(this string jsonString)
+        public static async Task<T> xToEntityAsync<T>(this Stream stream, JsonSerializerOptions options = null)
         {
-            return JsonSerializer.Deserialize<IEnumerable<T>>(jsonString);
+            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
+            return await JsonSerializer.DeserializeAsync<T>(stream, options);
+        }
+
+        public static IEnumerable<T> xToEntities<T>(this string jsonString, JsonSerializerOptions options = null)
+        {
+            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
+            return JsonSerializer.Deserialize<IEnumerable<T>>(jsonString, options);
+        }
+
+        public static async Task<IEnumerable<T>> xToEntitiesAsync<T>(this Stream stream, JsonSerializerOptions options = null)
+        {
+            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
+            return await JsonSerializer.DeserializeAsync<IEnumerable<T>>(stream, options);
         }
 
         public static string xToJson<T>(this T entity, JsonSerializerOptions serializerOptions = null)
@@ -39,7 +51,7 @@ namespace eXtensionSharp
         {
             return new FastDeepCloner.FastDeepCloner(src).Clone<T>();
         }
-        
+
         public static T xToClone<T>(this T src, Func<T, T> func) where T : class
         {
             var result = src.xToClone();
