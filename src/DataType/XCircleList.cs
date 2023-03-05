@@ -7,7 +7,7 @@ namespace eXtensionSharp
     {
         private int _index;
         public int Index => _index;
-        
+
         public CircleXList()
         {
         }
@@ -21,7 +21,6 @@ namespace eXtensionSharp
         {
             AddRange(enumerable);
         }
-
 
         public T Next()
         {

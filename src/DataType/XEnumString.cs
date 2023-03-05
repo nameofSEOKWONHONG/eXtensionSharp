@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
@@ -36,7 +36,7 @@ namespace eXtensionSharp
             string stringValue = null;
             try
             {
-                var enumType = (Enum) Enum.Parse(EnumType, valueName);
+                var enumType = (Enum)Enum.Parse(EnumType, valueName);
                 stringValue = GetStringValue(enumType);
             }
             catch (Exception)
@@ -253,11 +253,11 @@ namespace eXtensionSharp
 
         public static string xEnumToString(this Enum value)
         {
-            var da = (DescriptionAttribute[]) value.GetType().GetField(value.ToString())
+            var da = (DescriptionAttribute[])value.GetType().GetField(value.ToString())
                 ?.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return da != null && da.Length > 0 ? da[0].Description : value.ToString();
         }
     }
 
-    #endregion
+    #endregion [static enum util]
 }

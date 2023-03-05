@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace eXtensionSharp
         public XDictionaryPool(byte maxPoolSize)
         {
             if (maxPoolSize <= 0)
-                maxPoolSize = (byte) Math.Min(Environment.ProcessorCount, byte.MaxValue);
+                maxPoolSize = (byte)Math.Min(Environment.ProcessorCount, byte.MaxValue);
 
             _poolSize = maxPoolSize;
             _keyQueue = new ConcurrentQueue<TKey>();
@@ -204,17 +204,6 @@ namespace eXtensionSharp
                 }
             });
 
-            return result;
-        }
-
-        public static IDictionary<string, object> xToDictionary<T>(this T entity) where T : class
-        {
-            var result = new DynamicDictionary<object>();
-            var props = entity.xGetProperties();
-            props.xForEach(prop =>
-            {
-                result.Add(prop.Name, prop.GetValue(entity, null));
-            });
             return result;
         }
     }

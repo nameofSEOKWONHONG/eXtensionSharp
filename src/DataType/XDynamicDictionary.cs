@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using System.Dynamic;
 
 namespace eXtensionSharp
@@ -117,7 +116,7 @@ namespace eXtensionSharp
             return _inner.GetEnumerator();
         }
 
-        #endregion
+        #endregion Dictionary
 
         #region Dynamic
 
@@ -136,10 +135,10 @@ namespace eXtensionSharp
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            _inner[binder.Name] = (T) value;
+            _inner[binder.Name] = (T)value;
             return true;
         }
 
-        #endregion
+        #endregion Dynamic
     }
 }

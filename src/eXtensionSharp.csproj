@@ -3,26 +3,29 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>disable</Nullable>
-    <Authors>seokwon hong</Authors>
-    <Description>c# extension methods</Description>
-    <Copyright>MIT</Copyright>
-    <PackageLicenseFile>README.md</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
-    <PackageTags>#eXtensionSharp</PackageTags>
-    <PackageReleaseNotes>first release</PackageReleaseNotes>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Copyright>seokwon hong</Copyright>
+    <Product>eXtensionSharp</Product>
+    <Company>seokwon hong</Company>
+    <Version>1.0.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Mapster" Version="7.3.0" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="6.0.1" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;COREFX;</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE;COREFX;</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <PackageReference Include="Mapster" Version="7.3.0" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.3" />
   </ItemGroup>
 
 </Project>

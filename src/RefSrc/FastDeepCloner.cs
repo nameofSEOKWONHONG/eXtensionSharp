@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,24 +12,28 @@ namespace FastDeepCloner
     public class FastDeepCloner
     {
         #region Privat Properties
-        private const BindingFlags Binding = BindingFlags.Instance | BindingFlags.NonPublic |  BindingFlags.Public | BindingFlags.FlattenHierarchy;
+
+        private const BindingFlags Binding = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
         private readonly Type _primaryType;
         private readonly object _desireObjectToBeCloned;
-        #endregion
+
+        #endregion Privat Properties
 
         #region Contructure
+
         public FastDeepCloner(object desireObjectToBeCloned)
         {
             if (desireObjectToBeCloned == null)
                 throw new Exception("The desire object to be cloned cant be NULL");
             _primaryType = desireObjectToBeCloned.GetType();
             _desireObjectToBeCloned = desireObjectToBeCloned;
-            
         }
-        #endregion
+
+        #endregion Contructure
 
         #region Privat Method Deep Clone
-       // Clone the object Properties and its children recursively
+
+        // Clone the object Properties and its children recursively
         private object DeepClone()
         {
             if (_desireObjectToBeCloned == null)
@@ -57,7 +61,7 @@ namespace FastDeepCloner
             else
             {
                 // if the item is a string then Clone it and return it directly.
-                if (_primaryType == typeof(string))  
+                if (_primaryType == typeof(string))
                     return (_desireObjectToBeCloned as string)?.Clone();
 
                 // Create an empty object and ignore its construtore.
@@ -78,18 +82,21 @@ namespace FastDeepCloner
 
             return tObject;
         }
-        
-        #endregion
+
+        #endregion Privat Method Deep Clone
 
         #region public Method Clone
+
         public object Clone()
         {
             return DeepClone();
         }
+
         public T Clone<T>()
         {
             return (T)DeepClone();
         }
-        #endregion
-    }        
+
+        #endregion public Method Clone
+    }
 }

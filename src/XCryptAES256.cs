@@ -4,14 +4,12 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace eXtensionSharp
 {
     public static class XCryptAES256
-    {
-        [Obsolete("no more use method", true)]
-        public static string xToEncAES256(this string plainText, string cipherKey, string cipherIV,
+    {   
+        public static string xToEncAES(this string plainText, string cipherKey, string cipherIV,
             CipherMode cipherMode, PaddingMode paddingMode)
         {
             var byteKey = Encoding.UTF8.GetBytes(cipherKey);
@@ -20,7 +18,7 @@ namespace eXtensionSharp
             var strEncode = string.Empty;
             var bytePlainText = Encoding.UTF8.GetBytes(plainText);
 
-            using (var aesCryptoProvider = new AesCryptoServiceProvider())
+            using (var aesCryptoProvider = Aes.Create())
             {
                 try
                 {
@@ -36,15 +34,14 @@ namespace eXtensionSharp
                 }
             }
         }
-
-        [Obsolete("no more use method", true)]
-        public static string xToDecAES256(this string cipherText, string cipherKey, string cipherIV,
+        
+        public static string xToDecAES(this string cipherText, string cipherKey, string cipherIV,
             CipherMode cipherMode, PaddingMode paddingMode, DeconvertCipherFormat format)
         {
             var byteKey = Encoding.UTF8.GetBytes(cipherKey);
             var byteIV = Encoding.UTF8.GetBytes(cipherIV);
             var byteBuff = cipherText.xToHMAC(format);
-            using (var aesCrytoProvider = new AesCryptoServiceProvider())
+            using (var aesCrytoProvider = Aes.Create())
             {
                 aesCrytoProvider.Mode = cipherMode;
                 aesCrytoProvider.Padding = paddingMode;
@@ -54,7 +51,6 @@ namespace eXtensionSharp
             }
         }
 
-        [Obsolete("no more use method", true)]
         public static string xToEncryptString(this string plainText, [StringLength(32)] string key)
         {
             byte[] iv = new byte[16];
@@ -79,7 +75,6 @@ namespace eXtensionSharp
             return Convert.ToBase64String(array);
         }
 
-        [Obsolete("no more use method", true)]
         public static string xToEncryptNumber(this string encryptString, [StringLength(36)] string key)
         {
             byte[] clearBytes = Encoding.Unicode.GetBytes(encryptString);
@@ -103,7 +98,6 @@ namespace eXtensionSharp
             return encryptString;
         }
 
-        [Obsolete("no more use method", true)]
         public static string xToDecryptString(this string cipherText, [StringLength(32)] string key)
         {
             byte[] iv = new byte[16];
@@ -126,7 +120,6 @@ namespace eXtensionSharp
             }
         }
 
-        [Obsolete("no more use method", true)]
         public static string xToDecryptNumber(this string cipherText, [StringLength(36)] string key)
         {
             cipherText = cipherText.Replace(" ", "+");
@@ -152,13 +145,14 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// AES256 암호화, 블레이저 지원 안함.
+        /// SHA512 암호화, 블레이저 지원 안함.
+        /// HASH로 인하여 동키값 암호화가 지원되지 않음.
         /// </summary>
         /// <param name="text"></param>
         /// <param name="key"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static string xToAES256Encrypt(this string text, string key)
+        public static string xToSHA512Encrypt(this string text, string key)
         {
             if (string.IsNullOrEmpty(text))
                 return string.Empty;
@@ -197,13 +191,14 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// AES256 복호화, 블레이저 지원 안함.
+        /// SHA512 복호화, 블레이저 지원 안함.
+        /// HASH로 인하여 동일값 암호화가 지원되지 않음.
         /// </summary>
         /// <param name="encryptedText"></param>
         /// <param name="key"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static string xToAES256Decrypt(this string encryptedText, string key)
+        public static string xToSHA512Decrypt(this string encryptedText, string key)
         {
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentException("Key must have valid value.", nameof(key));
@@ -244,6 +239,30 @@ namespace eXtensionSharp
                 }
             }
         }
+        
+        /// <summary>
+        /// 고정키 암호화
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
+        public static string xToAESEncrypt(this string text, string key, string iv)
+        {
+            return text.xToEncAES(key, iv, CipherMode.CBC, PaddingMode.PKCS7);
+        }
+
+        /// <summary>
+        /// 고정키 복호화
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
+        public static string xToAESDecrypt(this string text, string key, string iv)
+        {
+            return text.xToDecAES(key, iv, CipherMode.CBC, PaddingMode.PKCS7, DeconvertCipherFormat.HEX);
+        }        
         
         public static string xToBase64(this string input)
         {

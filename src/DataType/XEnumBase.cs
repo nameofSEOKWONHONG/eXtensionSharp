@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -43,7 +42,7 @@ namespace eXtensionSharp
             if (value == null)
                 return null; // the null-valued instance is null.
 
-            var result = new T {Value = value};
+            var result = new T { Value = value };
             valueDict.Add(value, result);
             return result;
         }
@@ -136,6 +135,7 @@ namespace eXtensionSharp
             }
             return base.CanConvertFrom(context, sourceType);
         }
+
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if (value is string)
@@ -145,7 +145,7 @@ namespace eXtensionSharp
             return base.ConvertFrom(context, culture, value);
         }
     }
-    
+
     public class XEnumBaseJsonConverter<T> : JsonConverter<T> where T : XEnumBase<T>, new()
     {
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

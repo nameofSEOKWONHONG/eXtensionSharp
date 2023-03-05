@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace eXtensionSharp
 {
@@ -44,13 +45,36 @@ namespace eXtensionSharp
                 default: return false;
             }
         }
-
+        
         public static bool xIsNotEmpty<T>(this T obj)
         {
             return !obj.xIsEmpty();
         }
 
-        public static bool xIsEquals<T>(this T src, T compare)
+        public static bool xIsEmpty(this DateTime dt)
+        {
+            return dt <= DateTime.MinValue;
+        }
+
+        public static bool xIsNotEmpty(this DateTime dt)
+        {
+            return !dt.xIsEmpty();
+        }
+
+        public static bool xIsEmptyNum<T>(this T number)
+            where T : INumber<T>
+        {
+            T zero = default;
+            return number <= zero;
+        }
+
+        public static bool xIsNotEmptyNum<T>(this T number)
+            where T : INumber<T>
+        {
+            return !number.xIsEmptyNum();
+        }
+
+        public static bool xIsEquals<T>(this T src, T compare) where T : class
         {
             if (src.xIsEmpty()) return false;
             if (compare.xIsEmpty()) return false;
@@ -58,6 +82,7 @@ namespace eXtensionSharp
         }
 
         public static bool xIsEquals<T>(this T src, IEnumerable<T> compares)
+            where T : class
         {
             var isEqual = false;
             compares.xForEach(item =>
@@ -70,6 +95,7 @@ namespace eXtensionSharp
         }
 
         public static bool xIsEquals<T>(this IEnumerable<T> srcs, T compare)
+            where T : class
         {
             if (srcs.xIsEmpty()) return false;
             if (compare.xIsEmpty()) return false;

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 namespace eXtensionSharp
@@ -39,7 +36,7 @@ namespace eXtensionSharp
 
         public static bool xContains(this string src, string[] compares)
         {
-            return compares.FirstOrDefault(m => m.Contains(src)).xIsNotEmpty();
+            return compares.FirstOrDefault(m => src.Contains(m)).xIsNotEmpty();
         }
 
         public static bool xContains<T>(this IEnumerable<T> src, IEnumerable<T> compares)
