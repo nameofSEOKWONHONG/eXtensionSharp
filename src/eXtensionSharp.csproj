@@ -7,8 +7,14 @@
     <Copyright>seokwon hong</Copyright>
     <Product>eXtensionSharp</Product>
     <Company>seokwon hong</Company>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.0.1</Version>
     <FileVersion>1.0.0.0</FileVersion>
+    <Title>eXtensionSharp</Title>
+    <Description>c# extensions</Description>
+    <PackageProjectUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,12 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <PackageReference Include="Mapster" Version="7.3.0" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.3" />
+    <None Include="..\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
