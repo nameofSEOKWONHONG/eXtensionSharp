@@ -101,7 +101,13 @@ namespace eXtensionSharp
             if (compare.xIsEmpty()) return false;
             return compare.xIsEquals(srcs);
         }
-
+        
+        public static bool xIsEquals(this DateTime? from, DateTime? to)
+        {
+            if (from.xIsEmpty()) return false;
+            if (to.xIsEmpty()) return false;
+            return (from!.Value.Year == to!.Value.Year) && (from.Value.Month == to.Value.Month) && (from.Value.Day == to.Value.Day);
+        }
         public static bool IsNullableType<T>(T o)
         {
             var type = typeof(T);

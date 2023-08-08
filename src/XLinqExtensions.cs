@@ -16,8 +16,8 @@ namespace eXtensionSharp
             return CreateOrEnumerable(enumerable).Where(predicate);
         }
 
-        public static IEnumerable<T> xSelect<T>(this IEnumerable<T> enumerable, Func<T, T> predicate)
-            where T : class
+        public static IEnumerable<T2> xSelect<T1, T2>(this IEnumerable<T1> enumerable, Func<T1, T2> predicate)
+            where T1 : class
         {
             return CreateOrEnumerable(enumerable).Select(predicate);
         }
@@ -36,17 +36,25 @@ namespace eXtensionSharp
 
         public static bool xContains(this string src, string[] compares)
         {
+            if (src.xIsEmpty()) return false;
             return compares.FirstOrDefault(m => src.Contains(m)).xIsNotEmpty();
+        }
+
+        public static bool xContains<T>(this T src, IEnumerable<T> compares)
+        {
+            if (src.xIsEmpty()) return false;
+            return compares.Contains(src);
         }
 
         public static bool xContains<T>(this IEnumerable<T> src, IEnumerable<T> compares)
         {
-            return src.FirstOrDefault(compares.Contains).xIsNotEmpty();
+            if (src.xIsNotEmpty()) return false;
+            return src.Where(m => m.xContains(compares)).xIsNotEmpty();
         }
 
         public static T xFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
-            if (predicate.xIsNotNull()) return enumerable.FirstOrDefault(predicate);
+            if (predicate.xIsNotEmpty()) return enumerable.FirstOrDefault(predicate);
             return enumerable.FirstOrDefault();
         }
 
@@ -58,12 +66,12 @@ namespace eXtensionSharp
 
         public static List<T> xToList<T>(this IEnumerable<T> enumerable)
         {
-            return enumerable.xIsNull() ? new List<T>() : new List<T>(enumerable);
+            return enumerable.xIsEmpty() ? new List<T>() : new List<T>(enumerable);
         }
 
         public static T[] xToArray<T>(this IEnumerable<T> enumerable) where T : new()
         {
-            if (enumerable.xIsNull()) return new T[0];
+            if (enumerable.xIsEmpty()) return new T[0];
             return enumerable.ToArray();
         }
 
@@ -90,12 +98,20 @@ namespace eXtensionSharp
         public static bool xIsBetween(this TimeSpan value, TimeSpan from, TimeSpan to)
         {
             if (value <= TimeSpan.Zero) throw new Exception("not allow value");
-            if (from <= TimeSpan.Zero) throw new Exception("not allow from value");
-            if (to <= TimeSpan.Zero) throw new Exception("not allow to value");
-
             if (from <= value && to >= value) return true;
             return false;
         }
+        
+        public static bool xIsBetween(this TimeSpan value, TimeSpan? from, TimeSpan? to)
+        {
+            if (from.xIsEmpty()) throw new Exception("from is empty");
+            if (to.xIsEmpty()) throw new Exception("to is empty");
+            
+            if (value <= TimeSpan.Zero) throw new Exception("not allow value");
+            
+            if (from <= value && to >= value) return true;
+            return false;
+        }        
 
         public static bool xIsBetween(this char value, char from, char to, bool isStrict = true)
         {
@@ -107,5 +123,10 @@ namespace eXtensionSharp
         }
 
         #endregion [between]
+        
+        public static Span<T> xAsSpan<T>(this IEnumerable<T> items) where T : new()
+        {
+            return items.xToArray().AsSpan();
+        }
     }
 }

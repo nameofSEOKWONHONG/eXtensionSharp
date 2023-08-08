@@ -4,39 +4,6 @@ using System.Text;
 
 namespace eXtensionSharp
 {
-    //[Obsolete("test code, do not use", true)]
-    //internal ref struct SplitSpanEnumerator
-    //{
-    //    private ReadOnlySpan<char> text;
-    //    private readonly char splitChar;
-
-    //    public ReadOnlySpan<char> Current { get; private set; }
-
-    //    public SplitSpanEnumerator(ReadOnlySpan<char> text, char splitChar)
-    //    {
-    //        this.text = text;
-    //        this.splitChar = splitChar;
-    //        Current = default;
-    //    }
-
-    //    public SplitSpanEnumerator GetEnumerator()
-    //    {
-    //        return this;
-    //    }
-
-    //    public bool MoveNext()
-    //    {
-    //        var index = text.IndexOf(splitChar);
-    //        if (index == -1)
-    //            return false;
-
-    //        Current = text[..index];
-    //        text = text[(index + 1)..];
-
-    //        return true;
-    //    }
-    //}
-
     public static class XStringExtensions
     {
         /*
@@ -54,25 +21,14 @@ namespace eXtensionSharp
             return str.AsSpan()[startIndex..str.Length].ToString();
         }
 
-        public static IEnumerable<string> xSplit(this string str, char splitChar = '§')
+        public static string xJoin<T>(this IEnumerable<T> src, string separator = ",")
         {
-            if (str.xIsEmpty()) return new List<string>();
-            return str.Split(splitChar);
-        }
-
-        public static string xJoin<T>(this IEnumerable<T> src, char joinChar = ',')
-        {
-            return string.Join(joinChar, src);
+            return string.Join(separator, src);
         }
 
         public static int xCount(this string str)
         {
             return str.xIsNull() ? 0 : str.Length;
-        }
-
-        public static bool xIsEmpty(this string str)
-        {
-            return string.IsNullOrWhiteSpace(str);
         }
 
         public static string xReplace(this string text, string oldValue, string newValue)
@@ -204,44 +160,36 @@ namespace eXtensionSharp
             return src.xIsEmpty() ? string.Empty : src.Trim();
         }
 
-        public static string xValue(this XStringBuilder xsb)
-        {
-            var str = string.Empty;
-            xsb.Release(out str);
-            return str.xTrim();
-        }
-
         public static string xGetHashCode(this string text)
         {
             var sha = SHA256.Create();
-            var hash = sha.ComputeHash(Encoding.ASCII.GetBytes(text));
-            var stringBuilder = new XStringBuilder();
+            var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(text));
+            var stringBuilder = new StringBuilder();
             foreach (var b in hash) stringBuilder.AppendFormat("{0:x2}", b);
 
-            var result = string.Empty;
-            stringBuilder.Release(out result);
-            return result;
+            return stringBuilder.ToString();
         }
 
         public static byte[] xToBytes(this string str)
         {
-            return Encoding.ASCII.GetBytes(str);
+            return Encoding.UTF8.GetBytes(str);
         }
 
         public static byte[] xToBytes(this object obj)
         {
             var objToString = System.Text.Json.JsonSerializer.Serialize(obj);
-            return System.Text.Encoding.ASCII.GetBytes(objToString);
+            return System.Text.Encoding.UTF8.GetBytes(objToString);
         }
 
         public static string xToString(this byte[] bytes)
         {
-            return Encoding.ASCII.GetString(bytes);
+            return Encoding.UTF8.GetString(bytes);
         }
 
         public static int xCount(this string str, char word)
         {
-            return str.Where(x => x == word).Count();
+            if (str.xIsEmpty()) return 0;
+            return str.Count(x => x == word);
         }
 
         public static string xDistinct(this string str)
@@ -272,18 +220,21 @@ namespace eXtensionSharp
             return (T)Convert.ChangeType(value, typeof(T));
         }
 
-        public static string xToString<T>(this T value) where T : struct
-        {
-            return value.ToString();
-        }
-
         public static string xToJoin(this string[] values, string separator = ",")
         {
+            if (values.xIsEmpty()) return string.Empty;
             return string.Join(separator, values);
         }
 
+        /// <summary>
+        /// 문자열 분리
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="separator">'§'</param>
+        /// <returns></returns>
         public static string[] xToSplit(this string value, string separator = ",")
         {
+            if (value.xIsEmpty()) return Array.Empty<string>();
             return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
 

@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 
 namespace eXtensionSharp
 {
@@ -9,11 +6,12 @@ namespace eXtensionSharp
     {
         #region [Datatable & DataReader]
 
-        public static DataTable xToDateTable<T>(this IEnumerable<T> entities)
-            where T : class, new()
+        public static DataTable xToDataTable<T>(this IEnumerable<T> entities)
+            where T : class
         {
-            var entity = new T();
-            var properties = entity.GetType().GetProperties();
+            if (entities.xIsEmpty()) return new DataTable();
+            
+            var properties = entities.xFirst().xGetProperties();
 
             var dt = new DataTable();
             foreach (var property in properties) dt.Columns.Add(property.Name, property.PropertyType);

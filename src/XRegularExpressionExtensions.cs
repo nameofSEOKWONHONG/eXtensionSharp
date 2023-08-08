@@ -4,16 +4,13 @@ namespace eXtensionSharp;
 
 public static class XRegularExpressionExtensions
 {
-    //ref : https://medium.com/@mohsen_rajabi/how-to-write-a-regex-very-fast-in-c-best-practice-875d386c0485
-    private static Regex _numberRegex =
-        new Regex(@"^[a-zA-Z\-_]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
     public static bool xIsNumber(this string str)
     {
         if (str.xIsEmpty()) return false;
-        return _numberRegex.IsMatch(str);
+        return double.TryParse(str, out double num);
     }
 
+    //ref : https://medium.com/@mohsen_rajabi/how-to-write-a-regex-very-fast-in-c-best-practice-875d386c0485
     private static Regex _alphabetRegex =
         new Regex(@"^[a-zA-Z\-_]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 

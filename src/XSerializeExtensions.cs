@@ -46,17 +46,5 @@ namespace eXtensionSharp
         {
             return JsonSerializer.Serialize(obj);
         }
-
-        public static T xToClone<T>(this T src) where T : class
-        {
-            return new FastDeepCloner.FastDeepCloner(src).Clone<T>();
-        }
-
-        public static T xToClone<T>(this T src, Func<T, T> func) where T : class
-        {
-            var result = src.xToClone();
-            result = func(result);
-            return result;
-        }
     }
 }

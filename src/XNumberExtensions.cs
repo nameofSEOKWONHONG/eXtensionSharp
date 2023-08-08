@@ -6,7 +6,7 @@ namespace eXtensionSharp
 {
     public static class XNumberExtensions
     {
-        public static string xDisplayNumber<T>(this T val, ENUM_NUMBER_FORMAT_TYPE type, ENUM_VIEW_ALLOW_TYPE allow) where T : struct
+        public static string xDisplayNumber<T>(this T val, ENUM_NUMBER_FORMAT_TYPE type, ENUM_VIEW_ALLOW_TYPE allow = ENUM_VIEW_ALLOW_TYPE.NotAllow) where T : struct
         {
             if (val.GetType() == typeof(DateTime)) throw new NotSupportedException("DateTime is not support.");
             if (val.GetType() == typeof(float)) throw new NotSupportedException("float is not support.");

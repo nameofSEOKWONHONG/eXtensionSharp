@@ -15,14 +15,24 @@ namespace eXtensionSharp
             if (src.xIsEmpty())
             {
                 if (@default.xIsEmpty()) return default;
-                else return (T)Convert.ChangeType(@default, typeof(T))!;
+                return (T)Convert.ChangeType(@default, typeof(T))!;
             }
 
-            if (src is Guid guid)
-                return (T)Convert.ChangeType(guid.ToString(), typeof(T));
-            else if (src is DateTime time)
-                return (T)Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS), typeof(T));
+            if (typeof(T).IsEnum)
+            {
+                return (T)src;
+            }
 
+            if (src is Guid guid) return (T)Convert.ChangeType(guid.ToString(), typeof(T));
+            
+            if (src is DateTime time)
+            {
+                if(typeof(T) == typeof(int)) 
+                    return (T)Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYYMMDD), typeof(T));
+                
+                return (T)Convert.ChangeType(time, typeof(T));
+            }
+                
             return (T)Convert.ChangeType(src, typeof(T));
         }
 

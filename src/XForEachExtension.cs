@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace eXtensionSharp
 {
     public static class XForEachExtensions
     {
+        private const int LOOP_DELAY_COUNT = 5000;
+        private const int LOOP_SLEEP_MS = 100;
+        
         #region [정규목록]
 
         /// <summary>
@@ -19,9 +16,15 @@ namespace eXtensionSharp
         public static void xForEach<T>(this IEnumerable<T> iterator, Action<T> action)
         {
             if (iterator.xIsEmpty()) return;
+            int i = 0;
             foreach (var item in iterator)
             {
                 action(item);
+                i += 1;
+                if ((i % LOOP_DELAY_COUNT) == 0)
+                {
+                    Thread.Sleep(LOOP_SLEEP_MS);    
+                }
             }
         }
 
@@ -33,11 +36,11 @@ namespace eXtensionSharp
         /// <param name="action"></param>
         public static void xForEach<T>(this IEnumerable<T> iterator, Action<T, int> action)
         {
-            var index = 0;
+            var i = 0;
             iterator.xForEach(item =>
             {
-                action(item, index);
-                index++;
+                action(item, i);
+                i += 1;
             });
         }
 
@@ -50,26 +53,35 @@ namespace eXtensionSharp
         public static void xForEach<T>(this IEnumerable<T> iterator, Func<T, bool> func)
         {
             if (iterator.xIsEmpty()) return;
+            
+            var i = 0;
             foreach (var item in iterator)
             {
                 var isBreak = !func(item);
                 if (isBreak) break;
+                
+                i += 1;
+                if ((i % LOOP_DELAY_COUNT) == 0)
+                {
+                    Thread.Sleep(LOOP_SLEEP_MS);    
+                }                
             }
         }
 
         public static void xForEach<T>(this IEnumerable<T> iterator, Func<T, int, bool> func)
         {
-            var index = 0;
+            var i = 0;
             iterator.xForEach(item =>
             {
-                var isBreak = !func(item, index);
+                var isBreak = !func(item, i);
+                i += 1;
                 if (isBreak) return false;
                 return true;
             });
         }
 
-        public static void xForEach(this (DateTime from, DateTime to) fromToDate, ENUM_DATETIME_FOREACH_TYPE type,
-            Action<DateTime> action)
+        public static void xForEach(this DateTime from, DateTime to, ENUM_DATETIME_FOREACH_TYPE type,
+            Func<DateTime, bool> func)
         {
             var states = new Dictionary<ENUM_DATETIME_FOREACH_TYPE, Action<DateTime, DateTime>>()
             {
@@ -77,26 +89,37 @@ namespace eXtensionSharp
                     ENUM_DATETIME_FOREACH_TYPE.DAY, (from, to) =>
                     {
                         for (var i = from; i <= to; i = i.AddDays(1))
-                            action(i);
+                        {
+                            bool isContinue = func(i);
+                            if(isContinue.xIsFalse()) break;
+                        }
+                            
                     }
                 },
                 {
                     ENUM_DATETIME_FOREACH_TYPE.MONTH, (from, to) =>
                     {
                         for (var i = from; i <= to; i = i.AddMonths(1))
-                            action(i);
+                        {
+                            bool isContinue = func(i);
+                            if(isContinue.xIsFalse()) break;
+                        }
+
                     }
                 },
                 {
                     ENUM_DATETIME_FOREACH_TYPE.YEAR, (from, to) =>
                     {
                         for (var i = from; i <= to; i = i.AddYears(1))
-                            action(i);
+                        {
+                            bool isContinue = func(i);
+                            if(isContinue.xIsFalse()) break;
+                        }
                     }
                 }
             };
 
-            states[type](fromToDate.from, fromToDate.to);
+            states[type](from, to);
         }
 
         public static void xForEach(this ValueTuple<int, int> fromTo, Action<int> action)
@@ -108,64 +131,38 @@ namespace eXtensionSharp
 
         #region [확장목록]
 
-        public static void xForEachReverse(this ValueTuple<int, int> fromTo, Action<int> action)
+        public static void xForEachReversal(this ValueTuple<int, int> fromTo, Action<int> action)
         {
             for (var i = fromTo.Item2; i >= fromTo.Item1; i--) action(i);
         }
 
-        public static void xForEachReverse<T>(this IEnumerable<T> itorator, Action<T> action)
+        public static void xForEachReversal<T>(this IEnumerable<T> iterator, Action<T> action)
         {
-            itorator.Reverse().xForEach(item =>
-            {
-                action(item);
-            });
+            iterator.Reverse().xForEach(action);
         }
 
-        public static void xForEachReverse<T>(this IEnumerable<T> itorator, Func<T, bool> func)
+        public static void xForEachReverse<T>(this IEnumerable<T> iterator, Func<T, bool> func)
         {
-            itorator.Reverse().xForEach(item =>
-            {
-                return func(item);
-            });
+            iterator.Reverse().xForEach(func);
         }
 
-        public static void xForEachParallel<T>(this IEnumerable<T> items, Action<T> action, ParallelOptions parallelOptions = null)
+        public static void xForEachParallel<T>(this IEnumerable<T> items, Action<T> action, ParallelOptions parallelOptions)
         {
             Parallel.ForEach(items, parallelOptions, action);
         }
 
-        public static void xForEachParallel<T>(this IEnumerable<T> items,
-            Func<IEnumerable<T>, IEnumerable<IGrouping<string, T>>> groupby,
-            Func<string, IEnumerable<T>, IEnumerable<T>> filter,
-            Action<T, int> action) where T : class
-        {
-            var maps = new Dictionary<string, IEnumerable<T>>();
-            var groups = groupby(items);
-            groups.xForEach(group =>
-            {
-                var filterResult = filter(group.Key, items);
-                maps.Add(group.Key, filterResult);
-            });
-
-            maps.xForEachParallel(item =>
-            {
-                var i = 0;
-                item.Value.xForEach(item2 =>
-                {
-                    action(item2, i);
-                    i++;
-                });
-            });
-        }
-
         public static async Task xForEachAsync<T>(this IEnumerable<T> items, Func<T, Task> func)
         {
-            foreach (var value in items) await func(value);
+            if(items.xIsEmpty()) return;
+
+            foreach (var value in items)
+            {
+                await func(value);
+            }
         }
 
-        public static async Task xForEachParallelAsync<T>(this IEnumerable<T> items, Func<T, CancellationToken, Task> func, ParallelOptions parallelOptions = null)
+        public static async Task xForEachParallelAsync<T>(this IEnumerable<T> items, Func<T, CancellationToken, Task> func, ParallelOptions parallelOptions)
         {
-            if (parallelOptions.xIsEmpty()) parallelOptions = new ParallelOptions();
             await Parallel.ForEachAsync(items, parallelOptions, async (item, token) =>
             {
                 await func(item, token);
@@ -173,6 +170,19 @@ namespace eXtensionSharp
         }
 
         #endregion [확장목록]
+        
+        public static IEnumerable<T[]> xBatch<T>(this IEnumerable<T> valaus, int batchSize)
+        {
+            var result = new List<T[]>();
+            var array = valaus.ToArray();
+            for (int i = 0; i < array.Length; i += batchSize)
+            {
+                T[] batch = array.Skip(i).Take(batchSize).ToArray();
+                result.Add(batch);
+            }
+
+            return result;
+        }
     }
 
     public class ENUM_DATETIME_FOREACH_TYPE : XEnumBase<ENUM_DATETIME_FOREACH_TYPE>
