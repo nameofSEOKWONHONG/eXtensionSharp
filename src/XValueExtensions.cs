@@ -1,5 +1,3 @@
-using System;
-
 namespace eXtensionSharp
 {
     public static class XValueExtensions
@@ -30,7 +28,7 @@ namespace eXtensionSharp
                 if(typeof(T) == typeof(int)) 
                     return (T)Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYYMMDD), typeof(T));
                 
-                return (T)Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS_FFF), typeof(T));
+                return (T)Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD), typeof(T));
             }
                 
             return (T)Convert.ChangeType(src, typeof(T));

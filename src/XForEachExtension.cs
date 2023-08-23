@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 namespace eXtensionSharp
 {
     public static class XForEachExtensions
@@ -20,7 +23,7 @@ namespace eXtensionSharp
             foreach (var item in iterator)
             {
                 action(item);
-                i += 1;
+                i++;
                 if ((i % LOOP_DELAY_COUNT) == 0)
                 {
                     Thread.Sleep(LOOP_SLEEP_MS);    
@@ -130,6 +133,29 @@ namespace eXtensionSharp
         #endregion [정규목록]
 
         #region [확장목록]
+
+        public static void xForEachSpan<T>(this IEnumerable<T> items, Action<T> action)
+        {
+            Span<T> asSpan = items.ToArray();
+            asSpan.xForEachSpan((item, i) =>
+            {
+                action(item);
+            });
+        }
+
+        public static void xForEachSpan<T>(this Span<T> items, Action<T, int> action)
+        {
+            ref var searchSpace = ref MemoryMarshal.GetReference(items);
+            for (var i = 0; i < items.Length; i++)
+            {
+                var item = Unsafe.Add(ref searchSpace, i);
+                action(item, i);
+                if ((i % LOOP_DELAY_COUNT) == 0)
+                {
+                    Thread.Sleep(LOOP_SLEEP_MS);    
+                }
+            }
+        }
 
         public static void xForEachReversal(this ValueTuple<int, int> fromTo, Action<int> action)
         {

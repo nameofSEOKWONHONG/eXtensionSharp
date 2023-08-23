@@ -19,12 +19,6 @@ namespace eXtensionSharp
             return datetime;
         }
 
-        /// <summary>
-        /// Get Date By ENUM_DATE_FORMAT, Default yyyy-MM-dd
-        /// </summary>
-        /// <param name="date"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
         public static string xToDate(this DateTime date, ENUM_DATE_FORMAT format = null)
         {
             if (format.xIsEmpty()) format = ENUM_DATE_FORMAT.YYYY_MM_DD;

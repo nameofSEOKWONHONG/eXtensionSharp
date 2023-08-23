@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace eXtensionSharp
@@ -94,12 +92,12 @@ namespace eXtensionSharp
             return isEqual;
         }
 
-        public static bool xIsEquals<T>(this IEnumerable<T> srcs, T compare)
+        public static bool xIsEquals<T>(this IEnumerable<T> items, T compare)
             where T : class
         {
-            if (srcs.xIsEmpty()) return false;
+            if (items.xIsEmpty()) return false;
             if (compare.xIsEmpty()) return false;
-            return compare.xIsEquals(srcs);
+            return compare.xIsEquals(items);
         }
         
         public static bool xIsEquals(this DateTime? from, DateTime? to)
