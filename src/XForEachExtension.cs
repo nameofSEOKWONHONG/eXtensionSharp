@@ -150,10 +150,6 @@ namespace eXtensionSharp
             {
                 var item = Unsafe.Add(ref searchSpace, i);
                 action(item, i);
-                if ((i % LOOP_DELAY_COUNT) == 0)
-                {
-                    Thread.Sleep(LOOP_SLEEP_MS);    
-                }
             }
         }
 
