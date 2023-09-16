@@ -177,9 +177,9 @@ namespace eXtensionSharp
             return Encoding.UTF8.GetBytes(str);
         }
 
-        public static byte[] xToBytes(this object obj)
+        public static byte[] xToBytes<T>(this T value)
         {
-            var objToString = System.Text.Json.JsonSerializer.Serialize(obj);
+            var objToString = System.Text.Json.JsonSerializer.Serialize(value);
             return System.Text.Encoding.UTF8.GetBytes(objToString);
         }
 
@@ -238,21 +238,6 @@ namespace eXtensionSharp
         {
             if (value.xIsEmpty()) return Array.Empty<string>();
             return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        }
-
-        public static string xDisplayRequired(this string value)
-        {
-            return $"* {value}";
-        }
-
-        public static string xDisplaySearch(this string value)
-        {
-            return $"{value} : ";
-        }
-
-        public static string xDisplaySubTitle(this string value)
-        {
-            return $"▶ {value}";
         }
         
         public static string xRandomString(this int size, bool lowerCase = false)

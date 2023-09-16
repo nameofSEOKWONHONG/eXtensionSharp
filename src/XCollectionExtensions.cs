@@ -133,6 +133,17 @@ namespace eXtensionSharp
             }
             return result;
         }
+        
+        public static Dictionary<string, T2> xToDictionary<T, T2>(this T value) where T : class
+        {
+            var result = new Dictionary<string, T2>();
+            var props = value.GetType().GetProperties();
+            foreach (var prop in props)
+            {
+                result.Add(prop.Name, prop.GetValue(value, null).xValue<T2>());
+            }
+            return result;
+        }
 
         /// <summary>
         /// 객체간 값 복사 (UI 갱신용 아님), Inner Class는 복사안됨.
