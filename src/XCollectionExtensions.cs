@@ -168,6 +168,13 @@ namespace eXtensionSharp
             if (enumerable.xIsEmpty()) return 0;
             return enumerable.Count();
         }
+        
+        public static int xCount<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+        {
+            if (enumerable.xIsEmpty()) return 0;
+            if (predicate.xIsNotEmpty()) return enumerable.Count(predicate);
+            return enumerable.Count();
+        }
 
         public static IEnumerable<T> xWhere<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
             where T : class
