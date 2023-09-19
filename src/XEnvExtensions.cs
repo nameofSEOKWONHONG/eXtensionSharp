@@ -70,7 +70,7 @@ namespace eXtensionSharp
             var response = client.GetAsync("ip").GetAwaiter().GetResult();
             var html = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             string externalip = html.Trim();
-            if (String.IsNullOrWhiteSpace(externalip))
+            if (externalip.xIsNotEmpty())
             {
                 externalip = GetLocalIPAddress();//null경우 Get Internal IP를 가져오게 한다.
             }

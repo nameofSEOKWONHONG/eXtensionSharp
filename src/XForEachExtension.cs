@@ -31,6 +31,21 @@ namespace eXtensionSharp
             }
         }
 
+        public static async Task xForEachAsync<T>(this IEnumerable<T> iterator, Action<T> action)
+        {
+            if (iterator.xIsEmpty()) return;
+            int i = 0;
+            foreach (var item in iterator)
+            {
+                action(item);
+                i++;
+                if ((i % LOOP_DELAY_COUNT) == 0)
+                {
+                    await Task.Delay(LOOP_SLEEP_MS);
+                }
+            }
+        }
+
         /// <summary>
         ///     foreach loop
         /// </summary>

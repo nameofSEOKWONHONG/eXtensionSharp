@@ -163,13 +163,7 @@ namespace eXtensionSharp
             return list;
         }
         
-        public static int xCount<T>(this IEnumerable<T> enumerable)
-        {
-            if (enumerable.xIsEmpty()) return 0;
-            return enumerable.Count();
-        }
-        
-        public static int xCount<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+        public static int xCount<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
             if (enumerable.xIsEmpty()) return 0;
             if (predicate.xIsNotEmpty()) return enumerable.Count(predicate);
@@ -214,7 +208,7 @@ namespace eXtensionSharp
 
         public static bool xContains<T>(this IEnumerable<T> src, IEnumerable<T> compares)
         {
-            if (src.xIsNotEmpty()) return false;
+            if (src.xIsEmpty()) return false;
             return src.Where(m => m.xContains(compares)).xIsNotEmpty();
         }        
         
@@ -226,7 +220,7 @@ namespace eXtensionSharp
 
         public static T xLast<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
-            if (predicate.xIsNotNull()) return enumerable.LastOrDefault(predicate);
+            if (predicate.xIsNotEmpty()) return enumerable.LastOrDefault(predicate);
             return enumerable.LastOrDefault();
         }
 

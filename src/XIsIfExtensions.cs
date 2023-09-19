@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq.Expressions;
 using System.Numerics;
 
 namespace eXtensionSharp
@@ -110,6 +111,18 @@ namespace eXtensionSharp
         {
             var type = typeof(T);
             return Nullable.GetUnderlyingType(type) != null;
+        }
+
+        public static bool xIfBoolean(this string item, string match)
+        {
+            if (item == match) return true;
+            return false;
+        }
+        
+        public static bool xIfBoolean(this string item, string[] matches)
+        {
+            if (item == matches[0]) return true;
+            return false;
         }
 
         #endregion [xIs Series]
