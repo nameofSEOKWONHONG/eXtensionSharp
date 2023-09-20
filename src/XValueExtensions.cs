@@ -38,10 +38,22 @@ namespace eXtensionSharp
         {
             if (src.xIsEmpty())
             {
-                if (@default.xIsEmpty()) return default;
+                if (@default.xIsEmpty())
+                {
+                    if (typeof(T) == typeof(string))
+                    {
+                        return string.Empty as T;
+                    }
+                    return default;
+                }
                 else return @default;
             }
             return src;
+        }
+
+        public static T xAs<T>(this object src)
+        {
+            return (T)src;
         }
 
         // public static string xValue<T>(this XEnumBase<T> src, XEnumBase<T> defaultValue = null)
@@ -64,5 +76,7 @@ namespace eXtensionSharp
         //     if (defaultValue.xIsNotEmpty()) return defaultValue;
         //     return default;
         // }
+        
+ 
     }
 }
