@@ -30,22 +30,30 @@ namespace eXtensionSharp
 
         public static bool xIsEmpty<T>(this T obj)
         {
-            if (obj.xIsNull())
+            var type = typeof(T);
+            if (type == typeof(int) ||
+                type == typeof(float) ||
+                type == typeof(double) ||
+                type == typeof(decimal) ||
+                type == typeof(long) ||
+                type == typeof(short) ||
+                type == typeof(byte) ||
+                type == typeof(uint) ||
+                type == typeof(ulong) ||
+                type == typeof(ushort) ||
+                type == typeof(sbyte))
             {
-                return true;
+                return EqualityComparer<T>.Default.Equals(obj, default(T));
             }
+
+            if (obj.xIsNull()) return true;
             switch (obj) {
-                case null: return true;
-                case Int16 i16 when i16 <= 0:
-                case Int32 i32 when i32 <= 0:
-                case Int64 i64 when i64 <= 0:
-                case double d when d <= 0:
-                case float f when f <= 0:
-                case decimal de when de <= 0:
                 case DateTime dt when dt <= DateTime.MinValue:
                 case string s when string.IsNullOrWhiteSpace(s):
+                // ReSharper disable once HeapView.PossibleBoxingAllocation
                 case ICollection {Count: 0}:
                 case Array {Length: 0}:
+                // ReSharper disable once HeapView.PossibleBoxingAllocation
                 case IEnumerable e when !e.GetEnumerator().MoveNext():
                     return true;
                 default: return false;
@@ -99,14 +107,6 @@ namespace eXtensionSharp
 
             return isEqual;
         }
-
-        public static bool xIsEquals<T>(this IEnumerable<T> items, T compare)
-            where T : class
-        {
-            if (items.xIsEmpty()) return false;
-            if (compare.xIsEmpty()) return false;
-            return compare.xIsEquals(items);
-        }
         
         public static bool xIsEquals(this DateTime? from, DateTime? to)
         {
@@ -115,20 +115,6 @@ namespace eXtensionSharp
             return from!.Value.Year.Equals(to!.Value.Year) && 
                    from.Value.Month.Equals(to.Value.Month) && 
                    from.Value.Day.Equals(to.Value.Day);
-        }
-        
-        public static bool xIsNotSame<T>(this T a, T b)
-        {
-            if (a.xIsEmpty()) return false;
-            if (b.xIsEmpty()) return false;
-            return !a.Equals(b);
-        }
-
-        public static bool xIsSame<T>(this T a, T b)
-        {
-            if (a.xIsEmpty()) return false;
-            if (b.xIsEmpty()) return false;
-            return a.Equals(b);
         }
         
         public static bool IsNullableType<T>(T o)
