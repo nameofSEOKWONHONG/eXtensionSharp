@@ -30,6 +30,36 @@ namespace eXtensionSharp
 
         public static bool xIsEmpty<T>(this T obj)
         {
+            if (obj.xIsNumber())
+            {
+                return EqualityComparer<T>.Default.Equals(obj, default(T));
+            }
+
+            if (obj.xIsDateTime())
+            {
+                var t = obj.xAs<DateTime>();
+                if (t <= DateTime.MinValue) return true;
+            }
+
+            if (obj.xIsNull())
+            {
+                return true;
+            }
+            
+            switch (obj) {
+                case string s when string.IsNullOrWhiteSpace(s):
+                // ReSharper disable once HeapView.PossibleBoxingAllocation
+                case ICollection {Count: 0}:
+                case Array {Length: 0}:
+                // ReSharper disable once HeapView.PossibleBoxingAllocation
+                case IEnumerable e when !e.GetEnumerator().MoveNext():
+                    return true;
+                default: return false;
+            }
+        }
+
+        public static bool xIsNumber<T>(this T obj)
+        {
             var type = typeof(T);
             if (type == typeof(int) ||
                 type == typeof(float) ||
@@ -42,22 +72,17 @@ namespace eXtensionSharp
                 type == typeof(ulong) ||
                 type == typeof(ushort) ||
                 type == typeof(sbyte))
-            {
-                return EqualityComparer<T>.Default.Equals(obj, default(T));
-            }
+                return true;
 
-            if (obj.xIsNull()) return true;
-            switch (obj) {
-                case DateTime dt when dt <= DateTime.MinValue:
-                case string s when string.IsNullOrWhiteSpace(s):
-                // ReSharper disable once HeapView.PossibleBoxingAllocation
-                case ICollection {Count: 0}:
-                case Array {Length: 0}:
-                // ReSharper disable once HeapView.PossibleBoxingAllocation
-                case IEnumerable e when !e.GetEnumerator().MoveNext():
-                    return true;
-                default: return false;
-            }
+            return false;
+        }
+
+        public static bool xIsDateTime<T>(this T obj)
+        {
+            var type = typeof(T);
+            if (type == typeof(DateTime)) return true;
+
+            return false;
         }
         
         public static bool xIsNotEmpty<T>(this T obj)
@@ -88,27 +113,19 @@ namespace eXtensionSharp
             return !number.xIsEmptyNumber();
         }
 
-        public static bool xIsEquals<T>(this T src, T compare) where T : class
+        public static bool xIsSame<T>(this T src, T compare)
         {
             if (src.xIsEmpty()) return false;
             if (compare.xIsEmpty()) return false;
             return src.Equals(compare);
         }
-
-        public static bool xIsEquals<T>(this T src, IEnumerable<T> compares)
-            where T : class
-        {
-            var isEqual = false;
-            compares.xForEach(item =>
-            {
-                isEqual = item.xIsEquals(src);
-                return !isEqual;
-            });
-
-            return isEqual;
-        }
         
-        public static bool xIsEquals(this DateTime? from, DateTime? to)
+        public static bool xIsNotSame<T>(this T src, T compare)
+        {
+            return !src.Equals(compare);
+        }        
+        
+        public static bool xIsSame(this DateTime? from, DateTime? to)
         {
             if (from.xIsEmpty()) return false;
             if (to.xIsEmpty()) return false;
@@ -117,7 +134,7 @@ namespace eXtensionSharp
                    from.Value.Day.Equals(to.Value.Day);
         }
         
-        public static bool IsNullableType<T>(T o)
+        public static bool IsNullableType<T>(this T o)
         {
             var type = typeof(T);
             return Nullable.GetUnderlyingType(type).xIsNotEmpty();
@@ -125,7 +142,7 @@ namespace eXtensionSharp
 
         public static bool xIf(this string item, string match)
         {
-            if (item.xIsEquals(match)) return true;
+            if (item.xIsSame(match)) return true;
             return false;
         }
 

@@ -13,19 +13,19 @@ namespace eXtensionSharp.test {
         [Test]
         public void string_match() {
             var a = "A";
-            Assert.IsTrue(a.xIsEquals("A"));
+            Assert.IsTrue(a.xIsSame("A"));
         }
 
         [Test]
         public void string_collection_match() {
             var alist = new string[] {"A", "B", "C"};
-            Assert.IsTrue(alist.xIsEquals("A"));
+            Assert.IsTrue("A".xContains(alist));
         }
 
         [Test]
         public void string_collection_match2() {
             var a = "B";
-            Assert.IsTrue(a.xIsEquals(new[]{"A", "B", "C"}));
+            Assert.IsTrue(a.xContains(new[]{"A", "B", "C"}));
         }
 
         [Test]

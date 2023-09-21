@@ -74,7 +74,7 @@ namespace eXtensionSharp
 
         private static bool IsTypeMatch(string propertyTypeName)
         {
-            return propertyTypeName.xIsEquals(new string[]
+            return propertyTypeName.xContains(new string[]
             {
                 DataTypeName.Int16,
                 DataTypeName.Int32,
@@ -197,7 +197,7 @@ namespace eXtensionSharp
         public static bool xContains(this string src, string[] compares)
         {
             if (src.xIsEmpty()) return false;
-            return compares.FirstOrDefault(m => src.Contains(m)).xIsNotEmpty();
+            return compares.FirstOrDefault(src.Contains).xIsNotEmpty();
         }
 
         public static bool xContains<T>(this T src, IEnumerable<T> compares)
