@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Linq.Expressions;
 using System.Numerics;
 
 namespace eXtensionSharp
@@ -30,6 +29,11 @@ namespace eXtensionSharp
 
         public static bool xIsEmpty<T>(this T obj)
         {
+            if (obj.xIsNull())
+            {
+                return true;
+            }
+            
             if (obj.xIsNumber())
             {
                 return EqualityComparer<T>.Default.Equals(obj, default(T));
@@ -40,12 +44,8 @@ namespace eXtensionSharp
                 var t = obj.xAs<DateTime>();
                 if (t <= DateTime.MinValue) return true;
             }
-
-            if (obj.xIsNull())
-            {
-                return true;
-            }
             
+            // collection type
             switch (obj) {
                 case string s when string.IsNullOrWhiteSpace(s):
                 // ReSharper disable once HeapView.PossibleBoxingAllocation
@@ -125,13 +125,25 @@ namespace eXtensionSharp
             return !src.Equals(compare);
         }        
         
-        public static bool xIsSame(this DateTime? from, DateTime? to)
+        public static bool xIsSameDate(this DateTime? from, DateTime? to)
         {
             if (from.xIsEmpty()) return false;
             if (to.xIsEmpty()) return false;
-            return from!.Value.Year.Equals(to!.Value.Year) && 
-                   from.Value.Month.Equals(to.Value.Month) && 
+            return from!.Value.Year.Equals(to!.Value.Year) &&
+                   from.Value.Month.Equals(to.Value.Month) &&
                    from.Value.Day.Equals(to.Value.Day);
+        }
+        
+        public static bool xIsSameFullDate(this DateTime? from, DateTime? to)
+        {
+            if (from.xIsEmpty()) return false;
+            if (to.xIsEmpty()) return false;
+            return from!.Value.Year.Equals(to!.Value.Year) &&
+                   from.Value.Month.Equals(to.Value.Month) &&
+                   from.Value.Day.Equals(to.Value.Day) &&
+                   from.Value.Hour.Equals(to.Value.Hour) &&
+                   from.Value.Minute.Equals(to.Value.Minute) &&
+                   from.Value.Second.Equals(to.Value.Second);
         }
         
         public static bool IsNullableType<T>(this T o)
