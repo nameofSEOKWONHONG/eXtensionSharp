@@ -148,5 +148,17 @@ namespace eXtensionSharp
 
 
         #endregion [xIs Series]
+
+        public static bool xIsDuplicate<T>(this IEnumerable<T> items)
+        {
+            if (items.xIsEmpty()) return false;
+            
+            var v = items.GroupBy(x => x)
+                .Where(g => g.Count() > 1)
+                .Select(y => y.Key)
+                .ToList();
+            
+            return v.xIsNotEmpty();
+        }
     }
 }

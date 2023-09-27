@@ -285,5 +285,6 @@ namespace eXtensionSharp
         public static readonly ENUM_DATE_FORMAT YYYYMMDDHHMMSS = Define("yyyyMMddHHmmss");
         public static readonly ENUM_DATE_FORMAT YYYYMMDDHH = Define("yyyyMMddHH");
         public static readonly ENUM_DATE_FORMAT HHMMSS = Define("HHmmss");
+        public static readonly ENUM_DATE_FORMAT YYMMDD = Define("yyMMdd");
     }
 }
