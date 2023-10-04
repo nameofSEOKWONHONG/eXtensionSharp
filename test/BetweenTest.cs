@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NuGet.Frameworks;
 using NUnit.Framework;
 
@@ -45,5 +46,28 @@ namespace eXtensionSharp.test
             Assert.IsFalse(value.xIsBetween(from, to));
             Assert.IsTrue(value.xIsBetween(from, to, false));            
         }
+
+        [Test]
+        public void duplicate_test()
+        {
+            string[] arr = new[] { "A", "B", "C"};
+            var expected = arr.xIsDuplicate();
+            Assert.IsFalse(expected);
+
+            List<Sample> arr2 = new List<Sample>();
+            arr2.Add(new Sample() { Name = "A" });
+            arr2.Add(new Sample() { Name = "B" });
+            arr2.Add(new Sample() { Name = "C" });
+            arr2.Add(new Sample() { Name = "A" });
+
+            var expected2 = arr2.xSelect(m => m.Name).xIsDuplicate();
+            Assert.IsTrue(expected2);
+
+        }
+    }
+
+    public class Sample
+    {
+        public string Name { get; set; }
     }
 }
