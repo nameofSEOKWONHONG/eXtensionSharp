@@ -321,5 +321,20 @@ namespace eXtensionSharp
             //by default, show the standard implementation
             return expr.ToString();
         }
+        
+        public static string xHiddenText(this string str, char hiddenChar, int startIdx, int length = 0)
+        {
+            if (str.xIsEmpty()) return string.Empty;
+            
+            var arr = str.ToArray();
+        
+            for (int i = startIdx; i <= startIdx + length; i++)
+            {
+                if(arr[i].xIsEmpty()) continue;
+                arr[i] = hiddenChar;
+            }
+            
+            return new String(arr);
+        }
     }
 }

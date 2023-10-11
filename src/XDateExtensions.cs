@@ -203,6 +203,24 @@ namespace eXtensionSharp
             if (to.xIsEmpty()) return false;
             return from.xIsYearEquals(to) && from.xIsMonthEquals(from) && (from!.Value.Day == to!.Value.Day);
         }
+
+        public static TimeSpan xFromMilliseconds(this int i)
+        {
+            if(i <= 0) return TimeSpan.Zero;
+            return TimeSpan.FromMilliseconds(i);
+        }
+
+        public static TimeSpan xFromSeconds(this int i)
+        {
+            if(i <= 0) return TimeSpan.Zero;
+            return TimeSpan.FromSeconds(i);
+        }
+        
+        public static TimeSpan xFromMinutes(this int i)
+        {
+            if(i <= 0) return TimeSpan.Zero;
+            return TimeSpan.FromMinutes(i);
+        }        
     }
     
 // public static class WeekHelper {

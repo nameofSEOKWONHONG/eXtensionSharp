@@ -1,6 +1,6 @@
 ﻿namespace eXtensionSharp;
 
-public class XExtensionFunctions
+public class XTimeoutFunctions
 {
     public async Task SetTimeout(Func<Task> func, int interval = 1000, CancellationToken cancellationToken = new())
     {
