@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test {
     public class XStringTest {
         [Test]
         public void split_test() {
-            var chars ="a,b,c,d,e".xToSplit(",");
+            var chars ="a,b,c,d,e".xSplit(",");
             Assert.AreEqual(chars.xFirst(), "a");
             Assert.AreEqual(chars.xLast(), "e");
         }
@@ -48,6 +50,18 @@ namespace eXtensionSharp.test {
             var result2 = name2.xHiddenText('*', 1, 7);
             Assert.AreEqual(expected2, result2);
 
+        }
+
+        [Test]
+        public void jsonnode_to_value_test()
+        {
+            using var doc = JsonDocument.Parse(
+                "[\n    {\n        \"Name\" : \"Test 2\",\n        \"NumberOfComponents\" : 1,\n        \"IsActive\" : true,\n        \"CreatedBy\" : \"bsharma\"\n    },\n    {\n        \"Name\" : \"Test 2\",\n        \"NumberOfComponents\" : 1,\n        \"IsActive\" : true,\n        \"CreatedBy\" : \"bsharma\"\n    }\n]");
+            
+            foreach (var element in doc.RootElement.EnumerateArray())
+            {
+                TestContext.Out.WriteLine(element.GetProperty("Name").GetString());
+            }
         }
     }
 }

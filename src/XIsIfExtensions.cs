@@ -159,6 +159,11 @@ namespace eXtensionSharp
             return false;
         }
 
+        public static string xIf(this string item, string @case, Func<string> match, Func<string> notMatch)
+        {
+            if (item.xIsSame(@case)) return match();
+            return notMatch();
+        }
 
         #endregion [xIs Series]
 

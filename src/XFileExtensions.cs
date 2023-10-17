@@ -168,7 +168,7 @@ namespace eXtensionSharp
         /// <param name="fileName"></param>
         public static void xFileCreateAll(this string fileName)
         {
-            List<string> paths = fileName.xToSplit(Path.DirectorySeparatorChar.ToString()).xToList();
+            List<string> paths = fileName.xSplit(Path.DirectorySeparatorChar.ToString()).xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>
@@ -210,7 +210,7 @@ namespace eXtensionSharp
 
         public static void xDirCreateAll(this string path)
         {
-            List<string> paths = path.xToSplit(Path.DirectorySeparatorChar.ToString()).xToList();
+            List<string> paths = path.xSplit(Path.DirectorySeparatorChar.ToString()).xToList();
 
             var dir = string.Empty;
             paths.xForEach((path, i) =>

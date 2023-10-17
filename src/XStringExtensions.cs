@@ -234,7 +234,7 @@ namespace eXtensionSharp
         /// <param name="value"></param>
         /// <param name="separator">'§'</param>
         /// <returns></returns>
-        public static string[] xToSplit(this string value, string separator = ",")
+        public static string[] xSplit(this string value, string separator = ",")
         {
             if (value.xIsEmpty()) return Array.Empty<string>();
             return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);

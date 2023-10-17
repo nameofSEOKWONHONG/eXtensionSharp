@@ -1,3 +1,6 @@
+using System.Text;
+using System.Xml.Serialization;
+
 namespace eXtensionSharp
 {
     public static class XValueExtensions
@@ -77,6 +80,18 @@ namespace eXtensionSharp
         //     return default;
         // }
         
- 
+        public static string xToXmlString(this object obj, Type type)
+        {
+            string result = string.Empty;
+            XmlSerializer xmlSerialzer = new XmlSerializer(type);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                xmlSerialzer.Serialize(ms, obj);
+                result = Encoding.UTF8.GetString(ms.ToArray());
+            }
+
+            return result;
+        }
     }
 }
