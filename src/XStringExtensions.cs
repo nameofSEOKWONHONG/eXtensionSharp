@@ -336,5 +336,20 @@ namespace eXtensionSharp
             
             return new String(arr);
         }
+        
+        public static Encoding xToEncoding(this string value)
+        {
+            var result = value.ToUpper() switch
+            {
+                "UTF-8" => Encoding.UTF8,
+                "UTF32" => Encoding.UTF32,
+                "Unicode" => Encoding.Unicode,
+                "BigEndianUnicode" => Encoding.BigEndianUnicode,
+                "Latin1" => Encoding.Latin1,
+                "ASCII" => Encoding.ASCII,
+                _ => Encoding.UTF8
+            };
+            return result;
+        }
     }
 }

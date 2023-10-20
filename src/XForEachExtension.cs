@@ -214,11 +214,33 @@ namespace eXtensionSharp
             var array = valaus.ToArray();
             for (int i = 0; i < array.Length; i += batchSize)
             {
-                T[] batch = array.Skip(i).Take(batchSize).ToArray();
+                var batch = array.Skip(i).Take(batchSize).ToArray();
                 result.Add(batch);
             }
 
             return result;
+        }
+
+        public static async Task ParallelForEachAsync<T>(this IEnumerable<T> items, Func<T, CancellationToken, Task> func, ParallelOptions options = null)
+        {
+            if (options.xIsEmpty())
+            {
+                options = new ParallelOptions()
+                {
+                    MaxDegreeOfParallelism = Environment.ProcessorCount
+                };
+            }
+
+            var count = 0;
+            await Parallel.ForEachAsync(items, options, async (item, token) =>
+            {
+                await func(item, token);
+                count++;
+                if (count % LOOP_DELAY_COUNT == 0)
+                {
+                    await Task.Delay(LOOP_SLEEP_MS, token);
+                }
+            });
         }
     }
 
