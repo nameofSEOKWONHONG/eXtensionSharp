@@ -284,7 +284,7 @@ namespace eXtensionSharp
 
         #endregion [between]
         
-        public static Span<T> xToSpan<T>(this IEnumerable<T> items) where T : new()
+        public static Span<T> xToSpan<T>(this IEnumerable<T> items) where T : class, new()
         {
             return items.xToArray().AsSpan();
         }
