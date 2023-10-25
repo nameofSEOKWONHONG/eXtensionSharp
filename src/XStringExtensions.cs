@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace eXtensionSharp
 {
@@ -350,6 +351,54 @@ namespace eXtensionSharp
                 _ => Encoding.UTF8
             };
             return result;
+        }
+
+        public static bool xCheckImageFile(this string url)
+        {
+            try
+            {
+                if (!Regex.IsMatch(url, @"(http?:\/\/[^ ]*\.(?:png|jpg|jpeg))", RegexOptions.IgnoreCase) &&
+                    !Regex.IsMatch(url, @"(https?:\/\/[^ ]*\.(?:png|jpg|jpeg))", RegexOptions.IgnoreCase))
+                    return false;
+
+                if (Path.GetExtension(url).xIsEmpty()) return false;
+
+                if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                {
+                    var uri = new Uri(url);
+                    string path = uri.GetLeftPart(UriPartial.Path);
+                    if (string.Equals(Path.GetExtension(path), ".jpg", StringComparison.OrdinalIgnoreCase).xIsFalse() &&
+                        string.Equals(Path.GetExtension(path), ".jpeg", StringComparison.OrdinalIgnoreCase)
+                            .xIsFalse() &&
+                        string.Equals(Path.GetExtension(path), ".png", StringComparison.OrdinalIgnoreCase).xIsFalse())
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static string xToFileNameFromUrlWithoutExtension(this string url)
+        {
+            if (url.xIsEmpty()) return string.Empty;
+            
+            int index = url.IndexOf('?');
+            if (index == -1)
+            {
+                return url;
+            }
+
+            return url.Substring(0, index);
         }
     }
 }

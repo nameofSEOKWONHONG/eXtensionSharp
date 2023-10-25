@@ -178,5 +178,24 @@ namespace eXtensionSharp
             
             return v.xIsNotEmpty();
         }
+
+        public static bool xTryDuplicate<T>(this IEnumerable<T> items, out T key)
+        {
+            key = default;
+            
+            if (items.xIsEmpty()) return false;
+            
+            var v = items.GroupBy(x => x)
+                .Where(g => g.Count() > 1)
+                .Select(y => y.Key)
+                .ToList();
+            if (v.xIsNotEmpty())
+            {
+                key = v.First();
+                return true;
+            }
+
+            return false;
+        }
     }
 }
