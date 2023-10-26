@@ -388,17 +388,6 @@ namespace eXtensionSharp
             return true;
         }
 
-        public static string xToFileNameFromUrlWithoutExtension(this string url)
-        {
-            if (url.xIsEmpty()) return string.Empty;
-            
-            int index = url.IndexOf('?');
-            if (index == -1)
-            {
-                return url;
-            }
 
-            return url.Substring(0, index);
-        }
     }
 }

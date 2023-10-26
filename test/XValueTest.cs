@@ -57,4 +57,16 @@ public class XValueTest
         var item = a1.xLikeFirst(a2);
         Assert.AreEqual(item, "1");
     }
+
+    [Test]
+    public void duplicate_test()
+    {
+        var a1 = new[] { "1", "3", "2", "3", "11" };
+
+        if (a1.xTryDuplicate(out var d))
+        {
+            TestContext.Out.WriteLine(d);
+            Assert.AreEqual("3", d);
+        }
+    }
 }
