@@ -37,7 +37,7 @@ namespace eXtensionSharp
             
             if (obj.xIsNumber())
             {
-                return EqualityComparer<T>.Default.Equals(obj, default(T));
+                return Comparer<T>.Default.Compare(obj, default(T)) <= 0;
             }
 
             if (obj.xIsDateTime())

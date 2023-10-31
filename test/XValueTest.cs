@@ -26,11 +26,13 @@ public class XValueTest
     [Test]
     public void value_empty_not_empty_test()
     {
-        var n1 = 0;
-        Assert.IsTrue(n1.xIsEmpty());
+        var dmin = double.MinValue;
+        Assert.IsTrue(dmin.xIsEmpty());
 
-        long n2 = 100;
-        Assert.IsTrue(n2.xIsNotEmpty());
+        var nzero = 0;
+        Assert.IsTrue(nzero.xIsEmpty());
+        Assert.IsFalse(nzero.xIsNotEmpty());
+        
     }
 
     [Test]
