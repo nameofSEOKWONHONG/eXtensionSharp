@@ -288,5 +288,23 @@ namespace eXtensionSharp
             //0~32, 33 delete, 34~
             return dictionary;
         }
+
+        public static string[] xReadFileToLine(this string filePath, int linesToRead)
+        {
+            var lines = new List<string>();
+            
+            var line = string.Empty;
+            int lineCount = 0;
+
+            using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(fileStream);
+            while ((line = reader.ReadLine()) != null && lineCount < linesToRead)
+            {
+                lines.Add(line);
+                lineCount++;
+            }
+
+            return lines.ToArray();
+        }
     }
 }

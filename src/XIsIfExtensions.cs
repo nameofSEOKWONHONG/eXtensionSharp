@@ -197,5 +197,12 @@ namespace eXtensionSharp
 
             return false;
         }
+
+        public static bool xTryDateParse(this string date, out DateTime dateTime)
+        {
+            dateTime = DateTime.MinValue;
+
+            return DateTime.TryParse(date, out dateTime);
+        }
     }
 }
