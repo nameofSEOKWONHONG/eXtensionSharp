@@ -170,13 +170,18 @@ namespace eXtensionSharp
         public static bool xIsDuplicate<T>(this IEnumerable<T> items)
         {
             if (items.xIsEmpty()) return false;
+
+            HashSet<T> set = new();
             
-            var v = items.GroupBy(x => x)
-                .Where(g => g.Count() > 1)
-                .Select(y => y.Key)
-                .ToList();
-            
-            return v.xIsNotEmpty();
+            foreach (var item in items)
+            {
+                if (!set.Add(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static bool xTryDuplicate<T>(this IEnumerable<T> items, out T key)
@@ -185,14 +190,15 @@ namespace eXtensionSharp
             
             if (items.xIsEmpty()) return false;
             
-            var v = items.GroupBy(x => x)
-                .Where(g => g.Count() > 1)
-                .Select(y => y.Key)
-                .ToList();
-            if (v.xIsNotEmpty())
+            HashSet<T> set = new();
+            
+            foreach (var item in items)
             {
-                key = v.First();
-                return true;
+                if (!set.Add(item))
+                {
+                    key = item;
+                    return true;
+                }
             }
 
             return false;
