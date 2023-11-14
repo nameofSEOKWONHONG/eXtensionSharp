@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -206,12 +207,26 @@ namespace eXtensionSharp
                 }
             });
 
-            return string.Join("", hash);
+            return hash.xJoin();
+        }
+
+        public static string xDistinct(this IEnumerable<string> items)
+        {
+            var hash = new HashSet<string>();
+            items.xForEach(item =>
+            {
+                if (!hash.Contains(item))
+                {
+                    hash.Add(item);
+                }
+            });
+
+            return hash.xJoin();
         }
 
         public static string xToMySqlRLikeString(this IEnumerable<string> items)
         {
-            return string.Join('|', items.ToArray());
+            return items.ToArray().xJoin("|");
         }
 
         public static Guid xToGuid(this string str) => Guid.Parse(str);
@@ -337,57 +352,5 @@ namespace eXtensionSharp
             
             return new String(arr);
         }
-        
-        public static Encoding xToEncoding(this string value)
-        {
-            var result = value.ToUpper() switch
-            {
-                "UTF-8" => Encoding.UTF8,
-                "UTF32" => Encoding.UTF32,
-                "Unicode" => Encoding.Unicode,
-                "BigEndianUnicode" => Encoding.BigEndianUnicode,
-                "Latin1" => Encoding.Latin1,
-                "ASCII" => Encoding.ASCII,
-                _ => Encoding.UTF8
-            };
-            return result;
-        }
-
-        public static bool xCheckImageFile(this string url)
-        {
-            try
-            {
-                if (!Regex.IsMatch(url, @"(http?:\/\/[^ ]*\.(?:png|jpg|jpeg))", RegexOptions.IgnoreCase) &&
-                    !Regex.IsMatch(url, @"(https?:\/\/[^ ]*\.(?:png|jpg|jpeg))", RegexOptions.IgnoreCase))
-                    return false;
-
-                if (Path.GetExtension(url).xIsEmpty()) return false;
-
-                if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                {
-                    var uri = new Uri(url);
-                    string path = uri.GetLeftPart(UriPartial.Path);
-                    if (string.Equals(Path.GetExtension(path), ".jpg", StringComparison.OrdinalIgnoreCase).xIsFalse() &&
-                        string.Equals(Path.GetExtension(path), ".jpeg", StringComparison.OrdinalIgnoreCase)
-                            .xIsFalse() &&
-                        string.Equals(Path.GetExtension(path), ".png", StringComparison.OrdinalIgnoreCase).xIsFalse())
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-
     }
 }

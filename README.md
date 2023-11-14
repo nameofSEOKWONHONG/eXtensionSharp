@@ -6,6 +6,14 @@ This is a project that creates many useful methods based on null safe.
 
 Refer to the test code for how to use it.
 
+## Support
+net7, net8
+
+## Version
+* 1.0.0.6
+  * add - static string xDistinct(this IEnumerable<string> items)
+  * support net8
+
 ### Acknowledgements
 
 [JetBrains](https://www.jetbrains.com/?from=eXtensionSharp) kindly provides `eXtensionSharp` with a free open-source

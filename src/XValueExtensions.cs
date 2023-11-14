@@ -79,41 +79,5 @@ namespace eXtensionSharp
         //     if (defaultValue.xIsNotEmpty()) return defaultValue;
         //     return default;
         // }
-        
-        public static string xToXmlString(this object obj, Type type)
-        {
-            string result = string.Empty;
-            XmlSerializer xmlSerialzer = new XmlSerializer(type);
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                xmlSerialzer.Serialize(ms, obj);
-                result = Encoding.UTF8.GetString(ms.ToArray());
-            }
-
-            return result;
-        }
-
-        public static bool xValidateLatitude(this double latitude)
-        {
-            if (latitude.xIsEmpty()) return false;
-            
-            if (latitude is < -90 or > 90)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public static bool xValidateLongitude(this double longitude)
-        {
-            if (longitude.xIsEmpty()) return false;
-            
-            if (longitude is < -180 or > 180)
-            {
-                return false;
-            }
-            return true;
-        }
     }
 }
