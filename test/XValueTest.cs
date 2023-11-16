@@ -32,16 +32,17 @@ public class XValueTest
         var nzero = 0;
         Assert.IsTrue(nzero.xIsEmpty());
         Assert.IsFalse(nzero.xIsNotEmpty());
-        
     }
 
     [Test]
     public void number_is_or_test()
     {
         var n = 4;
-
-        var verify = n is 5 or 10;
-        Assert.IsTrue(verify);
+        Assert.Multiple(() =>
+        {
+            Assert.That(n.xIsNumber(), Is.True);
+            Assert.That(n.xValue<Int32>() == 4, Is.True);
+        });
     }
 
     [Test]

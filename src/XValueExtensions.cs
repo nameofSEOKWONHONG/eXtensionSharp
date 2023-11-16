@@ -24,16 +24,31 @@ namespace eXtensionSharp
                 return (T)src;
             }
 
+            if (src.xIsNumber())
+            {
+                if (src.GetType() == typeof(byte)) return (T)(object)Convert.ToByte(src);
+                else if (src.GetType() == typeof(sbyte)) return (T)(object)Convert.ToSByte(src);
+                else if (src.GetType() == typeof(short)) return (T)(object)Convert.ToInt16(src);
+                else if (src.GetType() == typeof(ushort)) return (T)(object)Convert.ToUInt16(src);
+                else if (src.GetType() == typeof(int)) return (T)(object)Convert.ToInt32(src);
+                else if (src.GetType() == typeof(uint)) return (T)(object)Convert.ToUInt32(src);
+                else if (src.GetType() == typeof(long)) return (T)(object)Convert.ToInt64(src);
+                else if (src.GetType() == typeof(ulong)) return (T)(object)Convert.ToUInt64(src);
+                else if (src.GetType() == typeof(float)) return (T)(object)Convert.ToSingle(src);
+                else if (src.GetType() == typeof(double)) return (T)(object)Convert.ToDouble(src);
+                else if (src.GetType() == typeof(decimal)) return (T)(object)Convert.ToDecimal(src);
+            }
+
             if (src is Guid guid) return (T)Convert.ChangeType(guid.ToString(), typeof(T));
-            
+
             if (src is DateTime time)
             {
-                if(typeof(T) == typeof(int)) 
+                if (typeof(T) == typeof(int))
                     return (T)Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYYMMDD), typeof(T));
-                
+
                 return (T)Convert.ChangeType(time.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD), typeof(T));
             }
-                
+
             return (T)Convert.ChangeType(src, typeof(T));
         }
 
