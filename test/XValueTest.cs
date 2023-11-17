@@ -72,4 +72,24 @@ public class XValueTest
             Assert.AreEqual("3", d);
         }
     }
+
+    [Test]
+    public void xvalue_number_convert_test()
+    {
+        int a = 32;
+        var r = a.xValue<Int64>();
+        Assert.That(a.xValue<Int64>(), Is.GreaterThan(0));
+    }
+
+    [Test]
+    public void xvalue_number_convert_test2()
+    {
+        var a = int.MaxValue;
+        var r = a.xValue<double>();
+        Assert.That(a.xValue<double>(), Is.GreaterThan(0));
+
+        var b = float.MaxValue;
+        var b2 = float.MinValue;
+        Assert.That(b.xValue<double>(), Is.GreaterThan(0));
+    }
 }
