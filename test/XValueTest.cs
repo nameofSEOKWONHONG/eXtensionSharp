@@ -58,7 +58,7 @@ public class XValueTest
         Assert.Greater(contains.Count(), 1);
 
         var item = a1.xLikeFirst(a2);
-        Assert.AreEqual(item, "1");
+        Assert.That(item, Is.EqualTo("1"));
     }
 
     [Test]
@@ -69,7 +69,7 @@ public class XValueTest
         if (a1.xTryDuplicate(out var d))
         {
             TestContext.Out.WriteLine(d);
-            Assert.AreEqual("3", d);
+            Assert.That(d, Is.EqualTo("3"));
         }
     }
 
