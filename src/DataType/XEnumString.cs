@@ -246,11 +246,13 @@ namespace eXtensionSharp
 
     public static class XEnumStringUtil
     {
+        [Obsolete("use smartenum", true)]
         public static T xStringToEnum<T>(this string value) where T : struct
         {
             return Enum.TryParse(value, true, out T result) ? result : default;
         }
 
+        [Obsolete("use smartenum", true)]
         public static string xEnumToString(this Enum value)
         {
             var da = (DescriptionAttribute[])value.GetType().GetField(value.ToString())

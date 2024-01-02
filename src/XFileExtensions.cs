@@ -267,12 +267,14 @@ namespace eXtensionSharp
             File.WriteAllText(fileName, fileContents, Encoding.UTF8);
         }
 
+        [Obsolete("don't use", true)]
         public static Dictionary<string, string> xGetFileExtensionProperties(this string fileName)
         {
             if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("Support Windows only.");
 
             var dictionary = new Dictionary<string, string>();
-            if (!File.Exists(fileName)) throw new FileNotFoundException();
+            if (!fileName.xFileExists()) return null;
+            
             Process process = new Process();
             process.StartInfo.FileName = "wmic.exe";
             process.StartInfo.Arguments = $"datafile where Name=\"{fileName}\"";
