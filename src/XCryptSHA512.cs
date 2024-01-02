@@ -13,16 +13,15 @@ namespace eXtensionSharp
         [Obsolete("don't use function", true)]
         public static string xToSHA512(this string encryptText)
         {
-            using (var sha512 = SHA512.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(encryptText);
-                var hash = sha512.ComputeHash(bytes);
-                var sb = new StringBuilder();
+            using var sha512 = SHA512.Create();
+            var bytes = Encoding.UTF8.GetBytes(encryptText);
+            var hash = sha512.ComputeHash(bytes);
+            var sb = new StringBuilder();
 
-                for (var i = 0; i < hash.Length; i++) sb.Append(hash[i].ToString("X2"));
+            foreach (var t in hash)
+                sb.Append(t.ToString("X2"));
 
-                return sb.ToString();
-            }
+            return sb.ToString();
         }
 
         /// <summary>
@@ -45,30 +44,24 @@ namespace eXtensionSharp
             var aesKey = new byte[24];
             Buffer.BlockCopy(hash.ComputeHash(Encoding.UTF8.GetBytes(key)), 0, aesKey, 0, 24);
 
-            using (var aes = Aes.Create())
-            {
-                if (aes == null)
-                    throw new ArgumentException("Parameter must not be null.", nameof(aes));
+            using var aes = Aes.Create();
+            if (aes == null)
+                throw new ArgumentException("Parameter must not be null.", nameof(aes));
 
-                aes.Key = aesKey;
+            aes.Key = aesKey;
 
-                using (var encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
-                using (var resultStream = new MemoryStream())
-                {
-                    using (var aesStream = new CryptoStream(resultStream, encryptor, CryptoStreamMode.Write))
-                    using (var plainStream = new MemoryStream(buffer))
-                    {
-                        plainStream.CopyTo(aesStream);
-                    }
+            using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using var resultStream = new MemoryStream();
+            using var aesStream = new CryptoStream(resultStream, encryptor, CryptoStreamMode.Write);
+            using var plainStream = new MemoryStream(buffer);
+            plainStream.CopyTo(aesStream);
 
-                    var result = resultStream.ToArray();
-                    var combined = new byte[aes.IV.Length + result.Length];
-                    Array.ConstrainedCopy(aes.IV, 0, combined, 0, aes.IV.Length);
-                    Array.ConstrainedCopy(result, 0, combined, aes.IV.Length, result.Length);
+            var result = resultStream.ToArray();
+            var combined = new byte[aes.IV.Length + result.Length];
+            Array.ConstrainedCopy(aes.IV, 0, combined, 0, aes.IV.Length);
+            Array.ConstrainedCopy(result, 0, combined, aes.IV.Length, result.Length);
 
-                    return Convert.ToBase64String(combined);
-                }
-            }
+            return Convert.ToBase64String(combined);
         }
 
         /// <summary>
@@ -92,33 +85,27 @@ namespace eXtensionSharp
             var aesKey = new byte[24];
             Buffer.BlockCopy(hash.ComputeHash(Encoding.UTF8.GetBytes(key)), 0, aesKey, 0, 24);
 
-            using (var aes = Aes.Create())
-            {
-                if (aes == null)
-                    throw new ArgumentException("Parameter must not be null.", nameof(aes));
+            using var aes = Aes.Create();
+            if (aes == null)
+                throw new ArgumentException("Parameter must not be null.", nameof(aes));
 
-                aes.Key = aesKey;
+            aes.Key = aesKey;
 
-                var iv = new byte[aes.IV.Length];
-                var ciphertext = new byte[buffer.Length - iv.Length];
+            var iv = new byte[aes.IV.Length];
+            var ciphertext = new byte[buffer.Length - iv.Length];
 
-                Array.ConstrainedCopy(combined, 0, iv, 0, iv.Length);
-                Array.ConstrainedCopy(combined, iv.Length, ciphertext, 0, ciphertext.Length);
+            Array.ConstrainedCopy(combined, 0, iv, 0, iv.Length);
+            Array.ConstrainedCopy(combined, iv.Length, ciphertext, 0, ciphertext.Length);
 
-                aes.IV = iv;
+            aes.IV = iv;
 
-                using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
-                using (var resultStream = new MemoryStream())
-                {
-                    using (var aesStream = new CryptoStream(resultStream, decryptor, CryptoStreamMode.Write))
-                    using (var plainStream = new MemoryStream(ciphertext))
-                    {
-                        plainStream.CopyTo(aesStream);
-                    }
+            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using var resultStream = new MemoryStream();
+            using var aesStream = new CryptoStream(resultStream, decryptor, CryptoStreamMode.Write);
+            using var plainStream = new MemoryStream(ciphertext);
+            plainStream.CopyTo(aesStream);
 
-                    return Encoding.UTF8.GetString(resultStream.ToArray());
-                }
-            }
+            return Encoding.UTF8.GetString(resultStream.ToArray());
         }
     }
 }

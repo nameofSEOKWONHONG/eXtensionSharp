@@ -13,11 +13,9 @@ namespace eXtensionSharp
             var keyBuff = encoding.GetBytes(encKey);
             byte[] hashMessage = null;
 
-            using (var hmacsha256 = new HMACSHA256(keyBuff))
-            {
-                var dataBytes = encoding.GetBytes(encData);
-                hashMessage = hmacsha256.ComputeHash(dataBytes);
-            }
+            using var hmacsha256 = new HMACSHA256(keyBuff);
+            var dataBytes = encoding.GetBytes(encData);
+            hashMessage = hmacsha256.ComputeHash(dataBytes);
 
             return hashMessage.fromHexToString();
         }

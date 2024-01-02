@@ -38,10 +38,13 @@ public class XValueTest
     public void number_is_or_test()
     {
         var n = 4;
+        var s = "4";
         Assert.Multiple(() =>
         {
             Assert.That(n.xIsNumber(), Is.True);
             Assert.That(n.xValue<Int32>() == 4, Is.True);
+            Assert.That(s.xIsNumber(), Is.False);
+            Assert.That(s.xValue<int>(0).xIsNumber(), Is.True);
         });
     }
 
