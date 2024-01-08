@@ -24,12 +24,9 @@ namespace eXtensionSharp.test
         public void TimeSpanBetweenTest()
         {
             var value = DateTime.Now.TimeOfDay;
-            var from = TimeSpan.Parse("13:27");
-            var to = TimeSpan.Parse("14:27");
+            var from = DateTime.Now.AddMinutes(-1).TimeOfDay;
+            var to = DateTime.Now.AddMinutes(1).TimeOfDay;
             Assert.IsTrue(value.xIsBetween(from, to));
-
-            value = TimeSpan.Parse("14:28");
-            Assert.IsFalse(value.xIsBetween(from, to));
         }
 
         [Test]

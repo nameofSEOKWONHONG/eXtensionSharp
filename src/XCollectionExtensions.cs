@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Data;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -162,6 +163,19 @@ namespace eXtensionSharp
             }
             return list;
         }
+
+        /// <summary>
+        /// support datatable
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <returns></returns>
+        public static IEnumerable<IDictionary<string, object>> xToDictionary(this DataTable dataTable)
+        {
+            if (dataTable.xIsEmpty()) return new List<IDictionary<string, object>>();
+            return dataTable.AsEnumerable().Select(row =>
+                dataTable.Columns.Cast<DataColumn>().ToDictionary(column => column.ColumnName, column => row[column])
+            ).ToList();
+        }
         
         public static int xCount<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
@@ -258,7 +272,8 @@ namespace eXtensionSharp
         public static bool xIsBetween(this TimeSpan value, TimeSpan from, TimeSpan to)
         {
             if (value <= TimeSpan.Zero) throw new Exception("not allow value");
-            if (from <= value && to >= value) return true;
+            if (from <= value && 
+                to >= value) return true;
             return false;
         }
         

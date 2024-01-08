@@ -6,15 +6,16 @@
         <Copyright>seokwon hong</Copyright>
         <Product>eXtensionSharp</Product>
         <Company>seokwon hong</Company>
-        <Version>1.0.0.6</Version>
-        <FileVersion>1.0.0.6</FileVersion>
+        <Version>1.0.0.7</Version>
+        <FileVersion>1.0.0.7</FileVersion>
         <Title>eXtensionSharp</Title>
         <Description>c# extensions</Description>
         <PackageProjectUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <TargetFrameworks>net8.0</TargetFrameworks>
+        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     
     <ItemGroup>

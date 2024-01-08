@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 
 namespace eXtensionSharp
@@ -7,8 +6,11 @@ namespace eXtensionSharp
     {
         public static DateTime xToDate(this int date)
         {
-            var str = date.ToString();
-            var dt = new DateTime(int.Parse(str.xSubstring(0, 4)), int.Parse(str.xSubstring(4, 2)), int.Parse(str.xSubstring(6, 2)));
+            var str = date.xValue<string>();
+            var dt = new DateTime(
+                int.Parse(str.xSubstring(0, 4)), 
+                int.Parse(str.xSubstring(4, 2)), 
+                int.Parse(str.xSubstring(6, 2)));
             return dt;
         }
         
@@ -23,6 +25,12 @@ namespace eXtensionSharp
         {
             if (format.xIsEmpty()) format = ENUM_DATE_FORMAT.YYYY_MM_DD;
             return date.ToString(format);
+        }
+
+        public static string xToDate(this DateTime date, string format, CultureInfo cultureInfo)
+        {
+            if (format.xIsEmpty()) format = "d";
+            return date.ToString(format, cultureInfo);
         }
 
         public static DateTime xToMin(this DateTime date)
@@ -291,6 +299,9 @@ namespace eXtensionSharp
 // #endregion Public Methods
 // }    
 
+    /// <summary>
+    /// datetime format from korea.
+    /// </summary>
     public class ENUM_DATE_FORMAT : XEnumBase<ENUM_DATE_FORMAT>
     {
         public static readonly ENUM_DATE_FORMAT YYYY_MM_DD = Define("yyyy-MM-dd");
