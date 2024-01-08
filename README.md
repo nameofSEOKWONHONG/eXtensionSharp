@@ -10,7 +10,7 @@ Refer to the test code for how to use it.
 net7, net8
 
 ## Version
-* 1.0.0.7
+* 1.0.0.8
   * add - xToDictionary(this DataTable datatable) return IDictionary<string, object?>
   * add - xToDate(this DateTime dt, string format, CultureInfo culture) return string
   * modify - xBetween(this DateTime v, DateTime from, DateTime to) return bool
