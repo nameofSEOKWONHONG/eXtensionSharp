@@ -177,6 +177,12 @@ namespace eXtensionSharp
             return Encoding.UTF8.GetString(bytes);
         }
 
+        public static bool xIsBase64(this string input)
+        {
+            Span<byte> buffer = new Span<byte>(new byte[input.Length]);
+            return Convert.TryFromBase64String(input, buffer, out int bytes);
+        }
+
         /// <summary>
         /// base64 암호화 인코딩
         /// </summary>
