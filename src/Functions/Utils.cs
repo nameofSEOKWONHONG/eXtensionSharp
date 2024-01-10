@@ -1,8 +1,8 @@
-﻿namespace eXtensionSharp.Statics;
+﻿namespace eXtensionSharp.Functions;
 
 public partial class Utils
 {
-    public static Dictionary<string, object> xToEnumDictionary<T>() where T : Enum
+    public static Dictionary<string, object> xEnumToDictionary<T>() where T : Enum
     {
         var keys = Enum.GetNames(typeof(T));
         var values = Enum.GetValues(typeof(T));
