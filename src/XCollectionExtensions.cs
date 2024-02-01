@@ -177,6 +177,10 @@ namespace eXtensionSharp
                 dataTable.Columns.Cast<DataColumn>().ToDictionary(column => column.ColumnName, column => row[column])
             ).ToList();
         }
+
+        public static IEnumerable<DynamicDictionary<object>> xToDictionary(this IEnumerable<dynamic> items) {
+            return items.Select(m => new DynamicDictionary<object>((IDictionary<string, object>)m));
+        }
         
         public static int xCount<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
