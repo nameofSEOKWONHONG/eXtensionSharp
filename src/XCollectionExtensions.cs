@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Immutable;
 using System.Data;
+using System.Dynamic;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -125,7 +126,7 @@ namespace eXtensionSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static IDictionary<string, object> xToDictionary<T>(this T value) where T : class
+        public static DynamicDictionary<object> xToDictionary<T>(this T value) where T : class
         {
             var result = new DynamicDictionary<object>();
             var props = value.GetType().GetProperties();
@@ -136,16 +137,16 @@ namespace eXtensionSharp
             return result;
         }
         
-        public static Dictionary<string, T2> xToDictionary<T, T2>(this T value) where T : class
-        {
-            var result = new Dictionary<string, T2>();
-            var props = value.GetType().GetProperties();
-            foreach (var prop in props)
-            {
-                result.Add(prop.Name, prop.GetValue(value, null).xValue<T2>());
-            }
-            return result;
-        }
+        // public static Dictionary<string, T2> xToDictionary<T, T2>(this T value) where T : class
+        // {
+        //     var result = new Dictionary<string, T2>();
+        //     var props = value.GetType().GetProperties();
+        //     foreach (var prop in props)
+        //     {
+        //         result.Add(prop.Name, prop.GetValue(value, null).xValue<T2>());
+        //     }
+        //     return result;
+        // }
 
         /// <summary>
         /// 객체간 값 복사 (UI 갱신용 아님), Inner Class는 복사안됨.
@@ -154,9 +155,14 @@ namespace eXtensionSharp
         /// <typeparam name="T"></typeparam>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static IEnumerable<IDictionary<string, object>> xToDictionary<T>(this IEnumerable<T> values) where T : class
+        public static IEnumerable<DynamicDictionary<object>> xToDictionaries<T>(this IEnumerable<T> values) where T : class
         {
-            var list = new List<IDictionary<string, object>>();
+            if(typeof(T) == typeof(ExpandoObject)) 
+            {
+                return values.Select(m => new DynamicDictionary<object>((IDictionary<string, object>)m));
+            }
+
+            var list = new List<DynamicDictionary<object>>();
             foreach (var value in values)
             {
                 var item = value.xToDictionary<T>();
@@ -170,16 +176,12 @@ namespace eXtensionSharp
         /// </summary>
         /// <param name="dataTable"></param>
         /// <returns></returns>
-        public static IEnumerable<IDictionary<string, object>> xToDictionary(this DataTable dataTable)
+        public static IEnumerable<IDictionary<string, object>> xDataTableToDictionaries(this DataTable dataTable)
         {
             if (dataTable.xIsEmpty()) return new List<IDictionary<string, object>>();
             return dataTable.AsEnumerable().Select(row =>
                 dataTable.Columns.Cast<DataColumn>().ToDictionary(column => column.ColumnName, column => row[column])
             ).ToList();
-        }
-
-        public static IEnumerable<DynamicDictionary<object>> xToDictionary(this IEnumerable<dynamic> items) {
-            return items.Select(m => new DynamicDictionary<object>((IDictionary<string, object>)m));
         }
         
         public static int xCount<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
@@ -229,7 +231,12 @@ namespace eXtensionSharp
         {
             if (src.xIsEmpty()) return false;
             return src.Where(m => m.xContains(compares)).xIsNotEmpty();
-        }        
+        }
+
+        public static bool xAny<T>(this IEnumerable<T> src) {
+            if(src.xIsEmpty()) return false;
+            return src.Any();
+        }
         
         public static T xFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
@@ -322,6 +329,7 @@ namespace eXtensionSharp
 
         public static IEnumerable<T> xLike<T>(this IEnumerable<T> item1, IEnumerable<T> item2)
         {
+            if(item1.xIsEmpty()) return default;
             return item1.Where(item2.Contains);
         }
     }

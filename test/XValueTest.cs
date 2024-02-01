@@ -55,7 +55,7 @@ public class XValueTest
         TestContext.Out.WriteLine(exist);
 
         var contains = a1.xLike(a2);
-        Assert.Greater(contains.Count(), 1);
+        Assert.That(contains.Count(), Is.EqualTo(2));
 
         var item = a1.xLikeFirst(a2);
         Assert.That(item, Is.EqualTo("1"));

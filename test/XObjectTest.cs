@@ -2,6 +2,9 @@ using System;
 using System.Globalization;
 using NUnit.Framework;
 using eXtensionSharp;
+using System.Dynamic;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace eXtensionSharp.test {
     public class XObjectTest {
@@ -64,7 +67,7 @@ namespace eXtensionSharp.test {
         }
 
         [Test]
-        public void object_to_dictionary_test()
+        public void class_to_dictionary_test()
         {
             var test = new Test();
             test.Id = 1;
@@ -74,6 +77,25 @@ namespace eXtensionSharp.test {
             var result = test.xToDictionary();
             Assert.AreEqual(result["Id"], 1);
             Assert.AreEqual(result["Name"], "test");
+
+            var list = new List<Test>();
+            list.Add(test);
+            var maps = list.xToDictionaries().ToList();
+            Assert.That(maps[0]["Name"].xValue<string>(), Is.EqualTo("test"));
+        }
+
+        [Test]
+        public void dynamic_list_to_dynamic_dictionary() {
+            var list = new List<ExpandoObject>();
+            dynamic eo = new ExpandoObject();
+            eo.Name = "test";
+            eo.Age = 10;
+            eo.Blood = "B";
+            list.Add(eo);
+
+            var dylist = list.xToDictionaries().ToList();
+            Assert.That(dylist[0]["Name"].xValue<string>(), Is.EqualTo("test"));
+            Assert.That(dylist[0]["Age"].xValue<int>(), Is.EqualTo(10));
         }
     }
 
