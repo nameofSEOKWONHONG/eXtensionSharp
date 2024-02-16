@@ -17,6 +17,24 @@ namespace eXtensionSharp
          * windows stack 최대 할당 용량은 1MB
          */
 
+        /// <summary>
+        /// substring
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// var s = "test";
+        /// var ss = s.xSubstring(0, 1);
+        /// Console.WriteLine(ss); //output:"t"
+        ///
+        /// var s = "";
+        /// var ss = s.xSubstring(0,1);
+        /// Console.WriteLine(ss); //output:""
+        /// </code>
+        /// </example>
         public static string xSubstring(this string str, int startIndex, int length = 0)
         {
             if (str.xIsEmpty()) return string.Empty;
@@ -233,9 +251,43 @@ namespace eXtensionSharp
 
         public static string xToString(this Guid guid, string format = "") => guid.ToString();
 
+        /// <summary>
+        /// string to number
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        /// <typeparam name="T">The type of the number to convert to.</typeparam>
+        /// <returns>The converted number.</returns>
+        /// <example> 
+        /// <code>
+        /// [example]
+        /// var s = "5";
+        /// var ss = s.xToNumber&lt;int&gt;();
+        /// Console.WriteLine(ss); //output:5
+        /// </code>
+        /// </example>
         public static T xToNumber<T>(this string value) where T : struct
         {
             return (T)Convert.ChangeType(value, typeof(T));
+        }
+
+        /// <summary>
+        /// string to extract number
+        /// </summary>
+        /// <param name="value"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// var s = "(5)";
+        /// var ss = s.xExtractNumber&lt;int&gt;();
+        /// Console.WriteLine(ss); //output:5
+        /// </code>
+        /// </example>
+        public static T xExtractNumber<T>(this string value) where T : struct
+        {
+            string pattern = @"\D"; // 숫자가 아닌 문자(\D)를 찾음
+            string result = Regex.Replace(value, pattern, ""); // 숫자가 아닌 문자를 공백으로 대체
+            return result.xToNumber<T>();
         }
 
         public static string xToJoin(this string[] values, string separator = ",")
@@ -245,11 +297,20 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// 문자열 분리
+        /// seperate to string arry
         /// </summary>
         /// <param name="value"></param>
         /// <param name="separator">'§'</param>
         /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// var s = "A,B,C";
+        /// var ss = s.xSplit(",");
+        /// foreach(var item in ss) {
+        ///     Console.WriteLine(item);
+        /// }
+        /// </code>
+        /// </example>
         public static string[] xSplit(this string value, string separator = ",")
         {
             if (value.xIsEmpty()) return Array.Empty<string>();
@@ -338,12 +399,26 @@ namespace eXtensionSharp
             return expr.ToString();
         }
         
+        /// <summary>
+        /// normal text to hide text
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="hiddenChar"></param>
+        /// <param name="startIdx"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// var s = "test@gmail.com";
+        /// var ss = s.xHiddenText('*', 0, 4)
+        /// Console.WriteLine(ss); //output:****@gmail.com 
+        /// </code>
+        /// </example>
         public static string xHiddenText(this string str, char hiddenChar, int startIdx, int length = 0)
         {
             if (str.xIsEmpty()) return string.Empty;
             
             var arr = str.ToArray();
-        
             for (int i = startIdx; i <= startIdx + length; i++)
             {
                 if(arr[i].xIsEmpty()) continue;

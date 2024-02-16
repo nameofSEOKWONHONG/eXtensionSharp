@@ -35,7 +35,7 @@ namespace eXtensionSharp
             propertyInfo?.SetValue(obj, value);
         }
         
-        public static void xMapping<T1>(this T1 src, T1 dest)
+        public static void xMapping<T1>(this T1 src, T1 dest, string[] notMappingNames = null)
         {
             var props = src.xGetProperties();
             props.xForEach(item =>
@@ -44,7 +44,10 @@ namespace eXtensionSharp
                 {
                     if (IsTypeMatch(item.PropertyType.ToString()))
                     {
-                        if (item.Name.xContains(new[] { "CreatedOn", "CreatedBy", "CreatedName", "TenantId" })) return true;
+                        if (notMappingNames.xIsNotEmpty())
+                        {
+                            if(item.Name.xContains(notMappingNames)) return true;
+                        }
                         var v = GetPropertyValue(src, item.Name);
                         SetPropertyValue(dest, item.Name, v);           
                     }
@@ -53,7 +56,7 @@ namespace eXtensionSharp
             });
         }
 
-        public static void xMapping<T1, T2>(this T1 src, T2 dest)
+        public static void xMapping<T1, T2>(this T1 src, T2 dest, string[] notMappingNames = null)
         {
             var props = src.xGetProperties();
             props.xForEach(item =>
@@ -62,7 +65,11 @@ namespace eXtensionSharp
                 {
                     if (IsTypeMatch(item.PropertyType.ToString()))
                     {
-                        if (item.Name.xContains(new[] { "CreatedOn", "CreatedBy", "CreatedName", "TenantId" })) return true;
+                        if (notMappingNames.xIsNotEmpty())
+                        {
+                            if(item.Name.xContains(notMappingNames)) return true;
+                        }
+                        
                         var v = GetPropertyValue(src, item.Name);
                         var exist = dest.xGetProperties().Where(m => m.Name == item.Name);
                         if (exist.Any())
