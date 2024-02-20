@@ -43,16 +43,59 @@ namespace eXtensionSharp
             return str.AsSpan()[startIndex..str.Length].ToString();
         }
 
+        /// <summary>
+        /// array or list string to join string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// var s = new string[]{"A", "B", "C"}
+        /// var ss = s.xJoin(",");
+        /// Console.WriteLine(ss); //output:"A,B,C";
+        /// </code>
+        /// </example>
         public static string xJoin<T>(this IEnumerable<T> src, string separator = ",")
         {
             return string.Join(separator, src);
         }
 
+        /// <summary>
+        /// get string length
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// var s = "abc";
+        /// var ss = s.xCount();
+        /// //output:3;
+        /// or
+        /// string s = null;
+        /// var ss = s.xCount();
+        /// //output:0;
+        /// </code>
+        /// </example>
         public static int xCount(this string str)
         {
-            return str.xIsNull() ? 0 : str.Length;
+            return str.xIsEmpty() ? 0 : str.Length;
         }
 
+        public static int xCount(this string str, char word)
+        {
+            if (str.xIsEmpty()) return 0;
+            return str.Count(x => x == word);
+        }        
+
+        /// <summary>
+        /// get replace string
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="oldValue"></param>
+        /// <param name="newValue"></param>
+        /// <returns></returns>
         public static string xReplace(this string text, string oldValue, string newValue)
         {
             return text.xIsEmpty() ? string.Empty : text.Replace(oldValue, newValue);
@@ -60,11 +103,14 @@ namespace eXtensionSharp
 
         private static void xCopyTo(Stream src, Stream dest)
         {
-            var bytes = new byte[4096];
+            if(src.xIsEmpty())  return;
 
+            var bytes = new byte[4096];
             int cnt;
 
-            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0) dest.Write(bytes, 0, cnt);
+            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0) {
+                dest.Write(bytes, 0, cnt);
+            } 
         }
 
         /// <summary>
@@ -208,11 +254,7 @@ namespace eXtensionSharp
             return Encoding.UTF8.GetString(bytes);
         }
 
-        public static int xCount(this string str, char word)
-        {
-            if (str.xIsEmpty()) return 0;
-            return str.Count(x => x == word);
-        }
+
 
         public static string xDistinct(this string str)
         {

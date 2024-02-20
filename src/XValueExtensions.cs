@@ -5,12 +5,28 @@ namespace eXtensionSharp
 {
     public static class XValueExtensions
     {
-        public static string xValue(this string src, string @default = null) =>
-            src.xIsEmpty() ? (@default.xIsEmpty() ? string.Empty : @default) : src;
 
         public static string xValue(this DateTime date, ENUM_DATE_FORMAT dateFormat) =>
             date.xIsEmpty() ? DateTime.MinValue.xToDate(dateFormat) : date.xToDate(dateFormat);
 
+        /// <summary>
+        /// object to T value
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src"></param>
+        /// <param name="default"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// var s = 1;
+        /// var ss = s.xValue<string>();
+        /// Console.WriteLine(ss); //output:"1";
+        /// or
+        /// var s = "";
+        /// var ss = s.xValue<string>("10");
+        /// Console.WriteLine(ss); //output:"10";
+        /// </code>
+        /// </example>
         public static T xValue<T>(this object src, object @default = null)
         {
             if (src.xIsEmpty())
@@ -52,8 +68,22 @@ namespace eXtensionSharp
             return (T)Convert.ChangeType(src, typeof(T));
         }
 
+        /// <summary>
+        /// casting src to T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src"></param>
+        /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// object o = "10";
+        /// var ss = o.xAs<string>();
+        /// Console.WriteLine(ss); //output:"10";
+        /// </code>
+        /// </example>
         public static T xAs<T>(this object src)
         {
+            if(src.xIsEmpty()) return default;
             return (T)src;
         }
 
