@@ -14,7 +14,7 @@
         <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <TargetFrameworks>net7.0;net8.0</TargetFrameworks>        
+        <TargetFrameworks>net8.0</TargetFrameworks>        
     </PropertyGroup>
     
     <ItemGroup>
