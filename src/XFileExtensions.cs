@@ -171,7 +171,7 @@ namespace eXtensionSharp
             List<string> paths = fileName.xSplit(Path.DirectorySeparatorChar.ToString()).xToList();
 
             var dir = string.Empty;
-            paths.xForEach((path, i) =>
+            paths.xForEach((i, path) =>
             {
                 if (!Path.GetExtension(path).xIsEmpty()) return false;
                 if (path.xContains(new[] { ":" }))
@@ -213,7 +213,7 @@ namespace eXtensionSharp
             List<string> paths = path.xSplit(Path.DirectorySeparatorChar.ToString()).xToList();
 
             var dir = string.Empty;
-            paths.xForEach((path, i) =>
+            paths.xForEach((i, path) =>
             {
                 if (!Path.GetExtension(path).xIsEmpty()) return false;
                 if (path.xContains(new[] { ":" }))

@@ -46,22 +46,6 @@ public class XValueTest
     }
 
     [Test]
-    public void like_test()
-    {
-        var a1 = new[] { "1", "2", "3", "11" };
-        var a2 = new[] { "1", "2" };
-        var exist = a1.FirstOrDefault(m => a2.Contains(m));
-        Assert.NotNull(exist);
-        TestContext.Out.WriteLine(exist);
-
-        var contains = a1.xLike(a2);
-        Assert.That(contains.Count(), Is.EqualTo(2));
-
-        var item = a1.xLikeFirst(a2);
-        Assert.That(item, Is.EqualTo("1"));
-    }
-
-    [Test]
     public void duplicate_test()
     {
         var a1 = new[] { "1", "3", "2", "3", "11" };

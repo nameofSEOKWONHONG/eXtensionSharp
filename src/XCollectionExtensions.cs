@@ -328,16 +328,5 @@ namespace eXtensionSharp
             var array = items.ToArray();
             return Unsafe.As<T[], ImmutableArray<T>>(ref array);
         }
-
-        public static T xLikeFirst<T>(this IEnumerable<T> item1, IEnumerable<T> item2)
-        {
-            return item1.FirstOrDefault(item2.Contains);
-        }
-
-        public static IEnumerable<T> xLike<T>(this IEnumerable<T> item1, IEnumerable<T> item2)
-        {
-            if(item1.xIsEmpty()) return default;
-            return item1.Where(item2.Contains);
-        }
     }
 }
