@@ -32,21 +32,6 @@ namespace eXtensionSharp
             }
         }
 
-        public static async Task xForEachAsync<T>(this IEnumerable<T> iterator, Action<T> action)
-        {
-            if (iterator.xIsEmpty()) return;
-            int i = 0;
-            foreach (var item in iterator)
-            {
-                action(item);
-                i++;
-                if ((i % LOOP_DELAY_COUNT) == 0)
-                {
-                    await Task.Delay(LOOP_SLEEP_MS);
-                }
-            }
-        }
-
         public static async Task xForEachAsync<T>(this IEnumerable<T> items, Func<T, Task> func)
         {
             if (items.xIsEmpty()) return;
@@ -205,26 +190,48 @@ namespace eXtensionSharp
             return result;
         }
 
-        public static async Task ParallelForEachAsync<T>(this IEnumerable<T> items, Func<T, CancellationToken, Task> func, ParallelOptions options = null)
+        /// <summary>
+        /// Parellel ForEach
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="func"></param>
+        /// <param name="options">ParallelOptions</param>
+        /// <returns></returns>
+        public static async Task<bool> xParallelForEachAsync<T>(this IEnumerable<T> items, Func<T, CancellationToken, Task> func, ParallelOptions options = null)
         {
             if (options.xIsEmpty())
             {
                 options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = Environment.ProcessorCount
+                    MaxDegreeOfParallelism = Environment.ProcessorCount,                    
                 };
             }
 
             var count = 0;
-            await Parallel.ForEachAsync(items, options, async (item, token) =>
+            var canceled = false;
+
+            //need to be sure this is the correct way to do it.
+            try
             {
-                await func(item, token);
-                count++;
-                if (count % LOOP_DELAY_COUNT == 0)
+                await Parallel.ForEachAsync(items, options, async (item, token) =>
                 {
-                    await Task.Delay(LOOP_SLEEP_MS, token);
-                }
-            });
+                    token.ThrowIfCancellationRequested();
+
+                    await func(item, token);
+                    count++;
+                    if (count % LOOP_DELAY_COUNT == 0)
+                    {
+                        await Task.Delay(LOOP_SLEEP_MS, token);
+                    }
+                });
+            }
+            catch (OperationCanceledException) 
+            { 
+                canceled = true;
+            }
+
+            return canceled;
         }
     }
 }

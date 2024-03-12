@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test {
@@ -26,14 +28,6 @@ namespace eXtensionSharp.test {
         {
             var ranges = Enumerable.Range(1, 5001).ToList();
             var isFind = false;
-            await ranges.xForEachAsync(item =>
-            {
-                if (isFind.xIsFalse())
-                {
-                    isFind = item == 2000;
-                }
-            });
-
             await ranges.xForEachAsync(async item =>
             {
                 await Task.Run(() => {
@@ -48,37 +42,61 @@ namespace eXtensionSharp.test {
         }
 
         [Test]
-        public void datetime_foreach_test() {
+        public void datetime_from_to_foreach_test() {
             var from = DateTime.Parse("2020-01-01");
             var to = DateTime.Parse("2021-12-31");
+            var expected = "2020-12-31";
 
-            var list = new List<DateTime>();            
-            var isFind = true;
+            var findDate = string.Empty;
             (from, to).xForEach(date =>
             {
-                if (isFind.xIsFalse())
+                if(date.ToString("yyyy-MM-dd") == expected)
                 {
-                    isFind = date.ToString("yyyy-MM-dd") == "2020-12-31";
+                    findDate = date.ToString("yyyy-MM-dd");
+                    return false;
                 }
-            });
-            Assert.IsTrue(isFind);
-
-            isFind = false;
-            (from, to).xForEach(date =>
-            {
-                isFind = date.ToString("yyyy-MM-dd") == "2020-12-31";
-                if (isFind) return false;
 
                 return true;
             });
-            Assert.IsTrue(isFind);
+            Assert.That(findDate, Is.EqualTo(expected));
         }
 
         [Test]
         public void number_from_to_test() {
-            (1, 10).xForEach(num => {
-                Console.WriteLine(num);
+            var list = new List<int>();
+            (1, 5001).xForEach(num => {
+                list.Add(num);
             });
+
+            Assert.That(list.Count, Is.EqualTo(5001));
+            Assert.That(list[2], Is.EqualTo(3));
+        }
+
+        [Test]
+        public async Task pararell_foreach_async_test()
+        {
+            var ranges = Enumerable.Range(1, 10).ToList();
+            var canceled = await ranges.xParallelForEachAsync(async (item, token) =>
+            {
+                await Task.Factory.StartNew(() => TestContext.WriteLine(item));
+            });
+            Assert.That(canceled, Is.False);
+
+            TestContext.WriteLine("===================================");
+
+            var cts = new CancellationTokenSource();
+            canceled = await ranges.xParallelForEachAsync(async (item, token) =>
+            {
+                if (item == 1)
+                {
+                    await cts.CancelAsync();
+                }
+
+                await Task.Factory.StartNew(() => TestContext.WriteLine(item));
+
+            }, new ParallelOptions() { CancellationToken = cts.Token, MaxDegreeOfParallelism = 2 });
+
+            Assert.That(canceled, Is.True);
         }
     }
 }
