@@ -328,5 +328,11 @@ namespace eXtensionSharp
             var array = items.ToArray();
             return Unsafe.As<T[], ImmutableArray<T>>(ref array);
         }
+
+        public static byte[] xToBytes<T>(this T value)
+        {
+            var objToString = System.Text.Json.JsonSerializer.Serialize(value);
+            return System.Text.Encoding.UTF8.GetBytes(objToString);
+        }
     }
 }

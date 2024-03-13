@@ -1,10 +1,12 @@
 using System.IO.Compression;
 using System.Linq.Expressions;
 using System.Numerics;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eXtensionSharp
 {
@@ -101,97 +103,68 @@ namespace eXtensionSharp
             return text.xIsEmpty() ? string.Empty : text.Replace(oldValue, newValue);
         }
 
-        private static void xCopyTo(Stream src, Stream dest)
-        {
-            if(src.xIsEmpty())  return;
-
-            var bytes = new byte[4096];
-            int cnt;
-
-            while ((cnt = src.Read(bytes, 0, bytes.Length)) != 0) {
-                dest.Write(bytes, 0, cnt);
-            } 
-        }
-
         /// <summary>
-        /// compression gzip
+        /// normal text to hide text
         /// </summary>
         /// <param name="str"></param>
-        /// <param name="level"></param>
+        /// <param name="replace"></param>
+        /// <param name="startIdx"></param>
+        /// <param name="length"></param>
         /// <returns></returns>
-        public static byte[] xCompressGZip(this string str, CompressionLevel level = CompressionLevel.Fastest)
+        /// <example>
+        /// <code>
+        /// var s = "test@gmail.com";
+        /// var ss = s.xHiddenText('*', 0, 4)
+        /// Console.WriteLine(ss); //output:****@gmail.com 
+        /// </code>
+        /// </example>
+        public static string xReplace(this string str, char replace, int startIdx, int length = 0)
         {
-            var bytes = Encoding.Unicode.GetBytes(str);
-            using var input = new MemoryStream(bytes);
-            using var output = new MemoryStream();
-            using var stream = new GZipStream(output, level);
+            if (str.xIsEmpty()) return string.Empty;
 
-            input.CopyTo(stream);
-            output.Flush();
-
-            var result = output.ToArray();
-            return result;
-        }
-
-        /// <summary>
-        /// uncompression gzip
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string xUnCompressGZip(this string value)
-        {
-            var bytes = Convert.FromBase64String(value);
-            using var input = new MemoryStream(bytes);
-            using var output = new MemoryStream();
-            using var stream = new GZipStream(input, CompressionMode.Decompress);
-
-            stream.CopyTo(output);
-            stream.Flush();
-
-            return Encoding.Unicode.GetString(output.ToArray());
-        }
-
-        /// <summary>
-        /// compression brotli
-        /// </summary>
-        /// <param name="str"></param>
-        /// <param name="level"></param>
-        /// <returns></returns>
-        public static byte[] xCompressBrotli(this string str, CompressionLevel level = CompressionLevel.Fastest)
-        {
-            var bytes = Encoding.UTF8.GetBytes(str);
-
-            using (var msi = new MemoryStream(bytes))
+            var arr = str.ToArray();
+            for (int i = startIdx; i <= startIdx + length; i++)
             {
-                using (var mso = new MemoryStream())
-                {
-                    using (var stream = new BrotliStream(mso, level))
-                    {
-                        msi.CopyTo(stream);
-                        mso.Flush();
-
-                        var result = mso.ToArray();
-                        return result;
-                    }
-                }
+                if (arr[i].xIsEmpty()) continue;
+                arr[i] = replace;
             }
+
+            return new System.String(arr);
         }
 
         /// <summary>
-        /// uncompression brotli
+        /// brotli compression, base by utf-8
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public static byte[] xCompress(this string value)
+        {
+            var bytes = Encoding.UTF8.GetBytes(value);
+
+            using var memory = new MemoryStream(bytes);
+            using var brotli = new BrotliStream(memory, CompressionMode.Compress);
+            using var decompress = new MemoryStream();
+
+            brotli.Write(bytes, 0, bytes.Length);
+            return decompress.ToArray();
+        }
+
+        /// <summary>
+        /// brotli uncompression, base by utf-8
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string xUnCompressBrotli(this string value)
+        public static string xUnCompress(this byte[] bytes)
         {
-            var bytes = Convert.FromBase64String(value);
-            using var input = new MemoryStream(bytes);
-            using var output = new MemoryStream();
-            using var stream = new BrotliStream(input, CompressionMode.Decompress);
+            using var memory = new MemoryStream(bytes);
+            using var brotli = new BrotliStream(memory, CompressionMode.Decompress);
+            using var decompressed = new MemoryStream();
 
-            stream.CopyTo(output);
+            brotli.CopyTo(decompressed);
+            var output = decompressed.ToArray();
 
-            return Encoding.Unicode.GetString(output.ToArray());
+            return Encoding.UTF8.GetString(output.ToArray());
         }
 
         public static string xJoin(this string[] value, string separator)
@@ -225,12 +198,12 @@ namespace eXtensionSharp
 
         public static string xTrim(this string src)
         {
-            return src.xIsEmpty() ? string.Empty : src.Trim();
+            return src.xValue<string>(string.Empty).Trim();
         }
 
         public static string xGetHashCode(this string text)
         {
-            var sha = SHA256.Create();
+            using var sha = SHA256.Create();
             var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(text));
             var stringBuilder = new StringBuilder();
             foreach (var b in hash) stringBuilder.AppendFormat("{0:x2}", b);
@@ -243,18 +216,10 @@ namespace eXtensionSharp
             return Encoding.UTF8.GetBytes(str);
         }
 
-        public static byte[] xToBytes<T>(this T value)
-        {
-            var objToString = System.Text.Json.JsonSerializer.Serialize(value);
-            return System.Text.Encoding.UTF8.GetBytes(objToString);
-        }
-
         public static string xToString(this byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
         }
-
-
 
         public static string xDistinct(this string str)
         {
@@ -267,7 +232,7 @@ namespace eXtensionSharp
                 }
             });
 
-            return hash.xJoin();
+            return hash.xJoin(string.Empty);
         }
 
         public static string xDistinct(this IEnumerable<string> items)
@@ -327,8 +292,10 @@ namespace eXtensionSharp
         /// </example>
         public static T xExtractNumber<T>(this string value) where T : struct
         {
-            string pattern = @"\D"; // 숫자가 아닌 문자(\D)를 찾음
-            string result = Regex.Replace(value, pattern, ""); // 숫자가 아닌 문자를 공백으로 대체
+            // 숫자가 아닌 문자(\D)를 찾음
+            string pattern = @"\D";
+            // 숫자가 아닌 문자를 공백으로 대체
+            string result = Regex.Replace(value, pattern, ""); 
             return result.xToNumber<T>();
         }
 
@@ -355,7 +322,7 @@ namespace eXtensionSharp
         /// </example>
         public static string[] xSplit(this string value, string separator = ",")
         {
-            if (value.xIsEmpty()) return Array.Empty<string>();
+            if (value.xIsEmpty()) return [];
             return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
         
@@ -439,35 +406,6 @@ namespace eXtensionSharp
 
             //by default, show the standard implementation
             return expr.ToString();
-        }
-        
-        /// <summary>
-        /// normal text to hide text
-        /// </summary>
-        /// <param name="str"></param>
-        /// <param name="hiddenChar"></param>
-        /// <param name="startIdx"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
-        /// <example>
-        /// <code>
-        /// var s = "test@gmail.com";
-        /// var ss = s.xHiddenText('*', 0, 4)
-        /// Console.WriteLine(ss); //output:****@gmail.com 
-        /// </code>
-        /// </example>
-        public static string xHiddenText(this string str, char hiddenChar, int startIdx, int length = 0)
-        {
-            if (str.xIsEmpty()) return string.Empty;
-            
-            var arr = str.ToArray();
-            for (int i = startIdx; i <= startIdx + length; i++)
-            {
-                if(arr[i].xIsEmpty()) continue;
-                arr[i] = hiddenChar;
-            }
-            
-            return new String(arr);
         }
     }
 }
