@@ -1,13 +1,9 @@
-using System.IO;
 using System.IO.Compression;
 using System.Linq.Expressions;
-using System.Numerics;
-using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eXtensionSharp
 {
