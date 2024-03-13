@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test {
@@ -68,5 +69,35 @@ namespace eXtensionSharp.test {
 
             Assert.That(selectedValue, Is.EqualTo(expected));
         }
+
+        [Test]
+        public void string_compress_test()
+        {
+			string text = "To work with BenchmarkDotNet you must install the BenchmarkDotNet package. " +
+			"You can do this either via the NuGet Package Manager inside the Visual Studio 2019 IDE, " +
+			"or by executing the Install-Package BenchmarkDotNet command at the NuGet Package Manager Console";
+			var bytes = text.xCompress( System.IO.Compression.CompressionLevel.Optimal);
+            var decompressTest = bytes.xUnCompress();
+
+			TestContext.WriteLine(text.Length);
+			TestContext.WriteLine(bytes.Length);
+			
+			Assert.That(text, Is.EqualTo(decompressTest));
+        }
+
+        [Test]
+        public async Task string_compress_async_test()
+        {
+			string text = "To work with BenchmarkDotNet you must install the BenchmarkDotNet package. " +
+			"You can do this either via the NuGet Package Manager inside the Visual Studio 2019 IDE, " +
+			"or by executing the Install-Package BenchmarkDotNet command at the NuGet Package Manager Console";
+			var bytes = await text.xCompressAsync(System.IO.Compression.CompressionLevel.Optimal);
+			var decompressTest = await bytes.xUnCompressAsync();
+
+			TestContext.WriteLine(text.Length);
+			TestContext.WriteLine(bytes.Length);
+
+			Assert.That(text, Is.EqualTo(decompressTest));
+		}
     }
 }
