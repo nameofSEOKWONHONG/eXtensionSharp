@@ -8,98 +8,90 @@ namespace eXtensionSharp
 {
     public static class XFileExtensions
     {
+        /// <summary>
+        /// 파일명 조회
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public static string xGetFileName(this string fileName) => Path.GetFileName(fileName);
 
-        public static string xGetFileNameWithoutExtension(this string fileName) => Path.GetFileNameWithoutExtension(fileName);
+        /// <summary>
+        /// 파일명 조회 (확장자 없이)
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+		public static string xGetFileNameWithoutExtension(this string fileName) => Path.GetFileNameWithoutExtension(fileName);
 
+        /// <summary>
+        /// 파일 확장자 조회
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public static string xGetExtension(this string fileName) => Path.GetExtension(fileName);
 
-        public static string xGetFileNameWithBaseDir(this string fileName, string baseDir = "")
+        public static string xRead(this string fileName)
         {
-            if (baseDir.xIsNotEmpty()) return Path.Combine(baseDir, fileName);
-            return Path.Combine(AppContext.BaseDirectory, fileName);
+            if (fileName.xExists().xIsFalse()) return string.Empty;
+
+			return File.ReadAllText(fileName);
+		}
+
+        public static async Task<string> xReadAsync(this string fileName)
+        {
+            if (fileName.xExists().xIsFalse()) return string.Empty;
+
+			return await File.ReadAllTextAsync(fileName);
+		}
+
+        public static string[] xReadLines(this string fileName)
+        {
+			if (fileName.xExists().xIsFalse()) return default(string[]);
+
+			return File.ReadAllLines(fileName);
         }
 
-        public static string xFileReadAllText(this string fileName)
+        public static async Task<string[]> xReadLinesAsync(this string fileName)
         {
-            if (fileName.xFileExists())
-            {
-                return File.ReadAllText(fileName);
-            }
+            if (fileName.xExists().xIsFalse()) return default(string[]);
 
-            return string.Empty;
-        }
+			return await File.ReadAllLinesAsync(fileName);
+		}
 
-        public static async Task<string> xFileReadAllTextAsync(this string fileName)
+        public static byte[] xReadBytes(this string fileName)
         {
-            if (fileName.xFileExists())
-            {
-                return await File.ReadAllTextAsync(fileName);
-            }
+            if (fileName.xExists().xIsFalse()) return default(byte[]);
 
-            return string.Empty;
-        }
+			return File.ReadAllBytes(fileName);
+		}
 
-        public static string[] xFileReadAllLines(this string fileName)
+        public static async Task<byte[]> xReadBytesAsync(this string fileName)
         {
-            if (fileName.xFileExists())
-            {
-                return File.ReadAllLines(fileName);
-            }
+            if (fileName.xExists().xIsFalse()) return default(byte[]);
 
-            return new string[0];
-        }
+			return await File.ReadAllBytesAsync(fileName);
+		}
 
-        public static async Task<string[]> xFileReadAllLinesAsync(this string fileName)
-        {
-            if (fileName.xFileExists())
-            {
-                return await File.ReadAllLinesAsync(fileName);
-            }
+		public static bool xExists(this string fileName)
+		{
+			return File.Exists(fileName);
+		}
 
-            return new string[0];
-        }
-
-        public static byte[] xFileReadAllBytes(this string fileName)
-        {
-            if (fileName.xFileExists())
-            {
-                return File.ReadAllBytes(fileName);
-            }
-
-            return null;
-        }
-
-        public static async Task<byte[]> xFileReadAllBytesAsync(this string fileName)
-        {
-            if (fileName.xFileExists())
-            {
-                return await File.ReadAllBytesAsync(fileName);
-            }
-
-            return null;
-        }
-
-        public static bool xDirExists(this string dir)
+		public static bool xDirExists(this string dir)
         {
             return Directory.Exists(dir);
         }
 
-        public static bool xFileExists(this string fileName)
+        public static bool xHasExtension(this string fileName)
         {
-            return File.Exists(fileName);
-        }
-
-        public static bool xIsFile(this string pathName)
-        {
-            var extension = Path.GetExtension(pathName);
+            var extension = Path.GetExtension(fileName);
             return extension.xIsNotEmpty();
         }
 
-        public static string xFileUniqueId(this string fileName)
+        public static string xUniqueId(this string fileName)
         {
             var ret = string.Empty;
-            if (!File.Exists(fileName)) return string.Empty;
+            if(fileName.xExists().xIsFalse()) return ret;
+
             using (var md5 = MD5.Create())
             {
                 using (var stream = File.OpenRead(fileName))
@@ -109,26 +101,25 @@ namespace eXtensionSharp
             }
         }
 
-        public static string xFileUniqueIdByFileInfo(this string fileName)
+        public static string xUniqueId(this FileInfo fileInfo)
         {
-            var fileInfo = new FileInfo(fileName);
-            if (!fileInfo.Exists) throw new FileNotFoundException();
+            if (!fileInfo.Exists.xIsFalse()) return string.Empty;
             return
                 $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}|{fileInfo.LastWriteTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}"
                     .xGetHashCode();
         }
 
-        public static void xFileLock(this string fileName)
+        public static void xLock(this string fileName)
         {
-#pragma warning disable CA1416
-            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows only");
-            if (!File.Exists(fileName)) throw new Exception("file not exists");
-            File.Encrypt(fileName);
+            using(var stream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+            {
+                stream.Lock(0, stream.Length);
+            }
         }
 
-        public static void xFileUnLock(this string fileName)
+        public static void xUnLock(this string fileName)
         {
-            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows only");
+            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows support only");
             if (!File.Exists(fileName)) throw new Exception("file not exists");
             File.Decrypt(fileName);
         }

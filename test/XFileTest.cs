@@ -14,7 +14,7 @@ namespace eXtensionSharp.test {
         public void setup()
         {
             _filename = @"D:\test\test\test.txt";
-            if (_filename.xFileExists().xIsFalse())
+            if (_filename.xExists().xIsFalse())
             {
                 _filename.xFileCreateAll();
             }
@@ -23,13 +23,13 @@ namespace eXtensionSharp.test {
         [Test]
         public void create_file_all() {
             //tested only windows.
-            Assert.IsTrue(_filename.xFileExists());
+            Assert.IsTrue(_filename.xExists());
         }
 
         [Test]
         public void unique_file_test()
         {
-            var result = _filename.xFileUniqueId();
+            var result = _filename.xUniqueId();
             Assert.That(result, Is.Not.Empty);
         }
 
@@ -37,9 +37,9 @@ namespace eXtensionSharp.test {
         public void file_lock_test()
         {
             _filename.xWriteFile("test");
-            _filename.xFileLock();
-            _filename.xFileUnLock();
-            var result = _filename.xFileReadAllText();
+            _filename.xLock();
+            _filename.xUnLock();
+            var result = _filename.xRead();
             Assert.That(result, Is.Not.Empty);
         }
 
