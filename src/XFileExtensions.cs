@@ -289,5 +289,54 @@ namespace eXtensionSharp
 
             return lines.ToArray();
         }
-    }
+
+		public static Dictionary<string, IEnumerable<string>> xGetFiles(this string path)
+		{
+			Dictionary<string, IEnumerable<string>> result = new Dictionary<string, IEnumerable<string>>();
+
+			if (!Directory.Exists(path))
+			{
+				return result;
+			}
+
+			result = SearchFiles(path);
+
+			return result;
+		}
+
+		private static Dictionary<string, IEnumerable<string>> SearchFiles(string directory)
+		{
+			var result = new Dictionary<string, IEnumerable<string>>();
+
+			try
+			{
+				string[] files = Directory.GetFiles(directory);
+				result.Add(directory, files);
+
+				string[] subdirectories = Directory.GetDirectories(directory);
+				foreach (string subdir in subdirectories)
+				{
+					// 재귀적으로 하위 디렉토리에서 파일 검색
+					var subdirectoryFiles = SearchFiles(subdir);
+					foreach (var kvp in subdirectoryFiles)
+					{
+						if (!result.ContainsKey(kvp.Key))
+							result.Add(kvp.Key, kvp.Value);
+						else
+						{
+							var fileList = new List<string>(result[kvp.Key]);
+							fileList.AddRange(kvp.Value);
+							result[kvp.Key] = fileList;
+						}
+					}
+				}
+			}
+			catch
+			{
+				
+			}
+
+			return result;
+		}
+	}
 }
