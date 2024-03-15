@@ -109,36 +109,22 @@ namespace eXtensionSharp
                     .xGetHashCode();
         }
 
-        public static void xLock(this string fileName)
+		private static Regex _fileExtension =
+			new Regex(@"^.*\.(zip|ZIP|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		public static bool xIsExtension(this string fileName)
         {
-            using(var stream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
-            {
-                stream.Lock(0, stream.Length);
-            }
+            return _fileExtension.IsMatch(fileName);
         }
 
-        public static void xUnLock(this string fileName)
-        {
-            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("windows support only");
-            if (!File.Exists(fileName)) throw new Exception("file not exists");
-            File.Decrypt(fileName);
-        }
-
-        public static bool xIsFileExtension(this string fileName,
-            string pattern = @"^.*\.(zip|ZIP|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF)$")
-        {
-            return Regex.Match(fileName, pattern).Success;
-        }
-
-        public static void xFileZip(this string srcDir, string destZipFileName,
+        public static void xZip(this string srcDir, string destZipFileName,
             CompressionLevel compressionLevel = CompressionLevel.Fastest)
         {
             ZipFile.CreateFromDirectory(srcDir, destZipFileName, compressionLevel, false);
         }
 
-        public static void xFileUnzip(this string srcFileName, string destdir)
+        public static void xUnzip(this string srcFileName, string destdir)
         {
-            if (srcFileName.xIsFileExtension())
+            if (srcFileName.xIsExtension())
                 ZipFile.ExtractToDirectory(srcFileName, destdir, null, true);
         }
 
@@ -147,41 +133,34 @@ namespace eXtensionSharp
         ///     if dir path not exists, throw exception
         /// </summary>
         /// <param name="fileName"></param>
-        public static void xFileCreate(this string fileName)
+        public static void xWrite(this string fileName, Func<byte[]> func)
         {
-            var fs = File.Create(fileName);
-            fs.Close();
+            using (var fs = File.Create(fileName))
+            {
+                var bytes = func();
+                fs.Write(bytes);
+            }   
         }
 
         /// <summary>
         ///     create dir and file
         /// </summary>
         /// <param name="fileName"></param>
-        public static void xFileCreateAll(this string fileName)
+        public static void xWriteAll(this string fileName, Func<byte[]> func)
         {
-            List<string> paths = fileName.xSplit(Path.DirectorySeparatorChar.ToString()).xToList();
-
-            var dir = string.Empty;
-            paths.xForEach((i, path) =>
+            var exist = Directory.Exists(fileName);
+            if(exist.xIsFalse())
             {
-                if (!Path.GetExtension(path).xIsEmpty()) return false;
-                if (path.xContains(new[] { ":" }))
-                {
-                    dir += path;
-                }
-                else
-                {
-                    dir += $"{Path.DirectorySeparatorChar}{path}";
-                }
-
-                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-                return true;
-            });
-            fileName.xFileCreate();
+				fileName.xDirectoryCreateAll();
+			}
+			fileName.xWrite(func);
         }
 
-        public static void xDirCreate(this string path)
+        /// <summary>
+        /// create dir
+        /// </summary>
+        /// <param name="path"></param>
+        public static void xDirectoryCreate(this string path)
         {
             var isException = false;
             try
@@ -195,19 +174,20 @@ namespace eXtensionSharp
 
             if (isException)
             {
-                xDirCreateAll(path);
+				xDirectoryCreateAll(path);
             }
         }
 
-        public static void xDirCreateAll(this string path)
+        public static void xDirectoryCreateAll(this string path)
         {
             List<string> paths = path.xSplit(Path.DirectorySeparatorChar.ToString()).xToList();
+			var driveSplitSymbol = ":";
 
-            var dir = string.Empty;
+			var dir = string.Empty;
             paths.xForEach((i, path) =>
             {
                 if (!Path.GetExtension(path).xIsEmpty()) return false;
-                if (path.xContains(new[] { ":" }))
+                if (path.xContains(new[] { driveSplitSymbol }))
                 {
                     dir += path;
                 }
@@ -222,40 +202,52 @@ namespace eXtensionSharp
             });
         }
 
+        /// <summary>
+        /// delete file
+        /// </summary>
+        /// <param name="fullFileName"></param>
         public static void xFileDelete(this string fullFileName)
         {
             if (File.Exists(fullFileName)) File.Delete(fullFileName);
         }
 
-        public static void xFileDeleteAll(this string fullPathName)
+        /// <summary>
+        /// delete all files in path
+        /// </summary>
+        /// <param name="fullPathName"></param>
+        public static void xDeleteAll(this string fullPathName)
         {
-            if (Directory.Exists(fullPathName))
-            {
-                Directory.Delete(fullPathName, true);
-            }
-        }
+			var rootPath = Path.GetDirectoryName(Path.GetDirectoryName(fullPathName));
+			if (Directory.Exists(rootPath))
+			{
+                Directory.Delete(rootPath, true);
+			}
+		}
 
-        public static void xCopy(this string sourceDir, string targetDir)
+		/// <summary>
+		/// file copy from source to target
+		/// </summary>
+		/// <param name="sourceDir"></param>
+		/// <param name="targetDir"></param>
+		/// <param name="isOverWrite"></param>
+		/// <param name="isRemoveTargetDir"></param>
+		public static void xCopy(this string sourceDir, string targetDir, bool isOverWrite = true, bool isRemoveTargetDir = false)
         {
-            if (Directory.Exists(targetDir))
+            if (isRemoveTargetDir)
             {
-                Directory.Delete(targetDir, true);
-            }
+				if (Directory.Exists(targetDir))
+				{
+					Directory.Delete(targetDir, true);
+				}
 
-            Directory.CreateDirectory(targetDir);
+				Directory.CreateDirectory(targetDir);
+			}
 
             foreach (var file in Directory.GetFiles(sourceDir))
-                File.Copy(file, Path.Combine(targetDir, Path.GetFileName(file)));
+                File.Copy(file, Path.Combine(targetDir, Path.GetFileName(file)), isOverWrite);
 
             foreach (var directory in Directory.GetDirectories(sourceDir))
-                xCopy(directory, Path.Combine(targetDir, Path.GetFileName(directory)));
-        }
-
-        public static void xWriteFile(this byte[] buffer, string fileName) => File.WriteAllBytes(fileName, buffer);
-
-        public static void xWriteFile(this string fileName, string fileContents)
-        {
-            File.WriteAllText(fileName, fileContents, Encoding.UTF8);
+                xCopy(directory, Path.Combine(targetDir, Path.GetFileName(directory)), isOverWrite, isRemoveTargetDir);
         }
 
         public static Dictionary<string, string> xGetFileExtensionProperties(this string fileName)

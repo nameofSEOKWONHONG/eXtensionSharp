@@ -8,52 +8,41 @@ using NUnit.Framework;
 namespace eXtensionSharp.test {
     public class XFileTest
     {
-        private string _filename;
-            
         [SetUp]
         public void setup()
         {
-            _filename = @"D:\test\test\test.txt";
-            if (_filename.xExists().xIsFalse())
-            {
-                _filename.xFileCreateAll();
-            }
-        }
-        
-        [Test]
-        public void create_file_all() {
-            //tested only windows.
-            Assert.IsTrue(_filename.xExists());
+
         }
 
         [Test]
-        public void unique_file_test()
+        public void file_test()
         {
-            var result = _filename.xUniqueId();
-            Assert.That(result, Is.Not.Empty);
-        }
+			var filename = @"D:\test\test\test\test.txt";
+            if (filename.xExists()) filename.xDeleteAll();
 
-        [Test]
-        public void file_lock_test()
-        {
-            _filename.xWriteFile("test");
-            _filename.xLock();
-            _filename.xUnLock();
-            var result = _filename.xRead();
-            Assert.That(result, Is.Not.Empty);
-        }
+			var content = "hello world!";
+			var isException = false;
 
-        [Test]
-        public void file_extension_test()
-        {
-            // var file = "d:\\\\D2 - 복사본.zip";
-            //
-            // var properties = file.xGetFileExtensionProperties();
-            // if (properties != null)
-            // {
-            //     
-            // }
-            Assert.Pass();
-        }
+			try
+			{
+				filename.xWrite(() => content.xToBytes());
+			}
+			catch
+			{
+				isException = true;
+			}
+
+			Assert.IsTrue(isException);
+
+			filename.xWriteAll(() => content.xToBytes());
+            var text = filename.xRead();
+            Assert.That(content, Is.EqualTo(text));
+
+			var fileName = filename.xGetFileName();
+			Assert.That(fileName, Is.EqualTo("test.txt"));
+
+			var extension = filename.xGetExtension();
+			Assert.That(extension, Is.EqualTo(".txt"));
+		}
     }
 }
