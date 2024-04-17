@@ -1,6 +1,4 @@
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace eXtensionSharp
 {
@@ -36,7 +34,7 @@ namespace eXtensionSharp
         {
             if (items.xIsEmpty()) return;
 
-            int i = 0;
+            int i = 0;            
             foreach (var value in items)
             {
                 await func(value);
