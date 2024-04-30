@@ -1,7 +1,4 @@
-using System;
-using System.Globalization;
 using NUnit.Framework;
-using eXtensionSharp;
 using System.Dynamic;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,8 +72,8 @@ namespace eXtensionSharp.test {
             test.Next = test;
 
             var result = test.xToDictionary();
-            Assert.AreEqual(result["Id"], 1);
-            Assert.AreEqual(result["Name"], "test");
+            Assert.That(result["Id"], Is.EqualTo(1));
+            Assert.That(result["Name"], Is.EqualTo("test"));
 
             var list = new List<Test>();
             list.Add(test);
@@ -98,6 +95,7 @@ namespace eXtensionSharp.test {
             Assert.That(dylist[0]["Age"].xValue<int>(), Is.EqualTo(10));
         }
     }
+    
 
     public class Test
     {
