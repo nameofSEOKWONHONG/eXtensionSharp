@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Numerics;
 
@@ -43,17 +44,17 @@ namespace eXtensionSharp
 
             if (obj.xIsNumber())
             {
-                if (obj.GetType() == typeof(byte)) return Comparer<byte>.Default.Compare(Convert.ToByte(obj), default(byte)) <= 0;
-                else if (obj.GetType() == typeof(sbyte)) return Comparer<sbyte>.Default.Compare(Convert.ToSByte(obj), default(sbyte)) <= 0;
-                else if (obj.GetType() == typeof(short)) return Comparer<short>.Default.Compare(Convert.ToInt16(obj), default(short)) <= 0;
-                else if (obj.GetType() == typeof(ushort)) return Comparer<ushort>.Default.Compare(Convert.ToUInt16(obj), default(ushort)) <= 0;
-                else if (obj.GetType() == typeof(int)) return Comparer<int>.Default.Compare(Convert.ToInt32(obj), default(int)) <= 0;
-                else if (obj.GetType() == typeof(uint)) return Comparer<uint>.Default.Compare(Convert.ToUInt32(obj), default(uint)) <= 0;
-                else if (obj.GetType() == typeof(long)) return Comparer<long>.Default.Compare(Convert.ToInt64(obj), default(long)) <= 0;
-                else if (obj.GetType() == typeof(ulong)) return Comparer<ulong>.Default.Compare(Convert.ToUInt64(obj), default(ulong)) <= 0;
-                else if (obj.GetType() == typeof(float)) return Comparer<float>.Default.Compare(Convert.ToSingle(obj), default(float)) <= 0;
-                else if (obj.GetType() == typeof(double)) return Comparer<double>.Default.Compare(Convert.ToDouble(obj), default(double)) <= 0;
-                else if (obj.GetType() == typeof(decimal)) return Comparer<decimal>.Default.Compare(Convert.ToDecimal(obj), default(decimal)) <= 0;
+                if (obj is byte) return Comparer<byte>.Default.Compare(Convert.ToByte(obj), default) <= 0;
+                else if (obj is sbyte) return Comparer<sbyte>.Default.Compare(Convert.ToSByte(obj), default) <= 0;
+                else if (obj is short) return Comparer<short>.Default.Compare(Convert.ToInt16(obj), default) <= 0;
+                else if (obj is ushort) return Comparer<ushort>.Default.Compare(Convert.ToUInt16(obj), default) <= 0;
+                else if (obj is int) return Comparer<int>.Default.Compare(Convert.ToInt32(obj), default) <= 0;
+                else if (obj is uint) return Comparer<uint>.Default.Compare(Convert.ToUInt32(obj), default) <= 0;
+                else if (obj is long) return Comparer<long>.Default.Compare(Convert.ToInt64(obj), default) <= 0;
+                else if (obj is ulong) return Comparer<ulong>.Default.Compare(Convert.ToUInt64(obj), default) <= 0;
+                else if (obj is float) return Comparer<float>.Default.Compare(Convert.ToSingle(obj), default) <= 0;
+                else if (obj is double) return Comparer<double>.Default.Compare(Convert.ToDouble(obj), default) <= 0;
+                else if (obj is decimal) return Comparer<decimal>.Default.Compare(Convert.ToDecimal(obj), default) <= 0;
 
                 return Comparer<T>.Default.Compare(obj, default(T)) <= 0;
             }
@@ -103,9 +104,7 @@ namespace eXtensionSharp
         public static bool xIsDateTime<T>(this T obj)
         {
             var type = typeof(T);
-            if (type == typeof(DateTime)) return true;
-
-            return false;
+            return type == typeof(DateTime);
         }
 
         public static bool xIsNotEmpty<T>(this T obj)
@@ -188,49 +187,5 @@ namespace eXtensionSharp
         }
 
         #endregion [xIs Series]
-
-        public static bool xIsDuplicate<T>(this IEnumerable<T> items)
-        {
-            if (items.xIsEmpty()) return false;
-
-            HashSet<T> set = new();
-
-            foreach (var item in items)
-            {
-                if (!set.Add(item))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool xTryDuplicate<T>(this IEnumerable<T> items, out T key)
-        {
-            key = default;
-
-            if (items.xIsEmpty()) return false;
-
-            HashSet<T> set = new();
-
-            foreach (var item in items)
-            {
-                if (!set.Add(item))
-                {
-                    key = item;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool xTryDateParse(this string date, out DateTime dateTime)
-        {
-            dateTime = DateTime.MinValue;
-
-            return DateTime.TryParse(date, out dateTime);
-        }
     }
 }

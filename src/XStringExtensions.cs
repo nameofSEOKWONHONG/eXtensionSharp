@@ -145,7 +145,7 @@ namespace eXtensionSharp
 				{
 					gzipStream.Write(bytes, 0, bytes.Length);
 				}
-				return memoryStream.ToArray();
+				return memoryStream.GetBuffer();
 			}
         }
 

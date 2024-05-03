@@ -228,7 +228,17 @@ namespace eXtensionSharp
         {
             if(i <= 0) return TimeSpan.Zero;
             return TimeSpan.FromMinutes(i);
-        }        
+        }     
+        
+        public static bool xTryDateParse(this string date, out DateTime dateTime)
+        {
+            return DateTime.TryParseExact(date, "yyyy-MM-dd", null, DateTimeStyles.None, out dateTime);
+        }
+        
+        public static bool xTryDateParse(this string date, string format, out DateTime dateTime)
+        {
+            return DateTime.TryParseExact(date, format, null, DateTimeStyles.None, out dateTime);
+        }
     }
     
 // public static class WeekHelper {

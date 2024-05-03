@@ -51,7 +51,8 @@ namespace eXtensionSharp
             //    else if (typeof(T).GetType() == typeof(decimal)) return (T)(object)Convert.ToDecimal(src);
             //}
 
-            if (src is Guid guid) return (T)Convert.ChangeType(guid.ToString(), typeof(T));
+            if (src is Guid guid) 
+                return (T)Convert.ChangeType(guid.ToString(), typeof(T));
 
             if (src is DateTime time)
             {
@@ -146,12 +147,49 @@ namespace eXtensionSharp
         /// <code>
         /// string name1 = "hello";
         /// string name2 = "HELLO";
-        /// bool areEqual = name1.xEquals(name2); // returns true
+        /// bool areEqual = string.Equals(name1, name2, StringComparison.OrdinalIgnoreCase); // returns true
         /// </code>
         /// </example>
         public static bool xEquals(this string src, string dest)
         {
-            return src.Equals(dest, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(src, dest, StringComparison.OrdinalIgnoreCase);
         }
+        
+        public static bool xIsDuplicate<T>(this IEnumerable<T> items)
+        {
+            if (items.xIsEmpty()) return false;
+
+            HashSet<T> set = new();
+
+            foreach (var item in items)
+            {
+                if (!set.Add(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool xTryDuplicate<T>(this IEnumerable<T> items, out T key)
+        {
+            key = default;
+
+            if (items.xIsEmpty()) return false;
+
+            HashSet<T> set = new();
+
+            foreach (var item in items)
+            {
+                if (!set.Add(item))
+                {
+                    key = item;
+                    return true;
+                }
+            }
+
+            return false;
+        }        
     }
 }

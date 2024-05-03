@@ -11,13 +11,14 @@ namespace eXtensionSharp.test {
         [Test]
         public void xforeach_test()
         {
-            var ranges = Enumerable.Range(1, 5001).ToList();
+            var expected = 114999;
+            var ranges = Enumerable.Range(1, expected).ToList();
             var isFind = false;
             ranges.xForEach((index, item) =>
             {
                 if(isFind.xIsFalse())
                 {
-                    isFind = item == 5001;
+                    isFind = item == expected;
                 }
             });
             Assert.IsTrue(isFind);
@@ -76,25 +77,30 @@ namespace eXtensionSharp.test {
         public async Task pararell_foreach_async_test()
         {
             var ranges = Enumerable.Range(1, 10).ToList();
-            var canceled = await ranges.xParallelForEachAsync(async (item, token) =>
+            var canceled = await ranges
+                .xParallelForEachAsync(null, async (item, token) =>
             {
-                await Task.Factory.StartNew(() => TestContext.WriteLine(item));
+                await Task.Factory.StartNew(() => TestContext.WriteLine(item), token);
             });
             Assert.That(canceled, Is.False);
 
             TestContext.WriteLine("===================================");
 
             var cts = new CancellationTokenSource();
-            canceled = await ranges.xParallelForEachAsync(async (item, token) =>
+            canceled = await ranges.xParallelForEachAsync(new ParallelOptions()
+                {
+                    MaxDegreeOfParallelism = 4,
+                    CancellationToken = cts.Token
+                }
+                , async (item, token) =>
             {
                 if (item == 1)
                 {
                     await cts.CancelAsync();
                 }
 
-                await Task.Factory.StartNew(() => TestContext.WriteLine(item));
-
-            }, new ParallelOptions() { CancellationToken = cts.Token, MaxDegreeOfParallelism = 2 });
+                await Task.Factory.StartNew(() => TestContext.WriteLine(item), token);
+            });
 
             Assert.That(canceled, Is.True);
         }

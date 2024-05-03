@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace eXtensionSharp
 {
@@ -18,6 +19,7 @@ namespace eXtensionSharp
         public static void xForEach<T>(this IEnumerable<T> iterator, Action<T> action)
         {
             if (iterator.xIsEmpty()) return;
+            
             int i = 0;
             foreach (var item in iterator)
             {
@@ -81,7 +83,7 @@ namespace eXtensionSharp
                 i += 1;
                 if ((i % LOOP_DELAY_COUNT) == 0)
                 {
-                    Thread.Sleep(LOOP_SLEEP_MS);    
+                    Thread.Sleep(LOOP_SLEEP_MS);   
                 }                
             }
         }
@@ -181,11 +183,9 @@ namespace eXtensionSharp
             var array = valaus.ToArray();
             for (int i = 0; i < array.Length; i += batchSize)
             {
-                var batch = array.Skip(i).Take(batchSize).ToArray();
-                result.Add(batch);
+                var batch = array[i..(i+batchSize)];
+                yield return batch;
             }
-
-            return result;
         }
 
         /// <summary>
@@ -196,13 +196,14 @@ namespace eXtensionSharp
         /// <param name="func"></param>
         /// <param name="options">ParallelOptions</param>
         /// <returns></returns>
-        public static async Task<bool> xParallelForEachAsync<T>(this IEnumerable<T> items, Func<T, CancellationToken, Task> func, ParallelOptions options = null)
+        public static async Task<bool> xParallelForEachAsync<T>(this IEnumerable<T> items, ParallelOptions options, Func<T, CancellationToken, Task> func)
         {
             if (options.xIsEmpty())
             {
                 options = new ParallelOptions()
                 {
-                    MaxDegreeOfParallelism = Environment.ProcessorCount,                    
+                    MaxDegreeOfParallelism = Math.Max(1, Environment.ProcessorCount),
+                    CancellationToken = default
                 };
             }
 
