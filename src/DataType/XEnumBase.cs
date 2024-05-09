@@ -24,6 +24,7 @@ namespace eXtensionSharp
     /// </code>
     /// </example>
     /// <typeparam name="T">The string-valued enum type. (i.e. class Color : StringEnum&lt;Color&gt;)</typeparam>
+    [Obsolete("don't use", true)]
     public abstract class XEnumBase<T> : IEquatable<T> where T : XEnumBase<T>, new()
     {
         private static readonly Dictionary<string, T> valueDict = new();
@@ -122,38 +123,38 @@ namespace eXtensionSharp
         }
     }
 
-    public class XEnumBaseTypeConverter<T> : TypeConverter where T : XEnumBase<T>, new()
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }
-            return base.CanConvertFrom(context, sourceType);
-        }
-
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            if (value is string)
-            {
-                return XEnumBase<T>.Parse((string)value);
-            }
-            return base.ConvertFrom(context, culture, value);
-        }
-    }
-
-    public class XEnumBaseJsonConverter<T> : JsonConverter<T> where T : XEnumBase<T>, new()
-    {
-        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var s = reader.GetString();
-            return XEnumBase<T>.Parse(s);
-        }
-
-        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(value.ToString());
-        }
-    }
+    // public class XEnumBaseTypeConverter<T> : TypeConverter where T : XEnumBase<T>, new()
+    // {
+    //     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+    //     {
+    //         if (sourceType == typeof(string))
+    //         {
+    //             return true;
+    //         }
+    //         return base.CanConvertFrom(context, sourceType);
+    //     }
+    //
+    //     public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+    //     {
+    //         if (value is string)
+    //         {
+    //             return XEnumBase<T>.Parse((string)value);
+    //         }
+    //         return base.ConvertFrom(context, culture, value);
+    //     }
+    // }
+    //
+    // public class XEnumBaseJsonConverter<T> : JsonConverter<T> where T : XEnumBase<T>, new()
+    // {
+    //     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    //     {
+    //         var s = reader.GetString();
+    //         return XEnumBase<T>.Parse(s);
+    //     }
+    //
+    //     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+    //     {
+    //         writer.WriteStringValue(value.ToString());
+    //     }
+    // }
 }

@@ -14,6 +14,7 @@ namespace eXtensionSharp.test {
             var expected = 114999;
             var ranges = Enumerable.Range(1, expected).ToList();
             var isFind = false;
+            ranges.xForEach(item => { });
             ranges.xForEach((index, item) =>
             {
                 if(isFind.xIsFalse())
@@ -65,11 +66,11 @@ namespace eXtensionSharp.test {
         [Test]
         public void number_from_to_test() {
             var list = new List<int>();
-            (1, 5001).xForEach(num => {
-                list.Add(num);
+            Enumerable.Range(1, 5000).xForEach(item => {
+                list.Add(item);
             });
 
-            Assert.That(list.Count, Is.EqualTo(5001));
+            Assert.That(list.Count, Is.EqualTo(5000));
             Assert.That(list[2], Is.EqualTo(3));
         }
 
@@ -103,6 +104,21 @@ namespace eXtensionSharp.test {
             });
 
             Assert.That(canceled, Is.True);
+        }
+
+        [Test]
+        public async Task async_no_wait_test()
+        {
+            var task = Task.Factory.StartNew(() =>
+            {
+                TestContext.WriteLine("test");
+            });
+            await task.WaitAsync(TimeSpan.FromSeconds(1));
+            var list = Enumerable.Range(1, 5000).ToList();
+            list.xForEach(item =>
+            {
+                Assert.That(item,Is.Not.Zero);
+            });
         }
     }
 }

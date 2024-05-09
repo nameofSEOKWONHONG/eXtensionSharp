@@ -9,21 +9,21 @@ namespace eXtensionSharp
     public static class XFileExtensions
     {
         /// <summary>
-        /// ÆÄÀÏ¸í Á¶È¸
+        /// ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½È¸
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
         public static string xGetFileName(this string fileName) => Path.GetFileName(fileName);
 
         /// <summary>
-        /// ÆÄÀÏ¸í Á¶È¸ (È®ÀåÀÚ ¾øÀÌ)
+        /// ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½È¸ (È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
 		public static string xGetFileNameWithoutExtension(this string fileName) => Path.GetFileNameWithoutExtension(fileName);
 
         /// <summary>
-        /// ÆÄÀÏ È®ÀåÀÚ Á¶È¸
+        /// ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
@@ -105,7 +105,7 @@ namespace eXtensionSharp
         {
             if (!fileInfo.Exists.xIsFalse()) return string.Empty;
             return
-                $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}|{fileInfo.LastWriteTime.xToDate(ENUM_DATE_FORMAT.YYYY_MM_DD_HH_MM_SS)}"
+                $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDate("yyyy-MM-dd HH:mm:ss")}|{fileInfo.LastWriteTime.xToDate("yyyy-MM-dd HH:mm:ss")}"
                     .xGetHashCode();
         }
 
@@ -316,7 +316,6 @@ namespace eXtensionSharp
 				string[] subdirectories = Directory.GetDirectories(directory);
 				foreach (string subdir in subdirectories)
 				{
-					// Àç±ÍÀûÀ¸·Î ÇÏÀ§ µð·ºÅä¸®¿¡¼­ ÆÄÀÏ °Ë»ö
 					var subdirectoryFiles = SearchFiles(subdir);
 					foreach (var kvp in subdirectoryFiles)
 					{

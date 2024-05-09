@@ -8,6 +8,7 @@ namespace eXtensionSharp
     /// <summary>
     ///     enum string class, use attribute
     /// </summary>
+    [Obsolete("don't use", true)]
     public class XEnumString
     {
         #region Instance implementation

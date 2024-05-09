@@ -368,7 +368,7 @@ namespace eXtensionSharp
         /// </example>
         public static string[] xSplit(this string value, string separator = ",")
         {
-            if (value.xIsEmpty()) return [];
+            if (value.xIsEmpty()) return Array.Empty<string>();
             return value.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
         

@@ -10,6 +10,16 @@ Refer to the test code for how to use it.
 net7, net8
 
 ## Version
+* 1.0.0.9
+  * remove - xForEach: remove thread.sleep
+  * remove - xForEach: remove number type from to xforeach, use Enumerable.Range(from, to)  
+  * modify - xForEach: change xforeach func item priority. (int Index, Generic T Item)
+  * remove - XHttpExtension
+  * add - xToDayOfWeek : day of week name (base by cultureinfo)
+  * etc - XFileExtension change huge naming.
+  * caution - xForEach can happen object null exception.  
+    case 1 : use AOT, happen exception after serialize object.  
+
 * 1.0.0.8
   * add - xToDictionary(this DataTable datatable) return IDictionary<string, object?>
   * add - xToDate(this DateTime dt, string format, CultureInfo culture) return string

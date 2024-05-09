@@ -21,9 +21,9 @@ namespace eXtensionSharp
             return datetime;
         }
 
-        public static string xToDate(this DateTime date, ENUM_DATE_FORMAT format = null)
+        public static string xToDate(this DateTime date, string format = null)
         {
-            if (format.xIsEmpty()) format = ENUM_DATE_FORMAT.YYYY_MM_DD;
+            if (format.xIsEmpty()) format = "yyyy-MM-dd";
             return date.ToString(format);
         }
 
@@ -239,6 +239,12 @@ namespace eXtensionSharp
         {
             return DateTime.TryParseExact(date, format, null, DateTimeStyles.None, out dateTime);
         }
+
+        public static string xToDayOfWeek(this DateTime date, string culture = null)
+        {
+            if (culture.xIsEmpty()) culture = CultureInfo.CurrentCulture.Name;
+            return date.ToString("dddd", new CultureInfo(culture));
+        }
     }
     
 // public static class WeekHelper {
@@ -312,18 +318,18 @@ namespace eXtensionSharp
     /// <summary>
     /// datetime format from korea.
     /// </summary>
-    public class ENUM_DATE_FORMAT : XEnumBase<ENUM_DATE_FORMAT>
-    {
-        public static readonly ENUM_DATE_FORMAT YYYY_MM_DD = Define("yyyy-MM-dd");
-        public static readonly ENUM_DATE_FORMAT YYYY_MM = Define("yyyy-MM");
-        public static readonly ENUM_DATE_FORMAT YYYY_MM_DD_HH_MM_SS = Define("yyyy-MM-dd HH:mm:ss");
-        public static readonly ENUM_DATE_FORMAT YYYY_MM_DD_HH_MM_SS_FFF = Define("yyyy-MM-dd HH:mm:ss.fff");
-        public static readonly ENUM_DATE_FORMAT YYYYMMDD = Define("yyyyMMdd");
-        public static readonly ENUM_DATE_FORMAT YYYYMM = Define("yyyyMM");
-        public static readonly ENUM_DATE_FORMAT YYYY_FS_MM_FS_DD = Define("yyyy/MM/dd");
-        public static readonly ENUM_DATE_FORMAT YYYYMMDDHHMMSS = Define("yyyyMMddHHmmss");
-        public static readonly ENUM_DATE_FORMAT YYYYMMDDHH = Define("yyyyMMddHH");
-        public static readonly ENUM_DATE_FORMAT HHMMSS = Define("HHmmss");
-        public static readonly ENUM_DATE_FORMAT YYMMDD = Define("yyMMdd");
-    }
+    // public class ENUM_DATE_FORMAT : ENUM_DATE_FORMAT
+    // {
+    //     public static readonly ENUM_DATE_FORMAT YYYY_MM_DD = Define("yyyy-MM-dd");
+    //     public static readonly ENUM_DATE_FORMAT YYYY_MM = Define("yyyy-MM");
+    //     public static readonly ENUM_DATE_FORMAT YYYY_MM_DD_HH_MM_SS = Define("yyyy-MM-dd HH:mm:ss");
+    //     public static readonly ENUM_DATE_FORMAT YYYY_MM_DD_HH_MM_SS_FFF = Define("yyyy-MM-dd HH:mm:ss.fff");
+    //     public static readonly ENUM_DATE_FORMAT YYYYMMDD = Define("yyyyMMdd");
+    //     public static readonly ENUM_DATE_FORMAT YYYYMM = Define("yyyyMM");
+    //     public static readonly ENUM_DATE_FORMAT YYYY_FS_MM_FS_DD = Define("yyyy/MM/dd");
+    //     public static readonly ENUM_DATE_FORMAT YYYYMMDDHHMMSS = Define("yyyyMMddHHmmss");
+    //     public static readonly ENUM_DATE_FORMAT YYYYMMDDHH = Define("yyyyMMddHH");
+    //     public static readonly ENUM_DATE_FORMAT HHMMSS = Define("HHmmss");
+    //     public static readonly ENUM_DATE_FORMAT YYMMDD = Define("yyMMdd");
+    // }
 }

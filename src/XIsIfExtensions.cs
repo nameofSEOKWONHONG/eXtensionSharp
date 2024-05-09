@@ -37,9 +37,9 @@ namespace eXtensionSharp
                 return true;
             }
 
-            if (obj is string)
+            if (obj is string v)
             {
-                return string.IsNullOrWhiteSpace(obj.ToString());
+                return string.IsNullOrWhiteSpace(v);
             }
 
             if (obj.xIsNumber())
@@ -68,8 +68,6 @@ namespace eXtensionSharp
             // collection type
             switch (obj)
             {
-                case string s when string.IsNullOrWhiteSpace(s):
-                // ReSharper disable once HeapView.PossibleBoxingAllocation
                 case ICollection { Count: 0 }:
                 case Array { Length: 0 }:
                 // ReSharper disable once HeapView.PossibleBoxingAllocation
@@ -112,16 +110,6 @@ namespace eXtensionSharp
             return !obj.xIsEmpty();
         }
 
-        public static bool xIsEmpty(this DateTime dt)
-        {
-            return dt <= DateTime.MinValue;
-        }
-
-        public static bool xIsNotEmpty(this DateTime dt)
-        {
-            return !dt.xIsEmpty();
-        }
-
         public static bool xIsEmptyNumber<T>(this T number)
             where T : INumber<T>
         {
@@ -144,28 +132,7 @@ namespace eXtensionSharp
 
         public static bool xIsNotSame<T>(this T src, T compare)
         {
-            return !src.Equals(compare);
-        }
-
-        public static bool xIsSameDate(this DateTime? from, DateTime? to)
-        {
-            if (from.xIsEmpty()) return false;
-            if (to.xIsEmpty()) return false;
-            return from!.Value.Year.Equals(to!.Value.Year) &&
-                   from.Value.Month.Equals(to.Value.Month) &&
-                   from.Value.Day.Equals(to.Value.Day);
-        }
-
-        public static bool xIsSameFullDate(this DateTime? from, DateTime? to)
-        {
-            if (from.xIsEmpty()) return false;
-            if (to.xIsEmpty()) return false;
-            return from!.Value.Year.Equals(to!.Value.Year) &&
-                   from.Value.Month.Equals(to.Value.Month) &&
-                   from.Value.Day.Equals(to.Value.Day) &&
-                   from.Value.Hour.Equals(to.Value.Hour) &&
-                   from.Value.Minute.Equals(to.Value.Minute) &&
-                   from.Value.Second.Equals(to.Value.Second);
+            return !src.xIsSame(compare);
         }
 
         public static bool IsNullableType<T>(this T o)
