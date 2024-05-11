@@ -10,6 +10,9 @@ Refer to the test code for how to use it.
 net7, net8
 
 ## Version
+* 1.0.0.10
+  * error modify - xcrypthmac -> fromHexToByte, fromHexToString xforeach loop error
+  
 * 1.0.0.9
   * remove - xForEach: remove thread.sleep
   * remove - xForEach: remove number type from to xforeach, use Enumerable.Range(from, to)  
