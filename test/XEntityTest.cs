@@ -1,0 +1,52 @@
+﻿using System;
+using NUnit.Framework;
+
+namespace eXtensionSharp.test;
+
+public class XEntityTest
+{
+    public static string _data = @"
+{
+    ""id"": 1,
+    ""city"": ""Georgia"",
+    ""date"": ""2024-05-18T14:57:38.907"",
+    ""summary"": ""test"",
+    ""temperatureC"": 39,
+    ""temperatureF"": 102,
+    ""createdName"": ""68B38E6A793298C6251DCD0C73BE5712"",
+    ""lastModifiedName"": """",
+    ""mTag"": null
+}
+";
+
+    [Test]
+    public void to_entity_test()
+    {
+        var converted = _data.xToEntity<WeatherForecast>();
+        Assert.That(converted, Is.Not.Null);
+        Assert.That(converted.Id, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void to_json_test()
+    {
+        var converted = _data.xToEntity<WeatherForecast>();
+        var json = converted.xToJson();
+        Assert.Multiple(() =>
+        {
+            Assert.That(json, Is.Not.Empty);
+            Assert.That(json, Does.Contain("Georgia"));
+        });
+    }
+}
+
+public class WeatherForecast
+{
+    public long Id { get; set; }
+    public string City { get; set; }
+    public DateTime? Date { get; set; }
+    public string Summary { get; set; }
+    public int? TemperatureC { get; set; }
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public string CreatedName { get; set; }    
+}

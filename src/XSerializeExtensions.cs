@@ -41,10 +41,5 @@ namespace eXtensionSharp
         {
             return JsonSerializer.Serialize(dictionary);
         }
-
-        public static string xToJson(this object obj)
-        {
-            return JsonSerializer.Serialize(obj);
-        }
     }
 }

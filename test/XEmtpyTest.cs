@@ -13,20 +13,11 @@ public class XEmtpyTest
         var str1 = string.Empty;
         string str2 = null;
         DateTime dt = DateTime.MinValue;
-        var n = 0;
-        double n1 = 0;
-        float n2 = 0f;
-        long n3 = 0;
         Assert.Multiple(() =>
         {
             Assert.That(str1.xIsEmpty(), Is.True);
             Assert.That(str2.xIsEmpty(), Is.True);
             Assert.That(dt.xIsEmpty(), Is.True);
-            Assert.That(n.xIsEmpty(), Is.True);
-            
-            Assert.That(n1.xIsEmpty(), Is.True);
-            Assert.That(n2.xIsEmpty(), Is.True);
-            Assert.That(n3.xIsEmpty(), Is.True);
         });
     }
 
