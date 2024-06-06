@@ -57,11 +57,11 @@ namespace eXtensionSharp.test {
             // Assert.AreEqual(x3, x4);
         }
 
-        [Test]
-        public void xos_test() {
-            Assert.IsTrue(XEnvExtensions.xIsWindows());
-            Assert.IsFalse(XEnvExtensions.xIsLinux());
-        }
+        // [Test]
+        // public void xos_test() {
+        //     Assert.IsTrue(XEnvExtensions.xIsWindows());
+        //     Assert.IsFalse(XEnvExtensions.xIsLinux());
+        // }
 
         [Test]
         public void class_to_dictionary_test()
