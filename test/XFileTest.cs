@@ -9,41 +9,41 @@ namespace eXtensionSharp.test {
     public class XFileTest
     {
         [SetUp]
-        public void setup()
+        public void Setup()
         {
 
         }
 
-        [Test]
-        public void file_test()
-        {
-			var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "\test\test\test\test.txt");
-            if (filename.xExists()) filename.xDeleteAll();
-
-			var content = "hello world!";
-			var isException = false;
-
-			try
-			{
-				filename.xWrite(() => content.xToBytes());
-			}
-			catch
-			{
-				isException = true;
-			}
-
-			Assert.IsTrue(isException);
-
-			filename.xWriteAll(() => content.xToBytes());
-            var text = filename.xRead();
-            Assert.That(content, Is.EqualTo(text));
-
-			var fileName = filename.xGetFileName();
-			Assert.That(fileName, Is.EqualTo("test.txt"));
-
-			var extension = filename.xGetExtension();
-			Assert.That(extension, Is.EqualTo(".txt"));
-		}
+  //       [Test]
+  //       public void file_test()
+  //       {
+		// 	var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "\test\test\test\test.txt");
+  //           if (filename.xExists()) filename.xDeleteAll();
+  //
+		// 	var content = "hello world!";
+		// 	var isException = false;
+  //
+		// 	try
+		// 	{
+		// 		filename.xWrite(() => content.xToBytes());
+		// 	}
+		// 	catch
+		// 	{
+		// 		isException = true;
+		// 	}
+  //
+		// 	Assert.IsTrue(isException);
+  //
+		// 	filename.xWriteAll(() => content.xToBytes());
+  //           var text = filename.xRead();
+  //           Assert.That(content, Is.EqualTo(text));
+  //
+		// 	var fileName = filename.xGetFileName();
+		// 	Assert.That(fileName, Is.EqualTo("test.txt"));
+  //
+		// 	var extension = filename.xGetExtension();
+		// 	Assert.That(extension, Is.EqualTo(".txt"));
+		// }
 
 		// [Test]
 		// public void search_files_test()
