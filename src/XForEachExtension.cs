@@ -135,7 +135,8 @@ namespace eXtensionSharp
             var array = valaus.ToArray();
             for (int i = 0; i < array.Length; i += batchSize)
             {
-                var batch = array[i..(i+batchSize)];
+                int size = Math.Min(batchSize, array.Length - i);
+                var batch = array[i..(i + size)];
                 yield return batch;
             }
         }

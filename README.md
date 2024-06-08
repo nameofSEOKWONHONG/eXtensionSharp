@@ -10,9 +10,10 @@ Refer to the test code for how to use it.
 net7, net8
 
 ## Version
-* 1.0.1.0
+* 1.0.1.11
   * change - xIsEmpty dose not support Number type.
   * remove - xIsNumber<T>(this T obj), remain xIsNumber(this string str)
+  * error modify - xBatch error modify.
 
 * 1.0.0.10
   * error modify - xcrypthmac -> fromHexToByte, fromHexToString xforeach loop error

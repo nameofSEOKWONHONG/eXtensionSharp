@@ -120,5 +120,18 @@ namespace eXtensionSharp.test {
                 Assert.That(item,Is.Not.Zero);
             });
         }
+
+        [Test]
+        public void xbatch_test()
+        {
+            var items = Enumerable.Range(1, 1000).ToList();
+            var batchItems = items.xBatch(412);
+            foreach (var batchItem in batchItems)
+            {
+                Assert.That(items, Does.Contain(batchItem.First()));
+            }
+
+            Assert.Pass();
+        }
     }
 }
