@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using MongoDB.Bson;
 
 namespace eXtensionSharp
 {
@@ -7,39 +8,83 @@ namespace eXtensionSharp
     {
         public static T xToEntity<T>(this string jsonString, JsonSerializerOptions options = null)
         {
-            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
+            if (options.xIsEmpty())
+            {
+                options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true, 
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                };
+            }
             return JsonSerializer.Deserialize<T>(jsonString, options);
         }
 
-        public static async Task<T> xToEntityAsync<T>(this Stream stream, JsonSerializerOptions options = null)
-        {
-            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
-            return await JsonSerializer.DeserializeAsync<T>(stream, options);
-        }
-
-        public static IEnumerable<T> xToEntities<T>(this string jsonString, JsonSerializerOptions options = null)
-        {
-            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
-            return JsonSerializer.Deserialize<IEnumerable<T>>(jsonString, options);
-        }
-
-        public static async Task<IEnumerable<T>> xToEntitiesAsync<T>(this Stream stream, JsonSerializerOptions options = null)
-        {
-            if (options.xIsEmpty()) options = new JsonSerializerOptions() { PropertyNameCaseInsensitive = true, ReferenceHandler = ReferenceHandler.IgnoreCycles };
-            return await JsonSerializer.DeserializeAsync<IEnumerable<T>>(stream, options);
-        }
-
-        public static string xToJson<T>(this T entity, JsonSerializerOptions serializerOptions = null)
+        public static string xToJson<T>(this T entity, JsonSerializerOptions options = null)
             where T : class
         {
-            if (!serializerOptions.xIsEmpty())
-                return JsonSerializer.Serialize(entity, serializerOptions);
-            return JsonSerializer.Serialize(entity);
+            if (options.xIsEmpty())
+            {
+                options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true, 
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                };
+            }
+            
+            return JsonSerializer.Serialize(entity, options);
+        }
+        
+        public static T xToDeserialize<T>(this string jsonString, JsonSerializerOptions options = null)
+        {
+            if (options.xIsEmpty())
+            {
+                options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true, 
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                    Converters = { new ObjectIdConverter() }
+                };
+            }
+            return JsonSerializer.Deserialize<T>(jsonString, options);
         }
 
-        public static string xToJson<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
+        public static string xToSerialize<T>(this T entity, JsonSerializerOptions options = null)
+            where T : class
         {
-            return JsonSerializer.Serialize(dictionary);
+            if (options.xIsEmpty())
+            {
+                options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true, 
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                    Converters = { new ObjectIdConverter() }
+                };
+            }
+            
+            return JsonSerializer.Serialize(entity, options);
+        }        
+    }
+
+    internal class ObjectIdConverter : JsonConverter<ObjectId>
+    {
+        public override void Write(Utf8JsonWriter writer, ObjectId value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
+
+        public override ObjectId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var stringValue = reader.GetString();
+            if (ObjectId.TryParse(stringValue, out var objectId))
+            {
+                return objectId;
+            }
+            throw new JsonException($"Unable to convert \"{stringValue}\" to ObjectId.");
+        }
+
+        public override bool CanConvert(Type typeToConvert)
+        {
+            return typeof(ObjectId).IsAssignableFrom(typeToConvert);
         }
     }
 }
