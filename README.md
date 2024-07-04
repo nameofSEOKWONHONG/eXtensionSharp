@@ -10,10 +10,10 @@ Refer to the test code for how to use it.
 net7, net8
 
 ## Version
-* 1.0.1.12
+[* 1.0.1.12
   * remove - xToJoin
-  * change - xJoin, if empty collection, return string.empty.
-  * 
+  * change - xJoin, if empty collection, return string.empty.]()
+
 * 1.0.1.11
   * change - xIsEmpty dose not support Number type.
   * remove - xIsNumber<T>(this T obj), remain xIsNumber(this string str)
