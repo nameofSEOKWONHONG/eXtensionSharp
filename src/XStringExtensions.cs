@@ -58,6 +58,7 @@ namespace eXtensionSharp
         /// </example>
         public static string xJoin<T>(this IEnumerable<T> src, string separator = ",")
         {
+            if (src.xIsEmpty()) return string.Empty;
             return string.Join(separator, src);
         }
 
@@ -343,12 +344,6 @@ namespace eXtensionSharp
             // 숫자가 아닌 문자를 공백으로 대체
             string result = Regex.Replace(value, pattern, ""); 
             return result.xToNumber<T>();
-        }
-
-        public static string xToJoin(this string[] values, string separator = ",")
-        {
-            if (values.xIsEmpty()) return string.Empty;
-            return string.Join(separator, values);
         }
 
         /// <summary>

@@ -27,9 +27,5 @@
         <Link>README.md</Link>
       </Content>
     </ItemGroup>
-    
-    <ItemGroup>
-      <PackageReference Include="MongoDB.Driver" Version="2.27.0" />
-    </ItemGroup>
 
 </Project>

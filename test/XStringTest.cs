@@ -99,5 +99,20 @@ namespace eXtensionSharp.test {
 
 			Assert.That(text, Is.EqualTo(decompressTest));
 		}
+
+
+
+        [Test]
+        public void xjoin_test()
+        {
+            var array = new[] { "hello", "world" };
+            var str = array.xJoin();
+            Assert.That(str, Is.EqualTo("hello,world"));
+
+            var empty_array = Array.Empty<string>();
+            var empty_str = string.Empty;
+            Assert.That(empty_str, Is.EqualTo(string.Empty));
+
+        }
     }
 }
