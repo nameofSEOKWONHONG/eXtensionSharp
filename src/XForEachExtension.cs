@@ -84,24 +84,15 @@ namespace eXtensionSharp
         public static async Task xForEachAsync<T>(this IEnumerable<T> items, Func<T, Task> func)
         {
             if (items.xIsEmpty()) return;
+            var results = new List<Task>();
 
             foreach (var value in items)
             {
-                await func(value);
+                results.Add(func(value));
             }
+
+            await Task.WhenAll(results);
         }
-        
-        public static async Task xForEachAsync<T>(this IEnumerable<T> items, Func<int, T, Task> func)
-        {
-            if (items.xIsEmpty()) return;
-
-            int i = 0;            
-            foreach (var value in items)
-            {
-                await func(i, value);
-                i++;
-            }
-        }        
 
         public static void xForEach(this ValueTuple<DateTime, DateTime> dateRange, Action<DateTime> action)
         {

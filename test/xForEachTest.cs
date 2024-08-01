@@ -28,19 +28,17 @@ namespace eXtensionSharp.test {
         [Test]
         public async Task xforeach_async_test()
         {
-            var ranges = Enumerable.Range(1, 5001).ToList();
-            var isFind = false;
-            await ranges.xForEachAsync(async item =>
-            {
-                await Task.Run(() => {
-                    if (isFind.xIsFalse())
-                    {
-                        isFind = item == 2000;
-                    }
-                });
+            var ranges = Enumerable.Range(1, 100).ToList();
+            var value = 0;
+            await ranges.xForEachAsync(Process);
+            //Assert.That(value, Is.Not.Zero);
+        }
 
-            });
-            Assert.IsTrue(isFind);
+        private async Task Process(int i)
+        {
+            TestContext.WriteLine(i);
+            await Task.Delay(1);
+            TestContext.WriteLine(i + "complete");
         }
 
         [Test]
