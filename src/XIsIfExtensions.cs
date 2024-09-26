@@ -31,7 +31,8 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// XisEmpty dose not support number type.
+        /// xIsEmpty dose not support number type.<br/>
+        /// xIsEmpty dose not support DateTime type.
         /// </summary>
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
@@ -48,36 +49,27 @@ namespace eXtensionSharp
                 return string.IsNullOrWhiteSpace(v);
             }
 
-            if (obj.xIsDateTime())
-            {
-                var t = obj.xAs<DateTime>();
-                if (t <= DateTime.MinValue) return true;
-            }
-
-            // collection type
             switch (obj)
             {
                 case ICollection { Count: 0 }:
                 case Array { Length: 0 }:
-                // ReSharper disable once HeapView.PossibleBoxingAllocation
                 case IEnumerable e when !e.GetEnumerator().MoveNext():
                     return true;
 
                 default: return false;
             }
         }
-
-        public static bool xIsDateTime<T>(this T obj)
-        {
-            var type = typeof(T);
-            return type == typeof(DateTime);
-        }
-
+        
         public static bool xIsNotEmpty<T>(this T obj)
         {
             return !obj.xIsEmpty();
-        }
+        }        
 
+        public static bool xIsDateTime<T>(this T obj)
+        {
+            return obj is DateTime;
+        }
+        
         public static bool xIsEmptyNumber<T>(this T number)
             where T : INumber<T>
         {
@@ -103,22 +95,10 @@ namespace eXtensionSharp
             return !src.xIsSame(compare);
         }
 
-        public static bool IsNullableType<T>(this T o)
+        public static void xIf<T>(this T item, T compare, Action match, Action notMatch)
         {
-            var type = typeof(T);
-            return Nullable.GetUnderlyingType(type).xIsNotEmpty();
-        }
-
-        public static bool xIf(this string item, string match)
-        {
-            if (item.xIsSame(match)) return true;
-            return false;
-        }
-
-        public static string xIf(this string item, string @case, Func<string> match, Func<string> notMatch)
-        {
-            if (item.xIsSame(@case)) return match();
-            return notMatch();
+            if (item.xIsSame(compare)) match();
+            else notMatch();
         }
 
         #endregion [xIs Series]

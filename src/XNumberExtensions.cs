@@ -4,8 +4,41 @@ using System.Text.RegularExpressions;
 
 namespace eXtensionSharp
 {
+    public class PhoneInfo
+    {
+        public string Nation { get; set; }
+        public string NationCode { get; set; }
+        public string Number { get; set; }
+    }
+    
     public static class XNumberExtensions
     {
+        public static string xToPhoneNumber(this string str)
+        {
+            if (str.xIsEmpty()) return string.Empty;
+            if (str.Length < 11) throw new Exception("str length is less than 11");
+            
+            var nation = string.Empty;
+            var head = string.Empty;
+            var body = string.Empty;
+            var tail = string.Empty;
+            
+            if (str.Length > 11)
+            {
+                nation = str.xSubstringFirst(2);
+                head = str.xSubstringMiddle(2, 3);
+                body = str.xSubstringMiddle(5, 4);
+                tail = str.Substring(9);
+                return $"+{nation}-{head}-{body}-{tail}";
+            }
+            
+            head = str.xSubstringFirst(3);
+            body = str.xSubstringMiddle(3, 4);
+            tail = str.xSubstringLast(4);
+            
+            return $"{head}-{body}-{tail}";
+        }
+        
         public static string xDisplayNumber<T>(this T val, ENUM_NUMBER_FORMAT_TYPE type, ENUM_VIEW_ALLOW_TYPE allow = ENUM_VIEW_ALLOW_TYPE.NotAllow) where T : struct
         {
             if (val.GetType() == typeof(DateTime)) throw new NotSupportedException("DateTime is not support.");
@@ -15,13 +48,6 @@ namespace eXtensionSharp
             {
                 ENUM_NUMBER_FORMAT_TYPE.Comma => $"{val:#,#}",
                 ENUM_NUMBER_FORMAT_TYPE.Rate => $"{val:##.##}",
-                ENUM_NUMBER_FORMAT_TYPE.Mobile => allow switch
-                {
-                    ENUM_VIEW_ALLOW_TYPE.Allow => $"{val.ToString().xSubstringFirst(3)}-{val.ToString().xSubstringMiddle(3, 4)}-{val.ToString().xSubstringLast(4)}",
-                    ENUM_VIEW_ALLOW_TYPE.NotAllow => $"{val.ToString().xSubstringFirst(3)}-{val.ToString().xSubstringMiddle(3, 4)}-****",
-                    _ => throw new NotSupportedException()
-                },
-                ENUM_NUMBER_FORMAT_TYPE.Phone => MakePhoneString(val, allow),
                 ENUM_NUMBER_FORMAT_TYPE.RRN => MakeRRNString(val, allow),
                 _ => throw new NotSupportedException("do not convert value")
             };
@@ -125,9 +151,7 @@ namespace eXtensionSharp
     {
         Comma,
         Rate,
-        Mobile,
         RRN,
         CofficePrice,
-        Phone
     }
 }
