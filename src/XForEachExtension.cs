@@ -170,5 +170,17 @@ namespace eXtensionSharp
 
             return isCancel;
         }
+
+        public static void xForEach<T1, T2, T3>(this T1[] item1, T2[] item2, T3[] item3, Action<T1, T2, T3> action)
+        {
+            if(item1.Length < item2.Length || 
+               item1.Length < item3.Length) 
+                throw new Exception("item are not same length");
+            
+            for (var i = 0; i < item1.Length; i++)
+            {
+                action(item1[i], item2[i], item3[i]);
+            }
+        }
     }
 }
