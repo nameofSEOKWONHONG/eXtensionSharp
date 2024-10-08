@@ -147,18 +147,5 @@ namespace eXtensionSharp.test {
                 Assert.That(c, Is.EqualTo(items3[c - 7]));
             });
         }
-
-        [Test]
-        public async Task processor_test()
-        {
-            JobProsessor<int>.Instance.SetProessor(JobHandler<int>.Instance);
-            
-            JobHandler<int>.Instance.Enqueue(1);
-            JobHandler<int>.Instance.Enqueue(2);
-            JobHandler<int>.Instance.Enqueue(3);
-            JobHandler<int>.Instance.Enqueue(4);
-
-            await Task.Delay(5000 * 2);
-        }
     }
 }

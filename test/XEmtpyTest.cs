@@ -12,12 +12,14 @@ public class XEmtpyTest
     {
         var str1 = string.Empty;
         string str2 = null;
-        DateTime dt = DateTime.MinValue;
+        
+        //It no longer supports datetime checking.
+        //DateTime dt = DateTime.MinValue;
         Assert.Multiple(() =>
         {
             Assert.That(str1.xIsEmpty(), Is.True);
             Assert.That(str2.xIsEmpty(), Is.True);
-            Assert.That(dt.xIsEmpty(), Is.True);
+            //Assert.That(dt.xIsEmpty(), Is.True);
         });
     }
 

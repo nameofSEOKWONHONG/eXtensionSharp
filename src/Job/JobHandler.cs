@@ -17,42 +17,50 @@ public class JobHandler<T>
     public T Dequeue() => _queue.TryDequeue(out var result) ? result : default;
 }
 
-public class JobProsessor<T>
+public class JobProcessor<T>
 {
-    private static Lazy<JobProsessor<T>> _instance = new Lazy<JobProsessor<T>>(() => new JobProsessor<T>());
-    public static JobProsessor<T> Instance => _instance.Value;
+    private static Lazy<JobProcessor<T>> _instance = new Lazy<JobProcessor<T>>(() => new JobProcessor<T>());
+    public static JobProcessor<T> Instance => _instance.Value;
 
 
-    private ConcurrentDictionary<JobHandler<T>, Action<T>> _concurrentDictionary;
+    private JobHandler<T> _handler;
+    private Action<T> _action;
+    private bool _isRunning;
     
     private Thread _thread;
-    private JobProsessor()
+    private JobProcessor()
     {
-        _concurrentDictionary = new();
-        _thread = new Thread(StartProess);
+        _thread = new Thread(Start);
         _thread.IsBackground = true;
         _thread.Start();
     }
 
-    public void SetProessor(JobHandler<T> jobHandler, Action<T> callback)
+    public void SetProcessor(JobHandler<T> jobHandler, Action<T> callback)
     {
-        _concurrentDictionary.TryAdd(jobHandler, callback);
+        _handler = jobHandler;
+        _action = callback;
     }
 
-    public void StartProess()
+    private void Start()
     {
-        while (true)
+        _isRunning = true;
+        
+        while (_isRunning)
         {
             try
             {
-                if (_concurrentDictionary.TryGetValue(out var hander))
+                if (_handler.xIsNotEmpty())
                 {
-                    var item = hander.Dequeue();
-                    if (item.xAs<int>() > 0)
+                    if (_action.xIsNotEmpty())
                     {
-                        Console.WriteLine(item.xAs<int>());        
+                        var item = _handler.Dequeue();
+                        if (item.xIsNotEmpty())
+                        {
+                            _action(item);    
+                        }
                     }
                 }
+                Thread.Sleep(10);
             }
             catch (InvalidOperationException e)
             {
@@ -60,5 +68,16 @@ public class JobProsessor<T>
                 break;
             }
         }
+    }
+
+    public void Stop()
+    {
+        _isRunning = false;
+    }
+    
+    internal class ProcessItem
+    {
+        public JobHandler<T> JobHandler { get; set; }
+        public Action<T> Callback { get; set; }
     }
 }
