@@ -171,11 +171,20 @@ namespace eXtensionSharp
             return isCancel;
         }
 
-        public static void xForEach<T1, T2, T3>(this T1[] item1, T2[] item2, T3[] item3, Action<T1, T2, T3> action)
+        /// <summary>
+        /// same method at python product method.
+        /// </summary>
+        /// <param name="item1"></param>
+        /// <param name="item2"></param>
+        /// <param name="item3"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <exception cref="Exception"></exception>
+        public static void xForEach<T>(this T[] item1, T[] item2, T[] item3, Action<T, T, T> action)
         {
             if(item1.Length < item2.Length || 
                item1.Length < item3.Length) 
-                throw new Exception("item are not same length");
+                throw new Exception("item array are not same length");
             
             for (var i = 0; i < item1.Length; i++)
             {

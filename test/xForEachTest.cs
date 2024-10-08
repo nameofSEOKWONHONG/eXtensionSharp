@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using eXtensionSharp.Job;
 using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using NUnit.Framework;
 
@@ -130,6 +131,34 @@ namespace eXtensionSharp.test {
             }
 
             Assert.Pass();
+        }
+
+        [Test]
+        public void xforeach_product_test()
+        {
+            var items1 = Enumerable.Range(1, 3).ToArray();
+            var items2 = Enumerable.Range(4, 3).ToArray();
+            var items3 = Enumerable.Range(7, 3).ToArray();
+            
+            items1.xForEach(items2, items3, (a, b, c) =>
+            {
+                Assert.That(a, Is.EqualTo(items1[a - 1]));
+                Assert.That(b, Is.EqualTo(items2[b - 4]));
+                Assert.That(c, Is.EqualTo(items3[c - 7]));
+            });
+        }
+
+        [Test]
+        public async Task processor_test()
+        {
+            JobProsessor<int>.Instance.SetProessor(JobHandler<int>.Instance);
+            
+            JobHandler<int>.Instance.Enqueue(1);
+            JobHandler<int>.Instance.Enqueue(2);
+            JobHandler<int>.Instance.Enqueue(3);
+            JobHandler<int>.Instance.Enqueue(4);
+
+            await Task.Delay(5000 * 2);
         }
     }
 }
