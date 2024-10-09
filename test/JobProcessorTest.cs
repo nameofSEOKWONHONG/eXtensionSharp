@@ -11,7 +11,7 @@ namespace eXtensionSharp.test;
 
 public class JobProcessorTest
 {
-    [Test]
+    [Test, Order(1)]
     public async Task job_processor_test()
     {
         using var processor = new JobProcessor<string>();
@@ -29,19 +29,14 @@ public class JobProcessorTest
         await Task.Delay(5000);
     }
 
-    [Test]
+    [Test, Order(2)]
     public async Task job_processor_test2()
     {
         var r1 = new StringBuilder();
-        var r2 = new StringBuilder();
         using var processor = new JobProcessorAsync<string>();
         processor.SetProcess(JobHandler<string>.Instance, async item =>
         {
             r1.Append(item);
-            using var client = new HttpClient();
-            var res = await client.GetAsync("http://www.google.com");
-            res.EnsureSuccessStatusCode();
-            r2.AppendLine(await res.Content.ReadAsStringAsync());
         });
             
         var texts = "hello world";
@@ -56,7 +51,6 @@ public class JobProcessorTest
         Assert.Multiple(() =>
         {
             Assert.That(r1.Length, Is.EqualTo(texts.Length));
-            Assert.That(r2.Length, Is.GreaterThan(0));
         });
     }
 }

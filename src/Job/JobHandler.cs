@@ -89,7 +89,6 @@ public class JobProcessor<T> : IDisposable
     public void Dispose()
     {
         _cts?.Cancel();
-        _cts?.Dispose();
     }
 }
 
@@ -157,8 +156,5 @@ public class JobProcessorAsync<T> : IDisposable
     {
         _cts?.Cancel();
         _task?.Wait();
-        
-        _cts?.Dispose();
-        _task?.Dispose();
     }
 }
