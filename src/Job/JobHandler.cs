@@ -1,8 +1,9 @@
 using System.Collections.Concurrent;
+using System.Security.Claims;
 
 namespace eXtensionSharp.Job;
 
-public class JobHandler<T>
+public class JobHandler<T> where T : class
 {
     private static Lazy<JobHandler<T>> _instance = new Lazy<JobHandler<T>>(() => new JobHandler<T>());
     public static JobHandler<T> Instance => _instance.Value;
@@ -14,28 +15,34 @@ public class JobHandler<T>
     }
     
     public void Enqueue(T item) => _queue.Enqueue(item);
-    public T Dequeue() => _queue.TryDequeue(out var result) ? result : default;
+
+    public T Dequeue()
+    {
+        if (_queue.TryDequeue(out var result))
+        {
+            return result;
+        }
+
+        return null;
+    }
 }
 
-public class JobProcessor<T>
+public class JobProcessor<T> : IDisposable
+    where T : class
 {
-    private static Lazy<JobProcessor<T>> _instance = new Lazy<JobProcessor<T>>(() => new JobProcessor<T>());
-    public static JobProcessor<T> Instance => _instance.Value;
-
-
     private JobHandler<T> _handler;
     private Action<T> _action;
-    private bool _isRunning;
+    private readonly CancellationTokenSource _cts = new CancellationTokenSource();
     
     private Thread _thread;
-    private JobProcessor()
+    public JobProcessor()
     {
         _thread = new Thread(Start);
         _thread.IsBackground = true;
         _thread.Start();
     }
 
-    public void SetProcessor(JobHandler<T> jobHandler, Action<T> callback)
+    public void SetProcess(JobHandler<T> jobHandler, Action<T> callback)
     {
         _handler = jobHandler;
         _action = callback;
@@ -43,9 +50,7 @@ public class JobProcessor<T>
 
     private void Start()
     {
-        _isRunning = true;
-        
-        while (_isRunning)
+        while (!_cts.Token.IsCancellationRequested)
         {
             try
             {
@@ -54,7 +59,7 @@ public class JobProcessor<T>
                     if (_action.xIsNotEmpty())
                     {
                         var item = _handler.Dequeue();
-                        if (item.xIsNotEmpty())
+                        if (item.xIsNotNull())
                         {
                             _action(item);    
                         }
@@ -69,15 +74,91 @@ public class JobProcessor<T>
             }
         }
     }
-
+    
     public void Stop()
     {
-        _isRunning = false;
+        _cts.Cancel();
     }
     
     internal class ProcessItem
     {
         public JobHandler<T> JobHandler { get; set; }
         public Action<T> Callback { get; set; }
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+}
+
+public class JobProcessorAsync<T> : IDisposable
+    where T : class
+{
+    private JobHandler<T> _handler;
+    private Func<T, Task> _func;
+    private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private Task _task;
+
+    public JobProcessorAsync()
+    {
+        _task = Task.Run(Start);
+    }
+
+    public void SetProcess(JobHandler<T> jobHandler, Func<T, Task> callback)
+    {
+        _handler = jobHandler;
+        _func = callback;
+    }
+
+    private async Task Start()
+    {       
+        while (!_cts.Token.IsCancellationRequested)
+        {
+            try
+            {
+                if (_handler.xIsNotEmpty())
+                {
+                    if (_func.xIsNotEmpty())
+                    {
+                        var item = _handler.Dequeue();
+                        if (item.xIsNotNull())
+                        {
+                            await _func(item);    
+                        }
+                    }
+                }
+                // Instead of Thread.Sleep, we use Task.Delay to make this asynchronous
+                await Task.Delay(10);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                break;
+            }
+        }
+    }
+
+    public void Stop()
+    {
+        _cts.Cancel();
+        _task.Wait(); // Wait for the task to finish gracefully
+    }
+
+    internal class ProcessItem
+    {
+        public JobHandler<T> JobHandler { get; set; }
+        public Action<T> Callback { get; set; }
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _task?.Wait();
+        
+        _cts?.Dispose();
+        _task?.Dispose();
     }
 }

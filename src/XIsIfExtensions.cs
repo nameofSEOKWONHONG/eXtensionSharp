@@ -48,7 +48,7 @@ namespace eXtensionSharp
             {
                 return string.IsNullOrWhiteSpace(v);
             }
-
+            
             switch (obj)
             {
                 case ICollection { Count: 0 }:
