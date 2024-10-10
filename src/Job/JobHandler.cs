@@ -80,12 +80,6 @@ public class JobProcessor<T> : IDisposable
         _cts.Cancel();
     }
     
-    internal class ProcessItem
-    {
-        public JobHandler<T> JobHandler { get; set; }
-        public Action<T> Callback { get; set; }
-    }
-
     public void Dispose()
     {
         _cts?.Cancel();
@@ -144,12 +138,6 @@ public class JobProcessorAsync<T> : IDisposable
     {
         _cts.Cancel();
         _task.Wait(); // Wait for the task to finish gracefully
-    }
-
-    internal class ProcessItem
-    {
-        public JobHandler<T> JobHandler { get; set; }
-        public Action<T> Callback { get; set; }
     }
 
     public void Dispose()
