@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test;
@@ -20,23 +21,34 @@ public class XEntityTest
 ";
 
     [Test]
-    public void to_entity_test()
+    public void from_deserialize_test()
     {
-        var converted = _data.xToEntity<WeatherForecast>();
+        var converted = _data.xFromDeserialize<WeatherForecast>();
         Assert.That(converted, Is.Not.Null);
         Assert.That(converted.Id, Is.EqualTo(1));
     }
 
     [Test]
-    public void to_json_test()
+    public void from_deserialize_to_serialize_test()
     {
-        var converted = _data.xToEntity<WeatherForecast>();
-        var json = converted.xToJson();
+        var converted = _data.xFromDeserialize<WeatherForecast>();
+        var json = converted.xToSerialize();
         Assert.Multiple(() =>
         {
             Assert.That(json, Is.Not.Empty);
             Assert.That(json, Does.Contain("Georgia"));
         });
+    }
+
+    [Test]
+    public void to_serialize_test()
+    {
+        var items = new List<WeatherForecast>();
+        items.Add(new WeatherForecast() { Id = 1, City = "Georgia", Date = DateTime.Now, Summary = "test", TemperatureC  = 32});
+        items.Add(new WeatherForecast() { Id = 2, City = "Georgia", Date = DateTime.Now, Summary = "test", TemperatureC  = 32});
+        var json = items.xToSerialize();
+        Assert.That(json, Is.Not.Empty);
+        Assert.That(json, Does.Contain("Summary"));
     }
 }
 

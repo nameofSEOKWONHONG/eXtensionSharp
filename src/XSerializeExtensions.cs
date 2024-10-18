@@ -5,20 +5,20 @@ namespace eXtensionSharp
 {
     public static class XSerializeExtensions
     {
-        public static T xToEntity<T>(this string jsonString, JsonSerializerOptions options = null)
+        public static T xFromDeserialize<T>(this string jsonString, JsonSerializerOptions options = null)
         {
             if (options.xIsEmpty())
             {
                 options = new JsonSerializerOptions()
                 {
                     PropertyNameCaseInsensitive = true, 
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
                 };
             }
             return JsonSerializer.Deserialize<T>(jsonString, options);
         }
-
-        public static string xToJson<T>(this T entity, JsonSerializerOptions options = null)
+        
+        public static string xToSerialize<T>(this T entity, JsonSerializerOptions options = null)
             where T : class
         {
             if (options.xIsEmpty())
@@ -26,42 +26,12 @@ namespace eXtensionSharp
                 options = new JsonSerializerOptions()
                 {
                     PropertyNameCaseInsensitive = true, 
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
                 };
             }
             
             return JsonSerializer.Serialize(entity, options);
-        }
-        
-        // public static T xToDeserialize<T>(this string jsonString, JsonSerializerOptions options = null)
-        // {
-        //     if (options.xIsEmpty())
-        //     {
-        //         options = new JsonSerializerOptions()
-        //         {
-        //             PropertyNameCaseInsensitive = true, 
-        //             ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        //             Converters = { new ObjectIdConverter() }
-        //         };
-        //     }
-        //     return JsonSerializer.Deserialize<T>(jsonString, options);
-        // }
-        //
-        // public static string xToSerialize<T>(this T entity, JsonSerializerOptions options = null)
-        //     where T : class
-        // {
-        //     if (options.xIsEmpty())
-        //     {
-        //         options = new JsonSerializerOptions()
-        //         {
-        //             PropertyNameCaseInsensitive = true, 
-        //             ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        //             Converters = { new ObjectIdConverter() }
-        //         };
-        //     }
-        //     
-        //     return JsonSerializer.Serialize(entity, options);
-        // }        
+        }        
     }
 
     // internal class ObjectIdConverter : JsonConverter<ObjectId>
