@@ -6,8 +6,11 @@ namespace eXtensionSharp
     public static class XValueExtensions
     {
         /// <summary>
-        /// object to T value
+        /// object to T value,
         /// </summary>
+        /// <remarks>
+        /// 10-22-24 : support json element, support value kind type is string, number, true, false, null, undefined
+        /// </remarks>
         /// <typeparam name="T"></typeparam>
         /// <param name="src"></param>
         /// <param name="default"></param>
@@ -34,6 +37,11 @@ namespace eXtensionSharp
             if (typeof(T).IsEnum)
             {
                 return (T)src;
+            }
+
+            if (src is JsonElement t)
+            {
+                return t.JsonElementToValue<T>();
             }
 
             //if (typeof(T).xIsNumber())
@@ -63,6 +71,22 @@ namespace eXtensionSharp
             }
 
             return (T)Convert.ChangeType(src, typeof(T));
+        }
+
+        private static T JsonElementToValue<T>(this JsonElement element)
+        {
+            var v = element.ValueKind switch
+            {
+                JsonValueKind.String => element.GetString().xValue<T>(),
+                JsonValueKind.Number => element.GetDouble().xValue<T>(),
+                JsonValueKind.True => element.GetBoolean().xValue<T>(),
+                JsonValueKind.False => element.GetBoolean().xValue<T>(),
+                JsonValueKind.Null => default,
+                JsonValueKind.Undefined => default,
+                _ => throw new Exception($"Unexpected JsonValueKind {element.ValueKind}")
+            };
+
+            return v;
         }
 
         /// <summary>
