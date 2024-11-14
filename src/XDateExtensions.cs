@@ -4,9 +4,16 @@ namespace eXtensionSharp
 {
     public static class XDateExtensions
     {
-        public static DateTime xToDate(this int date)
+        /// <summary>
+        /// int date to datetime
+        /// </summary>
+        /// <param name="date">20241231</param>
+        /// <returns></returns>
+        public static DateTime? xToYearMonthDay(this int date)
         {
             var str = date.xValue<string>();
+            if(str.Length < 8) return null;
+            
             var dt = new DateTime(
                 int.Parse(str.xSubstring(0, 4)), 
                 int.Parse(str.xSubstring(4, 2)), 
@@ -14,33 +21,40 @@ namespace eXtensionSharp
             return dt;
         }
         
-        public static DateTime xToDate(this string date)
+        /// <summary>
+        /// string date to datetime
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static DateTime? xConvertToDate(this string date)
         {
-            var datetime = DateTime.MinValue;
-            DateTime.TryParse(date, out datetime);
-            return datetime;
+            if(DateTime.TryParse(date, out var datetime)) return datetime;
+            return null;
         }
 
-        public static string xToDate(this DateTime date, string format = null)
+        /// <summary>
+        /// convert date to format date
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="format">yyyy-MM-dd</param>
+        /// <returns></returns>
+        public static string xToDateFormat(this DateTime date, string format = null)
         {
             if (format.xIsEmpty()) format = "yyyy-MM-dd";
             return date.ToString(format);
         }
 
-        public static string xToDate(this DateTime date, string format, CultureInfo cultureInfo)
+        /// <summary>
+        /// convert date to culture format date
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="cultureInfo"></param>
+        /// <param name="format">y, m, d</param>
+        /// <returns></returns>
+        public static string xToDateFormat(this DateTime date, CultureInfo cultureInfo, string format = null)
         {
             if (format.xIsEmpty()) format = "d";
             return date.ToString(format, cultureInfo);
-        }
-
-        public static DateTime xToMin(this DateTime date)
-        {
-            return DateTime.Parse(date.ToShortDateString());
-        }
-
-        public static DateTime xToMax(this DateTime date)
-        {
-            return DateTime.Parse($"{date.AddDays(1).ToShortDateString()}");
         }
 
         public static string xToYear(this DateTime date)
@@ -57,6 +71,31 @@ namespace eXtensionSharp
         {
             return date.ToString("dd");
         }
+        
+        public static string xToHour(this DateTime date)
+        {
+            return date.ToString("hh");
+        }        
+
+        public static string xToMinute(this DateTime date)
+        {
+            return date.ToString("mm");
+        }
+
+        public static string xToSecond(this DateTime date)
+        {
+            return date.ToString("ss");
+        }
+        
+        /// <summary>
+        /// Get Year (2Letters)
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static string xToShortYear(this DateTime date)
+        {
+            return date.ToString("yy");
+        }
 
         /// <summary>
         /// Get Month (Full Letters)
@@ -71,16 +110,6 @@ namespace eXtensionSharp
         }
         
         /// <summary>
-        /// Get Year (2Letters)
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        public static string xToShortYear(this DateTime date)
-        {
-            return date.ToString("yyyy").xSubstring(2, 2);
-        }
-
-        /// <summary>
         /// Get Month (3Letters)
         /// </summary>
         /// <param name="dateTime"></param>
@@ -91,31 +120,71 @@ namespace eXtensionSharp
             var culture = new CultureInfo(cultureName);
             return culture.DateTimeFormat.GetAbbreviatedMonthName(dateTime.Month);
         }
-
-        public static DateTime xToFromDate(this DateTime dateTime, bool isMonth = false)
+        
+        /// <summary>
+        /// convert date to from date
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="isMonth"></param>
+        /// <remarks>
+        /// name change xToFromDate to xFromDate.
+        /// why this need?
+        /// This is because when searching for dates, you need to check by day, and in the case of monthly searches, you need to check down to the hour, minute and second.
+        /// query example:
+        ///     select * from user where date >= @startDate and date < @endDate 
+        /// </remarks>
+        /// <example> 
+        /// var now = DateTime.Now; //2024-11-14 15:44:40
+        /// var from = now.xFromDate(); //2024-11-14 00:00:00
+        /// var month = now.xFromDate(true); //2024-11-01 00:00:00
+        /// </example>
+        /// <returns></returns>
+        public static DateTime xFromDate(this DateTime dateTime, bool isMonth = false)
         {
-            if (isMonth)
-            {
-                return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0); 
-            }
+            if (isMonth) return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0);
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0);
         }
 
-        public static DateTime xToToDate(this DateTime dateTime, bool isMonth = false)
+        /// <summary>
+        /// convert date to to date
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="isMonth"></param>
+        /// <remarks>
+        /// name change xToFromDate to xFromDate.
+        /// why this need?
+        /// This is because when searching for dates, you need to check by day, and in the case of monthly searches, you need to check down to the hour, minute and second.
+        /// query example:
+        ///     select * from user where date >= @startDate and date < @endDate 
+        /// </remarks>
+        /// <example> 
+        /// var now = DateTime.Now; //2024-11-14 15:44:40
+        /// var from = now.xToDate() //2024-11-15 00:00:00
+        /// var month = now.xToDate() //2024-12-01 00:00:00
+        /// </example>
+        /// <returns></returns>
+        public static DateTime xToDate(this DateTime dateTime, bool isMonth = false)
         {
-            if (isMonth)
-            {
-                return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0).AddMonths(1);
-            }
+            if (isMonth) return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0).AddMonths(1);
             return (new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0)).AddDays(1);
         }
 
+        /// <summary>
+        /// get last day of year month
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
         public static DateTime xToLastDate(this DateTime dateTime)
         {
-            var lastDay = dateTime.xToLastDay();
+            var lastDay = DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
             return new DateTime(dateTime.Year, dateTime.Month, lastDay, 0, 0, 0, 0);
         }
         
+        /// <summary>
+        /// convert datetime to integer
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
         public static int xToDigitize(this DateTime dt)
         {
             if (int.TryParse($"{dt.Year}{dt.Month.ToString().PadLeft(2, '0')}{dt.Day.ToString().PadLeft(2, '0')}",
@@ -127,19 +196,12 @@ namespace eXtensionSharp
             return 0;
         }
 
-        public static int xToMonth(this int yearMonthDay)
-        {
-            var str = yearMonthDay.ToString();
-            return str.xSubstring(4, 2).xValue<int>(0);
-        }
-
-        public static int xToDay(this int yearMonthDay)
-        {
-            var str = yearMonthDay.ToString();
-            return str.xSubstring(6, 2).xValue<int>(0);
-        }
-
-        public static int xToWeekCount(this DateTime date)
+        /// <summary>
+        /// get week count in month
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static int xWeekCountInMonth(this DateTime date)
         {
             // first generate all dates in the month of 'date'
             var dates = Enumerable.Range(1, DateTime.DaysInMonth(date.Year, date.Month)).Select(n => new DateTime(date.Year, date.Month, n));
@@ -150,7 +212,12 @@ namespace eXtensionSharp
             return weekends.Count();
         }
 
-        public static DateTime xToWeekStart(this DateTime date)
+        /// <summary>
+        /// get start date of week (monday date)
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static DateTime xStartOfWeek(this DateTime date)
         {
             DateTime weekStart;
             int monday = 1;
@@ -162,7 +229,12 @@ namespace eXtensionSharp
             return weekStart;
         }
 
-        public static DateTime xToWeekStop(this DateTime date)
+        /// <summary>
+        /// get end date of week (sunday date)
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static DateTime xEndOfWeek(this DateTime date)
         {
             DateTime weekStart;
             int sunday = 7;
@@ -174,12 +246,13 @@ namespace eXtensionSharp
             return weekStart;
         }
 
-        public static int xToLastDay(this DateTime date)
-        {
-            return DateTime.DaysInMonth(date.Year, date.Month);
-        }
-
-        public static DateTime xToFirstSaturdayPerMonth(this DateTime date, DayOfWeek week = DayOfWeek.Saturday)
+        /// <summary>
+        /// 날짜의 특정 주의 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="week"></param>
+        /// <returns></returns>
+        public static DateTime xDateForDayInWeek(this DateTime date, DayOfWeek week = DayOfWeek.Saturday)
         {
             DateTime dt = new DateTime(date.Year, date.Month, 1); // 현재 월의 첫 날
             while (date.DayOfWeek != week) // 첫째 주 토요일 찾기
@@ -190,7 +263,12 @@ namespace eXtensionSharp
             return date;
         }
         
-        
+        /// <summary>
+        /// compare year
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         public static bool xIsYearEquals(this DateTime? from, DateTime? to)
         {
             if (from.xIsEmpty()) return false;
@@ -198,6 +276,12 @@ namespace eXtensionSharp
             return from!.Value.Year == to!.Value.Year;
         }
         
+        /// <summary>
+        /// compare year month
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         public static bool xIsMonthEquals(this DateTime? from, DateTime? to)
         {
             if (from.xIsEmpty()) return false;
@@ -205,6 +289,12 @@ namespace eXtensionSharp
             return from.xIsYearEquals(to) && (from!.Value.Month == to!.Value.Month);
         }
         
+        /// <summary>
+        /// compare year month day
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
         public static bool xIsDayEquals(this DateTime? from, DateTime? to)
         {
             if (from.xIsEmpty()) return false;
@@ -228,22 +318,52 @@ namespace eXtensionSharp
         {
             if(i <= 0) return TimeSpan.Zero;
             return TimeSpan.FromMinutes(i);
-        }     
-        
-        public static bool xTryDateParse(this string date, out DateTime dateTime)
-        {
-            return DateTime.TryParseExact(date, "yyyy-MM-dd", null, DateTimeStyles.None, out dateTime);
-        }
-        
-        public static bool xTryDateParse(this string date, string format, out DateTime dateTime)
-        {
-            return DateTime.TryParseExact(date, format, null, DateTimeStyles.None, out dateTime);
         }
 
+        /// <summary>
+        /// get day of week (string)
+        /// </summary>
+        /// <param name="date"></param>
+        /// <param name="culture"></param>
+        /// <example>
+        /// var now = DateTime.Now;
+        /// var dayofweek = now.xToDayOfWeek(); //Monday
+        /// </example>
+        /// <returns></returns>
         public static string xToDayOfWeek(this DateTime date, string culture = null)
         {
             if (culture.xIsEmpty()) culture = CultureInfo.CurrentCulture.Name;
             return date.ToString("dddd", new CultureInfo(culture));
+        }
+
+        /// <summary>
+        /// Unix timestamp(second) to Datetime
+        /// </summary>
+        /// <param name="tsSecond"></param>
+        /// <param name="local"></param>
+        /// <returns></returns>
+        public static DateTime xFromUnixTimestampSecToDateTime(this long tsSecond, bool local = true)
+        {
+            var offset = DateTimeOffset.FromUnixTimeSeconds(tsSecond);
+            return local ? offset.LocalDateTime : offset.UtcDateTime;
+        }
+        
+        /// <summary>
+        /// Unix timestamp(millisecond) to Datetime
+        /// </summary>
+        /// <param name="tsMs"></param>
+        /// <param name="local"></param>
+        /// <returns></returns>
+        public static DateTime xFromUnixTimestampMsToDateTime(this long tsMs, bool local = true)
+        {
+            var offset = DateTimeOffset.FromUnixTimeMilliseconds(tsMs);
+            return local ? offset.LocalDateTime : offset.UtcDateTime;
+        }
+
+        public static DateTime xToTimezoneDate(this DateTime date, string timezoneId = "Korea Standard Time")
+        {
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
+            return TimeZoneInfo.ConvertTimeFromUtc(date, timezone);
         }
     }
     

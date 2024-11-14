@@ -5,7 +5,7 @@ namespace eXtensionSharp
 {
     public static class XSerializeExtensions
     {
-        public static T xFromDeserialize<T>(this string jsonString, JsonSerializerOptions options = null)
+        public static T xDeserialize<T>(this string jsonString, JsonSerializerOptions options = null)
         {
             if (options.xIsEmpty())
             {
@@ -18,7 +18,7 @@ namespace eXtensionSharp
             return JsonSerializer.Deserialize<T>(jsonString, options);
         }
         
-        public static string xToSerialize<T>(this T entity, JsonSerializerOptions options = null)
+        public static string xSerialize<T>(this T entity, JsonSerializerOptions options = null)
             where T : class
         {
             if (options.xIsEmpty())

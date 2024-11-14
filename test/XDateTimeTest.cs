@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using NUnit.Framework;
 
@@ -21,20 +23,39 @@ public class XDateTimeTest
         
         Assert.That(list.Count, Is.EqualTo(11));
     }
-    [Test]
-    public void datetime_parse_test()
-    {
-        var isConverted = "2022-12-31".xTryDateParse(out var date);
-        Assert.That(isConverted, Is.True);
-        Assert.That(DateTime.Parse("2022-12-31"), Is.EqualTo(date));
-    }
     
     [Test]
-    public void datetime_parse_format_test()
+    public void string_to_datetime_test()
     {
-        var format = "yyyy-MM-dd";
-        var isConverted = "2022-12-31".xTryDateParse(format, out var date);
-        Assert.That(isConverted, Is.True);
-        Assert.That(DateTime.Parse("2022-12-31"), Is.EqualTo(date));
+        var date = "2022-01-02";
+        var convertedDate = date.xConvertToDate();
+        Assert.That(convertedDate, Is.Not.Null);
+        Assert.That($"{convertedDate.Value.xToYear()}-{convertedDate.Value.xToMonth()}-{convertedDate.Value.xToDay()}", Is.EqualTo(date));
+    }
+
+    [Test]
+    public void datetime_from_to_test()
+    {
+        var items = new Dictionary<int, DateTime>();
+        Enumerable.Range(1, 100).ToList().ForEach(i =>
+        {
+            items.Add(i, DateTime.Now.AddDays(i));
+        });
+
+        var now = DateTime.Now;
+        var from = now.xFromDate().AddDays(1);
+        var to = now.xToDate().AddDays(10);
+        var selectedItems = items.Where(m => m.Value >= from && m.Value < to).ToList();
+        Assert.That(selectedItems.Count, Is.EqualTo(10));
+    }
+
+    [Test]
+    public void dateformat_culture_test()
+    {
+        var date = DateTime.Now;
+        var convertedDate = date.xToDateFormat(new CultureInfo("en-US"), "m");
+        TestContext.WriteLine(convertedDate);
+
+        TestContext.WriteLine(date.xToDayOfWeek());
     }
 }

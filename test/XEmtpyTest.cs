@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test;
@@ -51,18 +52,16 @@ public class XEmtpyTest
         var map = new Dictionary<string, string>();
         var hashset = new HashSet<string>();
         var hashtable = new Hashtable();
+        var collection = new Collection<string>();
+        
         Assert.Multiple(() =>
         {
             Assert.That(list1.xIsEmpty(), Is.True);
             Assert.That(map.xIsEmpty(), Is.True);
             Assert.That(hashset.xIsEmpty(), Is.True);
             Assert.That(hashtable.xIsEmpty(), Is.True);
+            Assert.That(collection.xIsEmpty(), Is.True);
         });
-        
-        list1.Add(string.Empty);
-        map.Add("A", "A");
-        hashset.Add("test");
-        hashtable.Add("A", "A");
     }
 
     [Test]

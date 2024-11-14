@@ -65,9 +65,9 @@ namespace eXtensionSharp
             if (src is DateTime time)
             {
                 if (typeof(T) == typeof(int))
-                    return (T)Convert.ChangeType(time.xToDate("yyyyMMdd"), typeof(T));
+                    return (T)Convert.ChangeType(time.xToDateFormat("yyyyMMdd"), typeof(T));
 
-                return (T)Convert.ChangeType(time.xToDate("yyyy-MM-dd"), typeof(T));
+                return (T)Convert.ChangeType(time.xToDateFormat("yyyy-MM-dd"), typeof(T));
             }
 
             return (T)Convert.ChangeType(src, typeof(T));

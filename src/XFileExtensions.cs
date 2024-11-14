@@ -105,7 +105,7 @@ namespace eXtensionSharp
         {
             if (!fileInfo.Exists.xIsFalse()) return string.Empty;
             return
-                $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDate("yyyy-MM-dd HH:mm:ss")}|{fileInfo.LastWriteTime.xToDate("yyyy-MM-dd HH:mm:ss")}"
+                $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDateFormat("yyyy-MM-dd HH:mm:ss")}|{fileInfo.LastWriteTime.xToDateFormat("yyyy-MM-dd HH:mm:ss")}"
                     .xGetHashCode();
         }
 

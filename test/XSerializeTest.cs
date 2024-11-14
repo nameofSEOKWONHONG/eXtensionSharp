@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace eXtensionSharp.test;
 
-public class XEntityTest
+public class XSerializeTest
 {
     public static string _data = @"
 {
@@ -23,7 +26,8 @@ public class XEntityTest
     [Test]
     public void from_deserialize_test()
     {
-        var converted = _data.xFromDeserialize<WeatherForecast>();
+        var converted = _data.xDeserialize<WeatherForecast>();
+        converted.xSerialize();
         Assert.That(converted, Is.Not.Null);
         Assert.That(converted.Id, Is.EqualTo(1));
     }
@@ -31,8 +35,8 @@ public class XEntityTest
     [Test]
     public void from_deserialize_to_serialize_test()
     {
-        var converted = _data.xFromDeserialize<WeatherForecast>();
-        var json = converted.xToSerialize();
+        var converted = _data.xDeserialize<WeatherForecast>();
+        var json = converted.xSerialize();
         Assert.Multiple(() =>
         {
             Assert.That(json, Is.Not.Empty);
@@ -46,7 +50,7 @@ public class XEntityTest
         var items = new List<WeatherForecast>();
         items.Add(new WeatherForecast() { Id = 1, City = "Georgia", Date = DateTime.Now, Summary = "test", TemperatureC  = 32});
         items.Add(new WeatherForecast() { Id = 2, City = "Georgia", Date = DateTime.Now, Summary = "test", TemperatureC  = 32});
-        var json = items.xToSerialize();
+        var json = items.xSerialize();
         Assert.That(json, Is.Not.Empty);
         Assert.That(json, Does.Contain("Summary"));
     }

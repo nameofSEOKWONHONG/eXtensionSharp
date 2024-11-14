@@ -31,8 +31,8 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// xIsEmpty dose not support number type.<br/>
-        /// xIsEmpty dose not support DateTime type.
+        /// xIsEmpty does not support number type.<br/>
+        /// xIsEmpty does not support DateTime type.
         /// </summary>
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
