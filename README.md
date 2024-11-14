@@ -7,10 +7,17 @@ This is a project that creates many useful methods based on null safe.
 Refer to the test code for how to use it.
 
 ## Support
-net7, net8
+net7, net8, net9
 
 ## Version
-[* 1.0.1.12
+* 1.0.2
+  * change datetime extensions, rename and remove method.
+  * remove xenum.
+  * name change xToEntity -> xSerialize, xToJson -> xDeserialize
+  * xIsEmpty no more check datetime type.
+  * more information refer XDateTimeTest.cs code.
+
+* 1.0.1.12
   * remove - xToJoin
   * change - xJoin, if empty collection, return string.empty.]()
 
