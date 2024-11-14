@@ -13,7 +13,7 @@ net7, net8, net9
 * 1.0.2
   * change datetime extensions, rename and remove method.
   * remove xenum.
-  * name change xToEntity -> xSerialize, xToJson -> xDeserialize
+  * name change xToEntity -> xDeserialize, xToJson -> xSerialize
   * xIsEmpty no more check datetime type.
   * more information refer XDateTimeTest.cs code.
 
