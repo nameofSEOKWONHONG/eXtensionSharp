@@ -4,10 +4,9 @@ using System.Text;
 
 namespace eXtensionSharp
 {
-    public static class XCryptHMAC
+    public static class XCryptionHmac
     {
-        public static string xToHMAC(this string encData, string encKey,
-            DeconvertCipherFormat deconvertCipherFormat)
+        public static string xToHMAC(this string encData, string encKey, DeconvertCipherFormat format)
         {
             var encoding = new UTF8Encoding();
             var keyBuff = encoding.GetBytes(encKey);
@@ -22,10 +21,10 @@ namespace eXtensionSharp
             return hashMessage.fromHexToString();
         }
 
-        public static byte[] xToHMAC(this string cipherText, DeconvertCipherFormat outputFormat)
+        public static byte[] xToHMAC(this string cipherText, DeconvertCipherFormat format)
         {
             byte[] decodeText = null;
-            switch (outputFormat)
+            switch (format)
             {
                 case DeconvertCipherFormat.HEX:
                     decodeText = fromHexToByte(cipherText);
