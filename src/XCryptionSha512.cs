@@ -3,28 +3,8 @@ using System.Text;
 
 namespace eXtensionSharp
 {
-    public static class XCryptSHA512
+    public static class XCryptionSha512
     {
-        /// <summary>
-        ///     SHA512 Encrypt (Decrypt is not support.)
-        /// </summary>
-        /// <param name="encryptText"></param>
-        /// <returns></returns>
-        [Obsolete("don't use function", true)]
-        public static string xToSHA512(this string encryptText)
-        {
-            using (var sha512 = SHA512.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(encryptText);
-                var hash = sha512.ComputeHash(bytes);
-                var sb = new StringBuilder();
-
-                for (var i = 0; i < hash.Length; i++) sb.Append(hash[i].ToString("X2"));
-
-                return sb.ToString();
-            }
-        }
-
         /// <summary>
         /// SHA512 암호화, 블레이저 지원 안함.
         /// HASH로 인하여 동키값 암호화가 지원되지 않음.

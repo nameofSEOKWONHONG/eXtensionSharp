@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eXtensionSharp
 {
-    public static class XCryptAES256
+    public static class XCryptionAes256
     {
         public static string xToEncAES(this string plainText, string cipherKey, string cipherIV,
             CipherMode cipherMode, PaddingMode paddingMode)

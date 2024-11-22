@@ -1,7 +1,5 @@
 using System.Diagnostics;
-using System.IO.Compression;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace eXtensionSharp
@@ -108,24 +106,11 @@ namespace eXtensionSharp
                 $"{fileInfo.FullName}|{fileInfo.CreationTime.xToDateFormat("yyyy-MM-dd HH:mm:ss")}|{fileInfo.LastWriteTime.xToDateFormat("yyyy-MM-dd HH:mm:ss")}"
                     .xGetHashCode();
         }
-
-		private static Regex _fileExtension =
-			new Regex(@"^.*\.(zip|ZIP|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-		public static bool xIsExtension(this string fileName)
+        
+        private static Regex _fileExtension = new Regex(@"^.*\.(zip|ZIP|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF|gr|GR|br|BR|)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        internal static bool xIsAllowFileExtension(this string fileName)
         {
-            return _fileExtension.IsMatch(fileName);
-        }
-
-        public static void xZip(this string srcDir, string destZipFileName,
-            CompressionLevel compressionLevel = CompressionLevel.Fastest)
-        {
-            ZipFile.CreateFromDirectory(srcDir, destZipFileName, compressionLevel, false);
-        }
-
-        public static void xUnzip(this string srcFileName, string destdir)
-        {
-            if (srcFileName.xIsExtension())
-                ZipFile.ExtractToDirectory(srcFileName, destdir, null, true);
+	        return _fileExtension.IsMatch(fileName);
         }
 
         /// <summary>

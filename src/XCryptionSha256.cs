@@ -3,16 +3,14 @@ using System.Text;
 
 namespace eXtensionSharp
 {
-    public static class XCryptSHA256
+    public static class XCryptionSha256
     {
         /// <summary>
         ///     SHA256 Encrypt (Decrypt is not support.)
         /// </summary>
         /// <param name="encryptText"></param>
-        /// <param name="encryptKey"></param>
-        /// <param name="useHashing">not use</param>
         /// <returns></returns>
-        public static string xToSHA256(this string encryptText)
+        public static string xToSha256(this string encryptText)
         {
             using (var sha = SHA256.Create())
             {
