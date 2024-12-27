@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -52,7 +51,7 @@ namespace eXtensionSharp.test {
         }
 
         [Test]
-        public void jsonnode_to_value_test()
+        public void json_node_to_value_test()
         {
             using var doc = JsonDocument.Parse(
                 "[\n    {\n        \"Name\" : \"Test 2\",\n        \"NumberOfComponents\" : 1,\n        \"IsActive\" : true,\n        \"CreatedBy\" : \"bsharma\"\n    },\n    {\n        \"Name\" : \"Test 2\",\n        \"NumberOfComponents\" : 1,\n        \"IsActive\" : true,\n        \"CreatedBy\" : \"bsharma\"\n    }\n]");
@@ -79,8 +78,8 @@ namespace eXtensionSharp.test {
 			var bytes = text.xCompress( System.IO.Compression.CompressionLevel.Optimal);
             var decompressTest = bytes.xUnCompress();
 
-			TestContext.WriteLine(text.Length);
-			TestContext.WriteLine(bytes.Length);
+			TestContext.Out.WriteLine(text.Length);
+			TestContext.Out.WriteLine(bytes.Length);
 			
 			Assert.That(text, Is.EqualTo(decompressTest));
         }
@@ -94,8 +93,8 @@ namespace eXtensionSharp.test {
 			var bytes = await text.xCompressAsync(System.IO.Compression.CompressionLevel.Optimal);
 			var decompressTest = await bytes.xUnCompressAsync();
 
-			TestContext.WriteLine(text.Length);
-			TestContext.WriteLine(bytes.Length);
+			TestContext.Out.WriteLine(text.Length);
+			TestContext.Out.WriteLine(bytes.Length);
 
 			Assert.That(text, Is.EqualTo(decompressTest));
 		}
@@ -114,5 +113,32 @@ namespace eXtensionSharp.test {
             Assert.That(empty_str, Is.EqualTo(string.Empty));
 
         }
+
+        [Test]
+        public void xslice_test()
+        {
+            var v= "hello world";
+            var n = v.xSlice(0, 5);
+            Assert.That(n.Length, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void xcount_test()
+        {
+            var v = "hello world";
+            var n = v.xCount();
+            Assert.That(n, Is.EqualTo(v.Length));
+            
+            n = v.xCount('o');
+            Assert.That(n, Is.EqualTo(2));
+        }
     }
+}
+
+public class Order
+{
+    public string Id { get; set; }
+    
+    public DateTime SubmittedDate { get; set; }
+    public decimal TotalPrice { get; set; }
 }

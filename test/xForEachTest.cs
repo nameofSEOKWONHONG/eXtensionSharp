@@ -23,7 +23,7 @@ namespace eXtensionSharp.test {
                     isFind = item == expected;
                 }
             });
-            Assert.IsTrue(isFind);
+            Assert.That(isFind, Is.True);
         }
 
         [Test]

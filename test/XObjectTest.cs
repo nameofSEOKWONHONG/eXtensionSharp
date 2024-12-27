@@ -13,19 +13,19 @@ namespace eXtensionSharp.test {
         [Test]
         public void string_match() {
             var a = "A";
-            Assert.IsTrue(a.xIsSame("A"));
+            Assert.That(a.xIsSame("A"), Is.True);
         }
 
         [Test]
         public void string_collection_match() {
             var alist = new string[] {"A", "B", "C"};
-            Assert.IsTrue("A".xContains(alist));
+            Assert.That("A".xContains(alist), Is.True);
         }
 
         [Test]
         public void string_collection_match2() {
             var a = "B";
-            Assert.IsTrue(a.xContains(new[]{"A", "B", "C"}));
+            Assert.That(a.xContains(["A", "B", "C"]), Is.True);
         }
 
         [Test]
@@ -91,8 +91,11 @@ namespace eXtensionSharp.test {
             list.Add(eo);
 
             var dylist = list.xToDictionaries().ToList();
-            Assert.That(dylist[0]["Name"].xValue<string>(), Is.EqualTo("test"));
-            Assert.That(dylist[0]["Age"].xValue<int>(), Is.EqualTo(10));
+            Assert.Multiple(() =>
+            {
+                Assert.That(dylist[0]["Name"].xValue<string>(), Is.EqualTo("test"));
+                Assert.That(dylist[0]["Age"].xValue<int>(), Is.EqualTo(10));
+            });
         }
     }
     

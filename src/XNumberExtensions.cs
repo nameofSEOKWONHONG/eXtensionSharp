@@ -17,15 +17,14 @@ namespace eXtensionSharp
         {
             if (str.xIsEmpty()) return string.Empty;
             if (str.Length < 11) throw new Exception("str length is less than 11");
-            
-            var nation = string.Empty;
-            var head = string.Empty;
-            var body = string.Empty;
-            var tail = string.Empty;
+
+            string head;
+            string body;
+            string tail;
             
             if (str.Length > 11)
             {
-                nation = str.xSubstringFirst(2);
+                var nation = str.xSubstringFirst(2);
                 head = str.xSubstringMiddle(2, 3);
                 body = str.xSubstringMiddle(5, 4);
                 tail = str.Substring(9);
@@ -41,8 +40,8 @@ namespace eXtensionSharp
         
         public static string xDisplayNumber<T>(this T val, ENUM_NUMBER_FORMAT_TYPE type, ENUM_VIEW_ALLOW_TYPE allow = ENUM_VIEW_ALLOW_TYPE.NotAllow) where T : struct
         {
-            if (val.GetType() == typeof(DateTime)) throw new NotSupportedException("DateTime is not support.");
-            if (val.GetType() == typeof(float)) throw new NotSupportedException("float is not support.");
+            if (val is DateTime) throw new NotSupportedException("DateTime is not support.");
+            if (val is float) throw new NotSupportedException("float is not support.");
 
             var result = type switch
             {
@@ -114,20 +113,7 @@ namespace eXtensionSharp
             return string.Format("{0}-*******", val.ToString().xSubstringFirst(6));
         }
 
-        public static string xSubstringMiddle(this string value, int fromLen, int getLen)
-        {
-            return value.Substring(fromLen, getLen);
-        }
 
-        public static string xSubstringFirst(this string value, int length)
-        {
-            return value.Substring(0, length);
-        }
-
-        public static string xSubstringLast(this string value, int length)
-        {
-            return value.Substring(value.Length - length, length);
-        }
 
         public static T ToSum<T>(this IEnumerable<T> args) where T : INumber<T>
         {

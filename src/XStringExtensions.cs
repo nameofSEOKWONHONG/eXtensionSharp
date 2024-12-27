@@ -9,13 +9,6 @@ namespace eXtensionSharp
 {
     public static class XStringExtensions
     {
-        /*
-         * Span변환의 장점 : 스택에 메모리 할당되므로 GC가 발생하지 않도록 해줌.
-         * Memory<T> (T:Class) -> Span<T> (T:Struct)로 변환하여 사용 가능
-         * new 대신 stackalloc 사용할 경우 GC 압력이 줄어듬.(struct type에 대하여, int, char, byte 등등)
-         * windows stack 최대 할당 용량은 1MB
-         */
-
         /// <summary>
         /// substring
         /// </summary>
@@ -38,8 +31,24 @@ namespace eXtensionSharp
         {
             if (str.xIsEmpty()) return string.Empty;
             if (str.Length <= 0) return string.Empty;
-            if (length > 0) return str.AsSpan()[startIndex..(startIndex + length)].ToString();
-            return str.AsSpan()[startIndex..str.Length].ToString();
+            if (length > 0) return str[startIndex..(startIndex + length)].ToString();
+            return str[startIndex..str.Length].ToString();
+        }
+
+        /// <summary>
+        /// substring use span
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static ReadOnlySpan<char> xSlice(this string str, int startIndex, int length = 0)
+        {
+            if(str.xIsEmpty()) return ReadOnlySpan<char>.Empty;
+            if (str.Length <= 0) return ReadOnlySpan<char>.Empty;
+            if(length <=0) return ReadOnlySpan<char>.Empty;
+            
+            return str.AsSpan(startIndex, length);
         }
 
         /// <summary>
@@ -140,14 +149,12 @@ namespace eXtensionSharp
         {
             var bytes = Encoding.Unicode.GetBytes(value);
 
-			using (var memoryStream = new MemoryStream())
-			{
-				using (var gzipStream = new GZipStream(memoryStream, level))
-				{
-					gzipStream.Write(bytes, 0, bytes.Length);
-				}
-				return memoryStream.GetBuffer();
-			}
+            using var memoryStream = new MemoryStream();
+            using (var gzipStream = new GZipStream(memoryStream, level))
+            {
+                gzipStream.Write(bytes, 0, bytes.Length);
+            }
+            return memoryStream.GetBuffer();
         }
 
         /// <summary>
@@ -157,20 +164,14 @@ namespace eXtensionSharp
         /// <returns></returns>
         public static string xUnCompress(this byte[] bytes)
         {
-            using (var memoryStream = new MemoryStream(bytes))
-            {
-				using (var outputStream = new MemoryStream())
-                {
-                    using (var decompressStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-                    {
-						decompressStream.CopyTo(outputStream);
+            using var memoryStream = new MemoryStream(bytes);
+            using var outputStream = new MemoryStream();
+            using var decompressStream = new GZipStream(memoryStream, CompressionMode.Decompress);
+            decompressStream.CopyTo(outputStream);
 
-						var outputBytes = outputStream.ToArray();
-						return Encoding.Unicode.GetString(outputBytes);
-					}
-				}
-			}
-		}
+            var outputBytes = outputStream.ToArray();
+            return Encoding.Unicode.GetString(outputBytes);
+        }
 
 		/// <summary>
 		/// gzip compression
@@ -182,15 +183,13 @@ namespace eXtensionSharp
 		{
 			var bytes = Encoding.Unicode.GetBytes(value);
 
-			using (var memoryStream = new MemoryStream())
-			{
-				using (var gzipStream = new GZipStream(memoryStream, level))
-				{
-					await gzipStream.WriteAsync(bytes, 0, bytes.Length);
-				}
-				return memoryStream.ToArray();
-			}
-		}
+            using var memoryStream = new MemoryStream();
+            await using (var gzipStream = new GZipStream(memoryStream, level))
+            {
+                await gzipStream.WriteAsync(bytes, 0, bytes.Length);
+            }
+            return memoryStream.ToArray();
+        }
 
 		/// <summary>
 		/// gzip uncompression
@@ -198,21 +197,15 @@ namespace eXtensionSharp
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public static async Task<string> xUnCompressAsync(this byte[] bytes)
-		{
-			using (var memoryStream = new MemoryStream(bytes))
-			{
-				using (var outputStream = new MemoryStream())
-				{
-					using (var decompressStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-					{
-						await decompressStream.CopyToAsync(outputStream);
+        {
+            using var memoryStream = new MemoryStream(bytes);
+            using var outputStream = new MemoryStream();
+            await using var decompressStream = new GZipStream(memoryStream, CompressionMode.Decompress);
+            await decompressStream.CopyToAsync(outputStream);
 
-						var outputBytes = outputStream.ToArray();
-						return Encoding.Unicode.GetString(outputBytes);
-					}
-				}
-			}
-		}
+            var outputBytes = outputStream.ToArray();
+            return Encoding.Unicode.GetString(outputBytes);
+        }
 
 		public static string xJoin(this string[] value, string separator)
         {
@@ -271,13 +264,7 @@ namespace eXtensionSharp
         public static string xDistinct(this string str)
         {
             var hash = new HashSet<char>();
-            str.xForEach(item =>
-            {
-                if (!hash.Contains(item))
-                {
-                    hash.Add(item);
-                }
-            });
+            str.xForEach(item => { hash.Add(item); });
 
             return hash.xJoin(string.Empty);
         }
@@ -285,13 +272,7 @@ namespace eXtensionSharp
         public static string xDistinct(this IEnumerable<string> items)
         {
             var hash = new HashSet<string>();
-            items.xForEach(item =>
-            {
-                if (!hash.Contains(item))
-                {
-                    hash.Add(item);
-                }
-            });
+            items.xForEach(item => { hash.Add(item); });
 
             return hash.xJoin();
         }
@@ -390,63 +371,81 @@ namespace eXtensionSharp
             return lowerCase ? builder.ToString().ToLower() : builder.ToString();
         }
         
-        private static string xToString(Expression expr)
+        // private static string xToString(Expression expr)
+        // {
+        //     switch (expr.NodeType)
+        //     {
+        //         case ExpressionType.Lambda:
+        //             //x => (Something), return only (Something), the Body
+        //             return xToString(((LambdaExpression)expr).Body);
+        //
+        //         case ExpressionType.Convert:
+        //         case ExpressionType.ConvertChecked:
+        //             //type casts are not important
+        //             return xToString(((UnaryExpression)expr).Operand);
+        //
+        //         case ExpressionType.Call:
+        //             //method call can be an Indexer (get_Item),
+        //             var callExpr = (MethodCallExpression)expr;
+        //             if (callExpr.Method.Name == "get_Item")
+        //             {
+        //                 //indexer call
+        //                 return xToString(callExpr.Object) + "[" +
+        //                        string.Join(",", callExpr.Arguments.Select(xToString)) + "]";
+        //             }
+        //             else
+        //             {
+        //                 //method call
+        //                 var arguments = callExpr.Arguments.Select(xToString).ToArray();
+        //                 string target;
+        //                 if (callExpr.Method.IsDefined(typeof(ExtensionAttribute), false))
+        //                 {
+        //                     //extension method
+        //                     target = string.Join(".", arguments[0], callExpr.Method.Name);
+        //                     arguments = arguments.Skip(1).ToArray();
+        //                 }
+        //                 else if (callExpr.Object == null)
+        //                 {
+        //                     //static method
+        //                     target = callExpr.Method.Name;
+        //                 }
+        //                 else
+        //                 {
+        //                     //instance method
+        //                     target = string.Join(".", xToString(callExpr.Object), callExpr.Method.Name);
+        //                 }
+        //
+        //                 return target + "(" + string.Join(",", arguments) + ")";
+        //             }
+        //         case ExpressionType.MemberAccess:
+        //             //property or field access
+        //             var memberExpr = (MemberExpression)expr;
+        //             if (memberExpr.Expression.Type.Name.Contains("<>")) //closure type, don't show it.
+        //                 return memberExpr.Member.Name;
+        //             else
+        //                 return string.Join(".", xToString(memberExpr.Expression), memberExpr.Member.Name);
+        //     }
+        //
+        //     //by default, show the standard implementation
+        //     return expr.ToString();
+        // }
+        
+        public static string xSubstringMiddle(this string value, int fromLen, int getLen)
         {
-            switch (expr.NodeType)
-            {
-                case ExpressionType.Lambda:
-                    //x => (Something), return only (Something), the Body
-                    return xToString(((LambdaExpression)expr).Body);
-
-                case ExpressionType.Convert:
-                case ExpressionType.ConvertChecked:
-                    //type casts are not important
-                    return xToString(((UnaryExpression)expr).Operand);
-
-                case ExpressionType.Call:
-                    //method call can be an Indexer (get_Item),
-                    var callExpr = (MethodCallExpression)expr;
-                    if (callExpr.Method.Name == "get_Item")
-                    {
-                        //indexer call
-                        return xToString(callExpr.Object) + "[" +
-                               string.Join(",", callExpr.Arguments.Select(xToString)) + "]";
-                    }
-                    else
-                    {
-                        //method call
-                        var arguments = callExpr.Arguments.Select(xToString).ToArray();
-                        string target;
-                        if (callExpr.Method.IsDefined(typeof(ExtensionAttribute), false))
-                        {
-                            //extension method
-                            target = string.Join(".", arguments[0], callExpr.Method.Name);
-                            arguments = arguments.Skip(1).ToArray();
-                        }
-                        else if (callExpr.Object == null)
-                        {
-                            //static method
-                            target = callExpr.Method.Name;
-                        }
-                        else
-                        {
-                            //instance method
-                            target = string.Join(".", xToString(callExpr.Object), callExpr.Method.Name);
-                        }
-
-                        return target + "(" + string.Join(",", arguments) + ")";
-                    }
-                case ExpressionType.MemberAccess:
-                    //property or field access
-                    var memberExpr = (MemberExpression)expr;
-                    if (memberExpr.Expression.Type.Name.Contains("<>")) //closure type, don't show it.
-                        return memberExpr.Member.Name;
-                    else
-                        return string.Join(".", xToString(memberExpr.Expression), memberExpr.Member.Name);
-            }
-
-            //by default, show the standard implementation
-            return expr.ToString();
+            if(value.xIsEmpty()) return string.Empty;
+            return value.Substring(fromLen, getLen);
         }
+
+        public static string xSubstringFirst(this string value, int length)
+        {
+            if(value.xIsEmpty()) return string.Empty;
+            return value.Substring(0, length);
+        }
+
+        public static string xSubstringLast(this string value, int length)
+        {
+            if(value.xIsEmpty()) return string.Empty;
+            return value.Substring(value.Length - length, length);
+        }        
     }
 }

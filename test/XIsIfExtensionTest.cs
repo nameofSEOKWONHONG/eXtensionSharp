@@ -10,17 +10,16 @@ public class XIsIfExtensionTest
     public void xis_if_test()
     {
         var expected = false;
-        var a = "a";
-        a.xIf("b", () => Assert.AreEqual(expected, true), () => Assert.AreEqual(expected, false));
+        const string a = "a";
+        a.xIf("b", () => Assert.That(expected, Is.True), () => Assert.That(expected, Is.False));
     }
 
     [Test]
     public void xis_if_test2()
     {
-        var expected = false;
         var a = 1;
         var result = 0;
         a.xIf(2, () => result = 1, () => result = 2);
-        Assert.AreNotEqual(a, result);
+        Assert.That(a, Is.Not.EqualTo(result));
     }
 }
