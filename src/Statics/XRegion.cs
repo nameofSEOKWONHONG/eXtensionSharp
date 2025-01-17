@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace eXtensionSharp
 {
-    public static class XRegionExtensions
+    public class XRegion
     {
         public static IEnumerable<RegionInfo> xGetAllRegionInfos(string[] nationCodes = null)
         {
@@ -28,11 +28,6 @@ namespace eXtensionSharp
                 }
             }
             return regionInfos.OrderBy(m => m.DisplayName);
-        }
-
-        public static RegionInfo xGetRegionInfo(this string regionCode)
-        {
-            return new RegionInfo(regionCode);
         }
     }
 }

@@ -179,6 +179,12 @@ namespace eXtensionSharp
             return string.Equals(src, dest, StringComparison.OrdinalIgnoreCase);
         }
         
+        /// <summary>
+        /// get true, false of duplicate list
+        /// </summary>
+        /// <param name="items"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static bool xIsDuplicate<T>(this IEnumerable<T> items)
         {
             if (items.xIsEmpty()) return false;
@@ -196,9 +202,16 @@ namespace eXtensionSharp
             return false;
         }
 
-        public static bool xTryDuplicate<T>(this IEnumerable<T> items, out T key)
+        /// <summary>
+        /// get true, false of duplicate list, and out duplicate item
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="duplicateItem"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static bool xTryDuplicate<T>(this IEnumerable<T> items, out T duplicateItem)
         {
-            key = default;
+            duplicateItem = default;
 
             if (items.xIsEmpty()) return false;
 
@@ -208,7 +221,7 @@ namespace eXtensionSharp
             {
                 if (!set.Add(item))
                 {
-                    key = item;
+                    duplicateItem = item;
                     return true;
                 }
             }

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace eXtensionSharp;
 
-public static partial class XExpressionUtils
+public static class XExpressionUtils
 {
     public static Expression<Func<T, bool>> BuildPredicate<T>(string propertyName, string comparison, string value)
     {
@@ -75,7 +75,7 @@ public static partial class XExpressionUtils
     }
 }
 
-public static partial class QueryableExtensions
+public static class QueryableExtensions
 {
     public static IQueryable<T> Where<T>(this IQueryable<T> source, string propertyName, string comparison, string value)
     {

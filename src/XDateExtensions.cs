@@ -145,8 +145,8 @@ namespace eXtensionSharp
         /// <returns>The adjusted <see cref="DateTime"/> object.</returns>
         public static DateTime xFromDate(this DateTime dateTime, bool isMonth = false)
         {
-            if (isMonth) return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0);
-            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0);
+            if (isMonth) return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0, dateTime.Kind);
+            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0, dateTime.Kind);
         }
 
         /// <summary>
@@ -157,8 +157,8 @@ namespace eXtensionSharp
         /// <returns>The adjusted <see cref="DateTime"/> object.</returns>
         public static DateTime xToDate(this DateTime dateTime, bool isMonth = false)
         {
-            if (isMonth) return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0).AddMonths(1);
-            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0).AddDays(1);
+            if (isMonth) return new DateTime(dateTime.Year, dateTime.Month, 1, 0, 0, 0, 0, dateTime.Kind).AddMonths(1);
+            return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0, dateTime.Kind).AddDays(1);
         }
 
 
@@ -170,7 +170,7 @@ namespace eXtensionSharp
         public static DateTime xToLastDate(this DateTime dateTime)
         {
             var lastDay = DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
-            return new DateTime(dateTime.Year, dateTime.Month, lastDay, 0, 0, 0, 0);
+            return new DateTime(dateTime.Year, dateTime.Month, lastDay, 0, 0, 0, 0, dateTime.Kind);
         }
         
         /// <summary>

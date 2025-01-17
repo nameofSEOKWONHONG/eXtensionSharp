@@ -1,11 +1,9 @@
-using System;
-using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 
 namespace eXtensionSharp
 {
-    public class XEnvExtensions
+    public class XEnv
     {
         public static bool xIsWindows()
         {
@@ -20,6 +18,11 @@ namespace eXtensionSharp
         public static bool xIsLinux()
         {
             return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        }
+
+        public static bool xIsFreeBSD()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
         }
 
         public static int xCpuCoreCount()

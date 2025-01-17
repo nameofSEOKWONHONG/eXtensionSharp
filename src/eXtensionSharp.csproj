@@ -1,26 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <TargetFrameworks>net7.0;net8.0;net9.0;</TargetFrameworks>
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        
         <Copyright>MIT</Copyright>
         <Product>eXtensionSharp</Product>
         <Company>seokwon hong</Company>
-        <Version>1.0.1.12</Version>
-        <FileVersion>1.0.0.8</FileVersion>
+        <Version>1.0.2</Version>
+        <FileVersion>1.0.2</FileVersion>
         <Title>eXtensionSharp</Title>
         <Description>c# extensions</Description>
         <PackageProjectUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <TargetFrameworks>net7.0;net8.0;net9.0;</TargetFrameworks>
-        <PackageTags>cshapr, extension</PackageTags>        
+        <PackageTags>c# extension</PackageTags>    
     </PropertyGroup>
-    
-    <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
     
     <ItemGroup>
       <Content Include="..\README.md">

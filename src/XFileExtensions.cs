@@ -7,21 +7,21 @@ namespace eXtensionSharp
     public static class XFileExtensions
     {
         /// <summary>
-        /// ���ϸ� ��ȸ
+        /// get file name
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
         public static string xGetFileName(this string fileName) => Path.GetFileName(fileName);
 
         /// <summary>
-        /// ���ϸ� ��ȸ (Ȯ���� ����)
+        /// get file name without extension
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
 		public static string xGetFileNameWithoutExtension(this string fileName) => Path.GetFileNameWithoutExtension(fileName);
 
         /// <summary>
-        /// ���� Ȯ���� ��ȸ
+        /// get extension
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
@@ -114,17 +114,15 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        ///     create file
-        ///     if dir path not exists, throw exception
+        /// create file
+        /// if dir path not exists, throw exception
         /// </summary>
         /// <param name="fileName"></param>
         public static void xWrite(this string fileName, Func<byte[]> func)
         {
-            using (var fs = File.Create(fileName))
-            {
-                var bytes = func();
-                fs.Write(bytes);
-            }   
+	        using var fs = File.Create(fileName);
+	        var bytes = func();
+	        fs.Write(bytes);
         }
 
         /// <summary>
@@ -136,7 +134,7 @@ namespace eXtensionSharp
             var exist = Directory.Exists(fileName);
             if(exist.xIsFalse())
             {
-				fileName.xDirectoryCreateAll();
+				fileName.xCreateDirectory();
 			}
 			fileName.xWrite(func);
         }
@@ -159,11 +157,11 @@ namespace eXtensionSharp
 
             if (isException)
             {
-				xDirectoryCreateAll(path);
+				xCreateDirectory(path);
             }
         }
 
-        public static void xDirectoryCreateAll(this string path)
+        public static void xCreateDirectory(this string path)
         {
             List<string> paths = path.xSplit(Path.DirectorySeparatorChar.ToString()).xToList();
 			var driveSplitSymbol = ":";
@@ -197,7 +195,7 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// delete all files in path
+        /// delete all file, using file root path
         /// </summary>
         /// <param name="fullPathName"></param>
         public static void xDeleteAll(this string fullPathName)
@@ -237,7 +235,7 @@ namespace eXtensionSharp
 
         public static Dictionary<string, string> xGetFileExtensionProperties(this string fileName)
         {
-            if (!XEnvExtensions.xIsWindows()) throw new NotSupportedException("Support Windows only.");
+            if (!XEnv.xIsWindows()) throw new NotSupportedException("Support Windows only.");
 
             var dictionary = new Dictionary<string, string>();
             if (!File.Exists(fileName)) throw new FileNotFoundException();
@@ -257,24 +255,11 @@ namespace eXtensionSharp
             return dictionary;
         }
 
-        public static string[] xReadFileToLine(this string filePath, int linesToRead)
-        {
-            var lines = new List<string>();
-            
-            var line = string.Empty;
-            int lineCount = 0;
-
-            using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using var reader = new StreamReader(fileStream);
-            while ((line = reader.ReadLine()) != null && lineCount < linesToRead)
-            {
-                lines.Add(line);
-                lineCount++;
-            }
-
-            return lines.ToArray();
-        }
-
+        /// <summary>
+        /// get files using path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
 		public static Dictionary<string, IEnumerable<string>> xGetFiles(this string path)
 		{
 			Dictionary<string, IEnumerable<string>> result = new Dictionary<string, IEnumerable<string>>();
@@ -284,12 +269,17 @@ namespace eXtensionSharp
 				return result;
 			}
 
-			result = SearchFiles(path);
+			result = xSearchFiles(path);
 
 			return result;
 		}
 
-		private static Dictionary<string, IEnumerable<string>> SearchFiles(string directory)
+        /// <summary>
+        /// search file
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+		public static Dictionary<string, IEnumerable<string>> xSearchFiles(string directory)
 		{
 			var result = new Dictionary<string, IEnumerable<string>>();
 
@@ -301,7 +291,7 @@ namespace eXtensionSharp
 				string[] subdirectories = Directory.GetDirectories(directory);
 				foreach (string subdir in subdirectories)
 				{
-					var subdirectoryFiles = SearchFiles(subdir);
+					var subdirectoryFiles = xSearchFiles(subdir);
 					foreach (var kvp in subdirectoryFiles)
 					{
 						if (!result.ContainsKey(kvp.Key))
@@ -315,7 +305,7 @@ namespace eXtensionSharp
 					}
 				}
 			}
-			catch
+			finally
 			{
 				
 			}

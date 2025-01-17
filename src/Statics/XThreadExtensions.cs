@@ -1,8 +1,8 @@
 ﻿namespace eXtensionSharp;
 
-public class XTimeoutFunctions
+public class XThread
 {
-    public async Task SetTimeout(Func<Task> func, int interval = 1000, CancellationToken cancellationToken = default)
+    public static async Task SetTimeout(Func<Task> func, int interval = 1000, CancellationToken cancellationToken = default)
     {
         if (func.xIsEmpty()) throw new ArgumentException(nameof(func));
         
