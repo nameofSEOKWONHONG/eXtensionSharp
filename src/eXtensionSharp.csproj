@@ -15,7 +15,7 @@
         <PackageProjectUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</PackageProjectUrl>
         <RepositoryUrl>https://github.com/nameofSEOKWONHONG/eXtensionSharp</RepositoryUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>..\README.md</PackageReadmeFile>
         <PackageTags>c# extension</PackageTags>    
     </PropertyGroup>
     
