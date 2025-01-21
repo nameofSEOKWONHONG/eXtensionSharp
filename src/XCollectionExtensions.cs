@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 namespace eXtensionSharp
@@ -481,6 +482,46 @@ namespace eXtensionSharp
                 WriteIndented = false
             });
             return System.Text.Encoding.UTF8.GetBytes(objToString);
+        }
+
+        /// <summary>
+        /// Dictionary performance improvement method, (Nick Chapsas - Fixing Your Dictionary Performance Problem in .NETFixing Your Dictionary Problem in .NET -)
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
+        public static TValue xGetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+            where TKey : notnull
+        {
+            ref var val = ref CollectionsMarshal.GetValueRefOrAddDefault(dict, key, out var exists);
+            if (exists)
+            {
+                return val;
+            }
+            val = value;
+            return value;
+        }
+
+        /// <summary>
+        /// Dictionary performance improvement method (Nick Chapsas - Fixing Your Dictionary Performance Problem in .NETFixing Your Dictionary Problem in .NET -)
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
+        public static bool xTryUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value)
+            where TKey : notnull
+        {
+            ref var val = ref CollectionsMarshal.GetValueRefOrNullRef(dict, key);
+            if(Unsafe.IsNullRef(ref val)) return false;
+            
+            val = value;
+            return true;
         }
     }
 }
