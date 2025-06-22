@@ -63,16 +63,13 @@ namespace eXtensionSharp
         public static bool xIsNotEmpty<T>(this T obj)
         {
             return !obj.xIsEmpty();
-        }        
-
-        public static bool xIsDateTime<T>(this T obj)
-        {
-            return obj is DateTime;
         }
         
         public static bool xIsEmptyNumber<T>(this T number)
             where T : INumber<T>
         {
+            if (number.xIsEmpty()) return true;
+            
             T zero = default;
             return number <= zero;
         }
@@ -95,10 +92,11 @@ namespace eXtensionSharp
             return !src.xIsSame(compare);
         }
 
-        public static void xIf<T>(this T item, T compare, Action match, Action notMatch)
+        public static void xIf<T>(this T item, Expression<Func<T, bool>> compare, Action match, Action notMatch = null)
         {
-            if (item.xIsSame(compare)) match();
-            else notMatch();
+            var @case = compare.Compile().Invoke(item);
+            if(@case) match?.Invoke();
+            else notMatch?.Invoke();
         }
 
         #endregion [xIs Series]

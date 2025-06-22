@@ -11,7 +11,9 @@ public class XIsIfExtensionTest
     {
         var expected = false;
         const string a = "a";
-        a.xIf("b", () => Assert.That(expected, Is.True), () => Assert.That(expected, Is.False));
+        a.xIf(m => m == a, 
+            () => Assert.That(expected, Is.True), 
+            () => Assert.That(expected, Is.False));
     }
 
     [Test]
@@ -19,7 +21,10 @@ public class XIsIfExtensionTest
     {
         var a = 1;
         var result = 0;
-        a.xIf(2, () => result = 1, () => result = 2);
+        a.xIf(m => m > 2, 
+            () => result = 1, 
+            () => result = 2);
+        
         Assert.That(a, Is.Not.EqualTo(result));
     }
 }

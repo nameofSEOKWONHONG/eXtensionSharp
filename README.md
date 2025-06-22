@@ -10,6 +10,9 @@ Refer to the test code for how to use it.
 net7, net8, net9
 
 ## Version
+* 1.0.4
+  * change crypto class and function name
+  
 * 1.0.3
   * add xGetOrAdd, xTryUpdate method for Dictionary<>
 
