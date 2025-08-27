@@ -59,8 +59,23 @@ namespace eXtensionSharp
             //    else if (typeof(T).GetType() == typeof(decimal)) return (T)(object)Convert.ToDecimal(src);
             //}
 
-            if (src is Guid guid) 
-                return (T)Convert.ChangeType(guid.ToString(), typeof(T));
+            if (typeof(T) == typeof(Guid))
+            {
+                if (src is Guid g) return (T)(object)g;
+                if (Guid.TryParse(src.ToString(), out var parsedGuid))
+                    return (T)(object)parsedGuid;
+
+                throw new InvalidCastException($"Cannot convert {src} to Guid.");
+            }
+            
+            if (typeof(T) == typeof(DateTime))
+            {
+                if (src is DateTime dt) return (T)(object)dt;
+                if (DateTime.TryParse(src.ToString(), out var parsedDate))
+                    return (T)(object)parsedDate;
+
+                throw new InvalidCastException($"Cannot convert {src} to DateTime.");
+            }
 
             if (src is DateTime time)
             {
