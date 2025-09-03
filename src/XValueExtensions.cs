@@ -26,66 +26,13 @@ namespace eXtensionSharp
         /// Console.WriteLine(ss); //output:"10";
         /// </code>
         /// </example>
-        public static T xValue<T>(this object src, object @default = null)
+        public static T xValue<T>(this object src, object @default = null, ConvertOptions options = null)
         {
-            if (src.xIsEmpty())
-            {
-                if (@default.xIsEmpty()) return default;
-                return (T)Convert.ChangeType(@default, typeof(T))!;
-            }
+            // default도 한 번만 변환 시도(분기 최소화)
+            T defV = default;
+            if (@default is not null && FastConvert.TryChangeType(@default, out T tmp, options)) defV = tmp;
 
-            if (typeof(T).IsEnum)
-            {
-                return (T)src;
-            }
-
-            if (src is JsonElement t)
-            {
-                return t.JsonElementToValue<T>();
-            }
-
-            //if (typeof(T).xIsNumber())
-            //{
-            //    if (typeof(T).GetType() == typeof(byte)) return (T)(object)Convert.ToByte(src);
-            //    else if (typeof(T).GetType() == typeof(sbyte)) return (T)(object)Convert.ToSByte(src);
-            //    else if (typeof(T).GetType() == typeof(short)) return (T)(object)Convert.ToInt16(src);
-            //    else if (typeof(T).GetType() == typeof(ushort)) return (T)(object)Convert.ToUInt16(src);
-            //    else if (typeof(T).GetType() == typeof(int)) return (T)(object)Convert.ToInt32(src);
-            //    else if (typeof(T).GetType() == typeof(uint)) return (T)(object)Convert.ToUInt32(src);
-            //    else if (typeof(T).GetType() == typeof(long)) return (T)(object)Convert.ToInt64(src);
-            //    else if (typeof(T).GetType() == typeof(ulong)) return (T)(object)Convert.ToUInt64(src);
-            //    else if (typeof(T).GetType() == typeof(float)) return (T)(object)Convert.ToSingle(src);
-            //    else if (typeof(T).GetType() == typeof(double)) return (T)(object)Convert.ToDouble(src);
-            //    else if (typeof(T).GetType() == typeof(decimal)) return (T)(object)Convert.ToDecimal(src);
-            //}
-
-            if (typeof(T) == typeof(Guid))
-            {
-                if (src is Guid g) return (T)(object)g;
-                if (Guid.TryParse(src.ToString(), out var parsedGuid))
-                    return (T)(object)parsedGuid;
-
-                throw new InvalidCastException($"Cannot convert {src} to Guid.");
-            }
-            
-            if (typeof(T) == typeof(DateTime))
-            {
-                if (src is DateTime dt) return (T)(object)dt;
-                if (DateTime.TryParse(src.ToString(), out var parsedDate))
-                    return (T)(object)parsedDate;
-
-                throw new InvalidCastException($"Cannot convert {src} to DateTime.");
-            }
-
-            if (src is DateTime time)
-            {
-                if (typeof(T) == typeof(int))
-                    return (T)Convert.ChangeType(time.xToDateFormat("yyyyMMdd"), typeof(T));
-
-                return (T)Convert.ChangeType(time.xToDateFormat("yyyy-MM-dd"), typeof(T));
-            }
-
-            return (T)Convert.ChangeType(src, typeof(T));
+            return FastConvert.ChangeType(src, defV, options);
         }
 
         private static T JsonElementToValue<T>(this JsonElement element)

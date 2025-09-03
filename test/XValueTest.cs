@@ -11,7 +11,7 @@ public class XValueTest
     public void datetime_test()
     {
         object o = DateTime.Now;
-        o.xValue2<DateTime>();
+        o.xValue<DateTime>();
         TestContext.WriteLine(o);
     }
 
@@ -19,7 +19,7 @@ public class XValueTest
     public void value_collection_test()
     {
         object o = new List<string>() { "1", "2", "3" };
-        var list = o.xValue2<List<string>>();
+        var list = o.xValue<List<string>>();
         TestContext.WriteLine(list[0]);
     }
 
@@ -42,7 +42,7 @@ public class XValueTest
         Assert.Multiple(() =>
         {
             //Assert.That(n.xIsNumber(), Is.True);
-            Assert.That(n.xValue2<Int32>() == 4, Is.True);
+            Assert.That(n.xValue<Int32>() == 4, Is.True);
         });
     }
 
@@ -62,23 +62,23 @@ public class XValueTest
     public void xvalue_number_convert_test()
     {
         int a = 32;
-        var r = a.xValue2<Int64>();
-        Assert.That(a.xValue2<Int64>(), Is.GreaterThan(0));
+        var r = a.xValue<Int64>();
+        Assert.That(a.xValue<Int64>(), Is.GreaterThan(0));
     }
 
     [Test]
     public void xvalue_number_convert_test2()
     {
         var a = int.MaxValue;
-        var r = a.xValue2<double>();
-        Assert.That(a.xValue2<double>(), Is.GreaterThan(0));
+        var r = a.xValue<double>();
+        Assert.That(a.xValue<double>(), Is.GreaterThan(0));
 
         var b = float.MaxValue;
         var b2 = float.MinValue;
-        Assert.That(b.xValue2<double>(), Is.GreaterThan(0));
+        Assert.That(b.xValue<double>(), Is.GreaterThan(0));
 
         var c = 0.1f;
-        Assert.That(c.xValue2<int>(), Is.EqualTo(0));
+        Assert.That(c.xValue<int>(), Is.EqualTo(0));
     }
 
     [Test]
@@ -94,17 +94,17 @@ public class XValueTest
     public void guid_test() 
     {
         Guid? guid = Guid.NewGuid();
-        Assert.That(guid.xValue2<Guid>(), Is.EqualTo(guid));
+        Assert.That(guid.xValue<Guid>(), Is.EqualTo(guid));
 
         var guid2 = Guid.NewGuid().ToString();
-        Assert.That(guid2.xValue2<Guid>(), Is.EqualTo(Guid.Parse(guid2)));
+        Assert.That(guid2.xValue<Guid>(), Is.EqualTo(Guid.Parse(guid2)));
     }
 
     [Test]
     public void object_to_class_test()
     {
         object test = new Test() {Name = "test"};
-        var test2 = test.xValue2<Test>();
+        var test2 = test.xValue<Test>();
         Assert.That(test2.Name, Is.EqualTo("test"));
         
         var test3 = new Test2() {Name = "test", Age = "10"};

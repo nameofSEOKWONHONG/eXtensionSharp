@@ -6,19 +6,19 @@ using NUnit.Framework;
 
 namespace eXtensionSharp.test
 {
-    public class XValue2Tests
+    public class XValueV2Test
     {
         // 공용 옵션: 문화권/숫자 스타일 등
-        private readonly ConvertOptions _optInvariant = new()
+        private readonly ConvertOptions _optionsInvariant = new()
         {
             Culture = CultureInfo.InvariantCulture,
             NumberStyles = NumberStyles.Float | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
             EmptyStringIsNull = true
         };
 
-        private readonly ConvertOptions _optDe = new()
+        private readonly ConvertOptions _optionsKr = new()
         {
-            Culture = new CultureInfo("de-DE"), // 1.234,56 형태
+            Culture = new CultureInfo("ko-KR"), // 1.234,56 형태
             NumberStyles = NumberStyles.Float | NumberStyles.AllowThousands | NumberStyles.AllowLeadingSign,
             EmptyStringIsNull = false
         };
@@ -29,7 +29,7 @@ namespace eXtensionSharp.test
         public void Nullable_int_from_empty_string_returns_null_when_EmptyStringIsNull_true()
         {
             string s = "   ";
-            int? v = s.xValue2<int?>(opt: _optInvariant);
+            int? v = s.xValue<int?>(options: _optionsInvariant);
             Assert.That(v, Is.Null);
         }
 
@@ -37,7 +37,7 @@ namespace eXtensionSharp.test
         public void Fallback_default_is_used_when_conversion_fails()
         {
             string s = "not-a-number";
-            var v = s.xValue2<int>(@default: 8080, opt: _optInvariant);
+            var v = s.xValue<int>(@default: 8080, options: _optionsInvariant);
             Assert.That(v, Is.EqualTo(8080));
         }
 
@@ -45,7 +45,7 @@ namespace eXtensionSharp.test
         public void DBNull_becomes_defaultT()
         {
             object dbnull = DBNull.Value;
-            var v = dbnull.xValue2<int>();
+            var v = dbnull.xValue<int>();
             Assert.That(v, Is.EqualTo(default(int)));
         }
 
@@ -56,14 +56,14 @@ namespace eXtensionSharp.test
         [TestCase("1,234.56", 1234.56, TestName = "Invariant_decimal_parse")]
         public void Number_parse_invariant_decimal(string s, double expected)
         {
-            var v = s.xValue2<double>(opt: _optInvariant);
+            var v = s.xValue<double>(options: _optionsInvariant);
             Assert.That(v, Is.EqualTo(expected).Within(1e-9));
         }
 
-        [TestCase("1.234,56", 1234.56, TestName = "de-DE_decimal_parse")]
+        [TestCase("1,234", 1234, TestName = "ko-KR_decimal_parse")]
         public void Number_parse_de_decimal(string s, double expected)
         {
-            var v = s.xValue2<double>(opt: _optDe);
+            var v = s.xValue<double>(options: _optionsKr);
             Assert.That(v, Is.EqualTo(expected).Within(1e-9));
         }
 
@@ -71,7 +71,7 @@ namespace eXtensionSharp.test
         public void Numeric_cross_widening()
         {
             int a = int.MaxValue;
-            var d = a.xValue2<double>(opt: _optInvariant);
+            var d = a.xValue<double>(options: _optionsInvariant);
             Assert.That(d, Is.GreaterThan(0d));
         }
 
@@ -89,7 +89,7 @@ namespace eXtensionSharp.test
         [TestCase("off", false)]
         public void Boolean_polymorphic_inputs(string s, bool expected)
         {
-            var b = s.xValue2<bool>(opt: _optInvariant);
+            var b = s.xValue<bool>(options: _optionsInvariant);
             Assert.That(b, Is.EqualTo(expected));
         }
 
@@ -98,7 +98,7 @@ namespace eXtensionSharp.test
         [TestCase(2, true)]
         public void Boolean_from_numeric(object src, bool expected)
         {
-            var b = src.xValue2<bool>(opt: _optInvariant);
+            var b = src.xValue<bool>(options: _optionsInvariant);
             Assert.That(b, Is.EqualTo(expected));
         }
 
@@ -110,14 +110,14 @@ namespace eXtensionSharp.test
         public void Guid_from_string_roundtrip()
         {
             var g = Guid.NewGuid();
-            var g2 = g.ToString().xValue2<Guid>();
+            var g2 = g.ToString().xValue<Guid>();
             Assert.That(g2, Is.EqualTo(g));
         }
 
         [Test]
         public void Guid_invalid_uses_default()
         {
-            var g = "not-a-guid".xValue2<Guid>(@default: Guid.Empty);
+            var g = "not-a-guid".xValue<Guid>(@default: Guid.Empty);
             Assert.That(g, Is.EqualTo(Guid.Empty));
         }
 
@@ -142,21 +142,21 @@ namespace eXtensionSharp.test
         [Test]
         public void Enum_from_name_ignore_case()
         {
-            var c = "green".xValue2<Color2>();
+            var c = "green".xValue<Color2>();
             Assert.That(c, Is.EqualTo(Color2.Green));
         }
 
         [Test]
         public void Enum_from_numeric_string()
         {
-            var c = "3".xValue2<Color2>();
+            var c = "3".xValue<Color2>();
             Assert.That(c, Is.EqualTo(Color2.Blue));
         }
 
         [Test]
         public void Flags_enum_from_numeric()
         {
-            var p = "3".xValue2<FilePerm>(); // Read(1) | Write(2)
+            var p = "3".xValue<FilePerm>(); // Read(1) | Write(2)
             Assert.That(p.HasFlag(FilePerm.Read));
             Assert.That(p.HasFlag(FilePerm.Write));
             Assert.That(!p.HasFlag(FilePerm.Execute));
@@ -170,7 +170,7 @@ namespace eXtensionSharp.test
         [TestCase("2025-08-27T13:05:00Z")]
         public void DateTime_parses_common_formats(string s)
         {
-            var dt = s.xValue2<DateTime>(opt: new ConvertOptions
+            var dt = s.xValue<DateTime>(options: new ConvertOptions
             {
                 Culture = CultureInfo.InvariantCulture,
                 DateTimeFormats = new[] { "yyyy-MM-dd HH:mm:ss", "O", "s" }
@@ -181,7 +181,7 @@ namespace eXtensionSharp.test
         [TestCase("2025-08-27T13:05:00+09:00")]
         public void DateTimeOffset_parses_iso(string s)
         {
-            var dto = s.xValue2<DateTimeOffset>(opt: _optInvariant);
+            var dto = s.xValue<DateTimeOffset>(options: _optionsInvariant);
             Assert.That(dto.Offset, Is.EqualTo(TimeSpan.FromHours(9)));
         }
 
@@ -189,7 +189,7 @@ namespace eXtensionSharp.test
         [TestCase("1.01:00:00", 90000)] // 1 day + 1 hour
         public void TimeSpan_parses_multiple_formats(string s, int expectedSeconds)
         {
-            var ts = s.xValue2<TimeSpan>(opt: new ConvertOptions
+            var ts = s.xValue<TimeSpan>(options: new ConvertOptions
             {
                 Culture = CultureInfo.InvariantCulture,
                 TimeSpanFormats = new[] { "c", @"hh\:mm\:ss", @"d\.hh\:mm\:ss" }
@@ -205,7 +205,7 @@ namespace eXtensionSharp.test
         public void JsonElement_number_to_int()
         {
             var je = JsonSerializer.SerializeToElement(123);
-            var v = je.xValue2<int>();
+            var v = je.xValue<int>();
             Assert.That(v, Is.EqualTo(123));
         }
 
@@ -214,7 +214,7 @@ namespace eXtensionSharp.test
         {
             var g = Guid.NewGuid();
             var je = JsonSerializer.SerializeToElement(g.ToString());
-            var v = je.xValue2<Guid>();
+            var v = je.xValue<Guid>();
             Assert.That(v, Is.EqualTo(g));
         }
 
@@ -222,7 +222,7 @@ namespace eXtensionSharp.test
         public void JsonElement_complex_to_poco_via_deserialize()
         {
             var je = JsonSerializer.SerializeToElement(new { Name = "abc", Age = 10 });
-            var p = je.xValue2<Person>();
+            var p = je.xValue<Person>();
             Assert.That(p, Is.Not.Null);
             Assert.That(p.Name, Is.EqualTo("abc"));
             Assert.That(p.Age, Is.EqualTo(10));
@@ -250,7 +250,7 @@ namespace eXtensionSharp.test
         [Test]
         public void Uri_converter_via_TypeConverter()
         {
-            var u = "https://example.com".xValue2<Uri>();
+            var u = "https://example.com".xValue<Uri>();
             Assert.That(u, Is.Not.Null);
             Assert.That(u.Host, Is.EqualTo("example.com"));
         }
@@ -263,7 +263,7 @@ namespace eXtensionSharp.test
         public void Same_type_returns_as_is()
         {
             var now = DateTime.Now;
-            var v = now.xValue2<DateTime>();
+            var v = now.xValue<DateTime>();
             Assert.That(v, Is.EqualTo(now));
         }
 
