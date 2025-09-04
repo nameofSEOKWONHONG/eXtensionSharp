@@ -21,7 +21,10 @@ public static class FastConvert
     /// 실패 시 기본값을 반환하는 제네릭 변환.
     /// </summary>
     public static T ChangeType<T>(object src, T @default = default, ConvertOptions opt = null)
-        => TryChangeType(src, out T v, opt) ? v : @default;
+    {
+        if (src.xIsEmpty()) return @default;
+        return TryChangeType(src, out T v, opt) ? v : @default;
+    }
 
     /// <summary>
     /// 제네릭 Try-Convert.

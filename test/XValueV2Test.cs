@@ -268,5 +268,13 @@ namespace eXtensionSharp.test
         }
 
         #endregion
+
+        [Test]
+        public void string_null_or_empty_default_value_test()
+        {
+            string a = null;
+            var actual = a.xValue<string>(string.Empty);
+            Assert.That(actual, Is.EqualTo(string.Empty));
+        }
     }
 }

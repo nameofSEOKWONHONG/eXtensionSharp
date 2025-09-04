@@ -10,6 +10,10 @@ Refer to the test code for how to use it.
 net7, net8, net9
 
 ## Version
+* 1.0.6
+  * issue resolved `null.xValue<string>(string.Empty) == string.Empty`
+
+
 * 1.0.5
   * enhanced xValue<T>([DefaultValue])
   * issue resolved `Guid.NewGuid().ToString().xValue<Guid>()`
