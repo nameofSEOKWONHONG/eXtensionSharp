@@ -18,11 +18,11 @@ namespace eXtensionSharp
         /// <example>
         /// <code>
         /// var s = 1;
-        /// var ss = s.xValue<string>();
+        /// var ss = s.xValue&lt;string&gt;();
         /// Console.WriteLine(ss); //output:"1";
         /// or
         /// var s = "";
-        /// var ss = s.xValue<string>("10");
+        /// var ss = s.xValue&lt;string&gt;("10");
         /// Console.WriteLine(ss); //output:"10";
         /// </code>
         /// </example>
@@ -35,7 +35,32 @@ namespace eXtensionSharp
             return FastConvert.ChangeType(src, defV, options);
         }
 
-        private static T JsonElementToValue<T>(this JsonElement element)
+        /// <summary>
+        /// Converts a string value to a specified type based on the provided type name.
+        /// </summary>
+        /// <param name="src">The source string value to be converted.</param>
+        /// <param name="typeName">The name of the type to which the source value should be converted (e.g., "String", "Int32", "Boolean").</param>
+        /// <returns>An object representing the converted value of the specified type.</returns>
+        public static object xValueWithTypeName(this string src, string typeName)
+        {
+            return typeName switch
+            {
+                nameof(String) => src.xValue<string>(),
+                nameof(Int32) => src.xValue<int>(),
+                nameof(Int64) => src.xValue<long>(),
+                nameof(Double) => src.xValue<double>(),
+                nameof(Decimal) => src.xValue<decimal>(),
+                nameof(Boolean) => src.xValue<bool>(),
+                nameof(DateTime) => src.xValue<DateTime>(),
+                nameof(DateTimeOffset) => src.xValue<DateTimeOffset>(),
+                nameof(TimeSpan) => src.xValue<TimeSpan>(),
+                nameof(Guid) => src.xValue<Guid>(),
+                nameof(Byte) => src.xValue<byte>(),
+            };
+        }
+
+        
+        private static T xValueWithJsonElement<T>(this JsonElement element)
         {
             var v = element.ValueKind switch
             {
@@ -60,7 +85,7 @@ namespace eXtensionSharp
         /// <example>
         /// <code>
         /// object o = "10";
-        /// var ss = o.xAs<string>();
+        /// var ss = o.xAs&lt;string&gt;();
         /// Console.WriteLine(ss); //output:"10";
         /// </code>
         /// </example>
@@ -73,18 +98,19 @@ namespace eXtensionSharp
         /// <summary>
         /// casting src to T (safe casting)
         /// </summary>
-        /// <param name="src"></param>
         /// <typeparam name="T"></typeparam>
+        /// <param name="src"></param>
         /// <returns></returns>
+        /// <example>
+        /// <code>
+        /// object o = "10";
+        /// var ss = o.xAsSafe&lt;string&gt;();
+        /// </code>
+        /// </example>
         public static T xAsSafe<T>(this object src)
         {
             if(src.xIsEmpty()) return default;
-            if (src is T dest)
-            {
-                return dest;
-            }
-
-            return default;
+            return src is T result ? result : default;
         }
 
         /// <summary>

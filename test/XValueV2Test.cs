@@ -276,5 +276,29 @@ namespace eXtensionSharp.test
             var actual = a.xValue<string>(string.Empty);
             Assert.That(actual, Is.EqualTo(string.Empty));
         }
+
+        [Test]
+        public void xvalue_typename_to_value_test()
+        {
+            var a = "1234567890".xValueWithTypeName(nameof(Int32));
+            Assert.That(a, Is.EqualTo(1234567890));
+            
+            var b = "2025-08-27T13:05:00+09:00".xValueWithTypeName(nameof(DateTimeOffset));
+            Assert.That(b, Is.EqualTo(new DateTimeOffset(2025, 8, 27, 13, 5, 0, TimeSpan.FromHours(9))));
+            
+            var c = "01:30:00".xValueWithTypeName(nameof(TimeSpan));
+            Assert.That(c, Is.EqualTo(new TimeSpan(1, 30, 0)));
+            
+            var f = "1234567890".xValueWithTypeName(nameof(Int64));
+            Assert.That(f, Is.EqualTo(1234567890));
+            
+            TestContext.Out.WriteLine(JsonSerializer.Serialize(new
+            {
+                a,
+                b,
+                c,
+                f
+            }));
+        }
     }
 }
