@@ -235,7 +235,7 @@ namespace eXtensionSharp
 
         public static Dictionary<string, string> xGetFileExtensionProperties(this string fileName)
         {
-            if (!XEnv.xIsWindows()) throw new NotSupportedException("Support Windows only.");
+            if (!OperatingSystem.IsWindows()) throw new NotSupportedException("Support Windows only.");
 
             var dictionary = new Dictionary<string, string>();
             if (!File.Exists(fileName)) throw new FileNotFoundException();

@@ -5,36 +5,6 @@ namespace eXtensionSharp
 {
     public class XEnv
     {
-        public static bool xIsWindows()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        }
-
-        public static bool xIsMac()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        }
-
-        public static bool xIsLinux()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        }
-
-        public static bool xIsFreeBSD()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-        }
-
-        public static int xCpuCoreCount()
-        {
-            return Environment.ProcessorCount;
-        }
-
-        public static bool xIsX64()
-        {
-            return Environment.Is64BitOperatingSystem;
-        }
-        
         public static string GetLocalIPAddress()
         {
             string ipAddress = string.Empty;
