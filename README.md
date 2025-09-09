@@ -10,6 +10,12 @@ Refer to the test code for how to use it.
 net7, net8, net9
 
 ## Version
+* 1.0.8
+  * add xValueOfArray `[1,2,3].xValueOfArray(0) == 1 or [1,2,3].xValueOfArray(3) == 0`
+  * add hlist `var list = new HList<int, string, DateTime>(); list.Add(1); list.Add("string");`
+  * remove `Env.IsWindows()`. replace `OperatingSystem.IsWindows()`
+
+
 * 1.0.6
   * issue resolved `null.xValue<string>(string.Empty) == string.Empty`
 
