@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test;
@@ -110,6 +111,29 @@ public class XValueTest
         var test3 = new Test2() {Name = "test", Age = "10"};
         var test4 = test3.xAs<Test>();
         Assert.That(test4.Name, Is.EqualTo("test"));
+    }
+
+    [Test]
+    public void array_to_safe_value()
+    {
+        var array1 = new int[] {1, 2, 3};
+        var real = array1.xValueOfArray(0);
+        Assert.That(real, Is.EqualTo(1));
+        
+        var array2 = new string[] {"1", "2", "3"};
+        var real2 = array2.xValueOfArray(0);
+        Assert.That(real2, Is.EqualTo("1"));
+
+        var array3 = Array.Empty<string>();
+        var real3 = array3.xValueOfArray(0);
+        Assert.That(real3, Is.Null);
+        
+        var array4 = new Test[] {new Test() {Name = "test"}, new Test() {Name = "test2"}};
+        var real4 = array4.xValueOfArray(0);
+        Assert.That(real4.Name, Is.EqualTo("test"));
+
+        var real5 = array4.xValueOfArray(3);
+        Assert.That(real5, Is.Null);
     }
 
     class Test
