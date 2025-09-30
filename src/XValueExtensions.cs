@@ -26,7 +26,7 @@ namespace eXtensionSharp
         /// Console.WriteLine(ss); //output:"10";
         /// </code>
         /// </example>
-        public static T xValue<T>(this object src, object @default = null, ConvertOptions options = null)
+        public static T xValue<T>(this object src, object @default = null)
         {
             if (src.xIsEmpty())
             {
