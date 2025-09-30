@@ -136,6 +136,20 @@ public class XValueTest
         Assert.That(real5, Is.Null);
     }
 
+    [Test]
+    public void string_to_int_test()
+    {
+        var str = "123123";
+        Assert.That(str.xValue<int>(), Is.EqualTo(123123));
+    }
+
+    [Test]
+    public void int_to_string_test()
+    {
+        var number = 123123;
+        Assert.That(number.xValue<string>(), Is.EqualTo("123123"));
+    }
+
     class Test
     {
         public string Name { get; set; }

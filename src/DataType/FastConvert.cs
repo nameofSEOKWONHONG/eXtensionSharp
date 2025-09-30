@@ -61,9 +61,22 @@ public static class FastConvert
         // 3) 동형식 빠른 경로
         if (effType.IsInstanceOfType(src)) { result = src; return true; }
 
+        // 9) 숫자형 변환
+        if ((Nullable.GetUnderlyingType(targetType) ?? targetType) == typeof(string)
+            && IsNumeric(src.GetType()))
+        {
+            var provider = opt?.Culture ?? CultureInfo.InvariantCulture;
+            result = ((IFormattable)System.Convert.ChangeType(src, typeof(decimal), CultureInfo.InvariantCulture))
+                        .ToString(null, provider);
+            return true;
+        }
+
         // 4) 문자열 전처리(빈 문자열 → 기본값)
         if (src is string s && opt.EmptyStringIsNull && string.IsNullOrWhiteSpace(s))
-        { result = GetDefault(targetType); return true; }
+        {
+            result = GetDefault(targetType);
+            return true;
+        }
 
         // 5) JsonElement 최적화
         if (src is JsonElement je && TryFromJsonElement(je, effType, opt, out result)) return true;
