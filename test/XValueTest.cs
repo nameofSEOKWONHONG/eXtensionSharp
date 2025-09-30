@@ -150,6 +150,13 @@ public class XValueTest
         Assert.That(number.xValue<string>(), Is.EqualTo("123123"));
     }
 
+    [Test]
+    public void guid_to_string_test()
+    {
+        var guid = Guid.NewGuid();
+        Assert.That(guid.xValue<string>(), Is.EqualTo(guid.ToString()));
+    }
+
     class Test
     {
         public string Name { get; set; }
