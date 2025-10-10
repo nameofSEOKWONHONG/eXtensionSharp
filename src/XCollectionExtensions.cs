@@ -54,35 +54,6 @@ namespace eXtensionSharp
             var propertyInfo = obj.GetType().GetProperty(propertyName);
             propertyInfo?.SetValue(obj, value);
         }
-        
-        /// <summary>
-        /// Maps the properties of one object to another, optionally excluding certain properties from being mapped.
-        /// </summary>
-        /// <typeparam name="T1">The type of the source object.</typeparam>
-        /// <param name="src">The source object whose properties will be mapped.</param>
-        /// <param name="dest">The destination object to which the properties will be mapped.</param>
-        /// <param name="notMappingNames">An array of property names to exclude from mapping.</param>
-        public static void xMapping<T1>(this T1 src, T1 dest, string[] notMappingNames = null)
-
-        {
-            var props = src.xGetProperties();
-            props.xForEach(item =>
-            {
-                if (item.MemberType == MemberTypes.Property)
-                {
-                    if (IsTypeMatch(item.PropertyType.ToString()))
-                    {
-                        if (notMappingNames.xIsNotEmpty())
-                        {
-                            if(item.Name.xContains(notMappingNames)) return true;
-                        }
-                        var v = GetPropertyValue(src, item.Name);
-                        SetPropertyValue(dest, item.Name, v);           
-                    }
-                }
-                return true;
-            });
-        }
 
         /// <summary>
         /// Maps the properties of one object to another of a different type, optionally excluding certain properties from being mapped.
@@ -96,27 +67,28 @@ namespace eXtensionSharp
 
         {
             var props = src.xGetProperties();
-            props.xForEach(item =>
-            {
-                if (item.MemberType == MemberTypes.Property)
+            props.Where(m => m.MemberType == MemberTypes.Property)
+                 .Where(m => IsTypeMatch(m.PropertyType.ToString()))
+                 .Where(m => m.CanWrite)
+                .xForEach(item =>
                 {
-                    if (IsTypeMatch(item.PropertyType.ToString()))
+                    if (notMappingNames.xIsNotEmpty())
                     {
-                        if (notMappingNames.xIsNotEmpty())
+                        if (item.Name.xContains(notMappingNames))
                         {
-                            if(item.Name.xContains(notMappingNames)) return true;
+                            return true;
                         }
-                        
-                        var v = GetPropertyValue(src, item.Name);
-                        var exist = dest.xGetProperties().Where(m => m.Name == item.Name);
-                        if (exist.Any())
-                        {
-                            SetPropertyValue(dest, item.Name, v);    
-                        }       
                     }
-                }
-                return true;
-            });
+                    
+                    var v = GetPropertyValue(src, item.Name);
+                    var exist = dest.xGetProperties().Where(m => m.CanWrite).Where(m => m.Name == item.Name);
+                    if (exist.Any())
+                    {
+                        SetPropertyValue(dest, item.Name, v);
+                    }
+
+                    return true;
+                });
         } 
 
         /// <summary>
@@ -266,30 +238,6 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// Checks if a string contains a specific substring.
-        /// </summary>
-        /// <param name="src">The string to search within.</param>
-        /// <param name="compare">The substring to search for.</param>
-        /// <returns>True if the string contains the substring, otherwise false.</returns>
-        public static bool xContains(this string src, string compare)
-        {
-            if (src.xIsEmpty()) return false;
-            return src.Contains(compare);
-        }
-
-        /// <summary>
-        /// Checks if a string contains any of the substrings in a list.
-        /// </summary>
-        /// <param name="src">The string to search within.</param>
-        /// <param name="compares">The list of substrings to search for.</param>
-        /// <returns>True if the string contains any of the substrings, otherwise false.</returns>
-        public static bool xContains(this string src, string[] compares)
-        {
-            if (src.xIsEmpty()) return false;
-            return compares.FirstOrDefault(src.Contains).xIsNotEmpty();
-        }
-
-        /// <summary>
         /// Checks if a value is contained within a collection.
         /// </summary>
         /// <typeparam name="T">The type of value and collection elements.</typeparam>
@@ -307,18 +255,6 @@ namespace eXtensionSharp
             if (src.xIsEmpty()) return false;
             return src.Where(m => m.xContains(compares)).xIsNotEmpty();
         }
-
-        /// <summary>
-        /// Checks if any elements in a collection satisfy a given condition.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the collection.</typeparam>
-        /// <param name="src">The collection to check.</param>
-        /// <returns>True if any elements satisfy the condition, otherwise false.</returns>
-        public static bool xAny<T>(this IEnumerable<T> src) 
-        {
-            if(src.xIsEmpty()) return false;
-            return src.Any();
-        }
         
         /// <summary>
         /// Retrieves the first element from a collection that matches a given condition, or the first element if no condition is specified.
@@ -329,7 +265,10 @@ namespace eXtensionSharp
         /// <returns>The first element that matches the condition, or the first element in the collection if no condition is provided.</returns>
         public static T xFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
+            if (enumerable.xIsEmpty()) return default;
+
             if (predicate.xIsNotEmpty()) return enumerable.FirstOrDefault(predicate);
+            
             return enumerable.FirstOrDefault();
         }
 
@@ -342,7 +281,10 @@ namespace eXtensionSharp
         /// <returns>The last element that matches the condition, or the last element in the collection if no condition is provided.</returns>
         public static T xLast<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate = null)
         {
+            if (enumerable.xIsEmpty()) return default;
+
             if (predicate.xIsNotEmpty()) return enumerable.LastOrDefault(predicate);
+            
             return enumerable.LastOrDefault();
         }
 
@@ -445,17 +387,6 @@ namespace eXtensionSharp
             if (f <= v && t >= v) return true;
             return false;
         }
-        
-        /// <summary>
-        /// Converts a collection to a Span.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the collection.</typeparam>
-        /// <param name="items">The collection to convert to a Span.</param>
-        /// <returns>A Span containing the elements from the collection.</returns>
-        public static Span<T> xToSpan<T>(this IEnumerable<T> items) where T : class, new()
-        {
-            return items.xToArray().AsSpan();
-        }
 
         /// <summary>
         /// Converts a collection to an ImmutableArray.
@@ -475,13 +406,37 @@ namespace eXtensionSharp
         /// <typeparam name="T">The type of the object to convert.</typeparam>
         /// <param name="value">The object to convert to a byte array.</param>
         /// <returns>A byte array representing the object.</returns>
-        public static byte[] xToBytes<T>(this T value)
+        public static byte[] xStringToBytes(this string value)
         {
             var objToString = System.Text.Json.JsonSerializer.Serialize(value, new JsonSerializerOptions()
             {
                 WriteIndented = false
             });
             return System.Text.Encoding.UTF8.GetBytes(objToString);
+        }
+    
+
+        public static byte[] xFloatArrayToBytes(this float[] arr)
+        {
+            if (arr == null || arr.Length == 0) return Array.Empty<byte>();
+            var bytes = new byte[arr.Length * sizeof(float)];
+            Buffer.BlockCopy(arr, 0, bytes, 0, bytes.Length);
+            return bytes;
+        }
+
+        public static float[] xBytesToFloatArray(this byte[] bytes)
+        {
+            if (bytes == null || bytes.Length == 0) return Array.Empty<float>();
+            var arr = new float[bytes.Length / sizeof(float)];
+            Buffer.BlockCopy(bytes, 0, arr, 0, bytes.Length);
+            return arr;
+        }
+
+        public static byte[] xStremToByteArray(this Stream stream)
+        {
+            using var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            return ms.ToArray();
         }
 
         /// <summary>

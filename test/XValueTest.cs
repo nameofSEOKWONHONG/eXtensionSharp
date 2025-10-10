@@ -12,8 +12,8 @@ public class XValueTest
     public void datetime_test()
     {
         object o = DateTime.Now;
-        o.xValue<DateTime>();
-        TestContext.WriteLine(o);
+        var dt = o.xValue<DateTime>();
+        Assert.That(dt.ToString(), Is.EqualTo(((DateTime)o).ToString()));
     }
 
     [Test]
@@ -21,7 +21,7 @@ public class XValueTest
     {
         object o = new List<string>() { "1", "2", "3" };
         var list = o.xValue<List<string>>();
-        TestContext.WriteLine(list[0]);
+        Assert.That(list[0], Is.EqualTo("1"));
     }
 
     //xisempty dose not support xisnumber
@@ -104,12 +104,12 @@ public class XValueTest
     [Test]
     public void object_to_class_test()
     {
-        object test = new Test() {Name = "test"};
-        var test2 = test.xValue<Test>();
+        object test = new TestObject() {Name = "test"};
+        var test2 = test.xValue<TestObject>();
         Assert.That(test2.Name, Is.EqualTo("test"));
         
-        var test3 = new Test2() {Name = "test", Age = "10"};
-        var test4 = test3.xAs<Test>();
+        var test3 = new TestObject() {Name = "test" };
+        var test4 = test3.xAs<TestObject>();
         Assert.That(test4.Name, Is.EqualTo("test"));
     }
 
@@ -117,22 +117,22 @@ public class XValueTest
     public void array_to_safe_value()
     {
         var array1 = new int[] {1, 2, 3};
-        var real = array1.xValueOfArray(0);
+        var real = array1.xGetSafe(0);
         Assert.That(real, Is.EqualTo(1));
         
         var array2 = new string[] {"1", "2", "3"};
-        var real2 = array2.xValueOfArray(0);
+        var real2 = array2.xGetSafe(0);
         Assert.That(real2, Is.EqualTo("1"));
 
         var array3 = Array.Empty<string>();
-        var real3 = array3.xValueOfArray(0);
+        var real3 = array3.xGetSafe(0);
         Assert.That(real3, Is.Null);
         
-        var array4 = new Test[] {new Test() {Name = "test"}, new Test() {Name = "test2"}};
-        var real4 = array4.xValueOfArray(0);
+        var array4 = new TestObject[] {new TestObject() {Name = "test"}, new TestObject() {Name = "test2"}};
+        var real4 = array4.xGetSafe(0);
         Assert.That(real4.Name, Is.EqualTo("test"));
 
-        var real5 = array4.xValueOfArray(3);
+        var real5 = array4.xGetSafe(3);
         Assert.That(real5, Is.Null);
     }
 
@@ -157,14 +157,12 @@ public class XValueTest
         Assert.That(guid.xValue<string>(), Is.EqualTo(guid.ToString()));
     }
 
-    class Test
+    [Test]
+    public void float_to_string_test()
     {
-        public string Name { get; set; }
-    }
-
-    class Test2 : Test
-    {
-        public string Age { get; set; }
+        var f = 0.1f;
+        var s = f.xValue<string>();
+        Assert.That(s, Is.EqualTo(f.ToString()));
     }
 }
 

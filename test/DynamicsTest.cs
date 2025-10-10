@@ -207,7 +207,7 @@ public class DynamicsTest
             xs.Add(1);
             xs.Add("x");
             //Assert.Throws<ArgumentOutOfRangeException>(() => { var _ = xs[1]; });
-            Assert.That(xs.xValueOfArray(2), Is.Default);
+            Assert.That(xs.xGetSafe(2), Is.Default);
         }
     }
 }

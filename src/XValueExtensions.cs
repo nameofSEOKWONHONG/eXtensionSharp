@@ -135,6 +135,7 @@ namespace eXtensionSharp
                 nameof(TimeSpan) => src.xValue<TimeSpan>(),
                 nameof(Guid) => src.xValue<Guid>(),
                 nameof(Byte) => src.xValue<byte>(),
+                _ => throw new NotImplementedException(),
             };
         }
 
@@ -175,24 +176,6 @@ namespace eXtensionSharp
         }
 
         /// <summary>
-        /// casting src to T (safe casting)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="src"></param>
-        /// <returns></returns>
-        /// <example>
-        /// <code>
-        /// object o = "10";
-        /// var ss = o.xAsSafe&lt;string&gt;();
-        /// </code>
-        /// </example>
-        public static T xAsSafe<T>(this object src)
-        {
-            if(src.xIsEmpty()) return default;
-            return src is T result ? result : default;
-        }
-
-        /// <summary>
         /// Creates a deep copy of the source object by serializing it to JSON and then deserializing it back to the specified type.
         /// </summary>
         /// <typeparam name="T">The type to which the object is to be cloned.</typeparam>
@@ -202,6 +185,7 @@ namespace eXtensionSharp
         /// This method checks if the source object is empty using the xIsEmpty extension method. If the source is empty, it returns the default value for type T.
         /// The cloning is performed by serializing the source object to a JSON string and then deserializing that string to the specified type.
         /// This method can throw serialization-related exceptions if the object type is not compatible with JSON serialization.
+        /// Is not good code.
         /// </remarks>
         /// <example>
         /// <code>
@@ -220,7 +204,7 @@ namespace eXtensionSharp
         /// // Original: John, 30
         /// // Cloned: John, 30
         /// </code>
-        /// </example> 
+        /// </example>         
         public static T xClone<T>(this T src)
         {
             if (src.xIsEmpty()) return default;
@@ -245,6 +229,23 @@ namespace eXtensionSharp
         {
             return string.Equals(src, dest, StringComparison.OrdinalIgnoreCase);
         }
+
+        public static T xDuplicate<T>(this IEnumerable<T> items)
+        {
+            if (items.xIsEmpty()) return default;
+
+            HashSet<T> set = new();
+
+            foreach (var item in items)
+            {
+                if (!set.Add(item))
+                {
+                    return item;
+                }
+            }
+
+            return default;
+        }
         
         /// <summary>
         /// get true, false of duplicate list
@@ -254,17 +255,8 @@ namespace eXtensionSharp
         /// <returns></returns>
         public static bool xIsDuplicate<T>(this IEnumerable<T> items)
         {
-            if (items.xIsEmpty()) return false;
-
-            HashSet<T> set = new();
-
-            foreach (var item in items)
-            {
-                if (!set.Add(item))
-                {
-                    return true;
-                }
-            }
+            var exists = items.xDuplicate<T>();
+            if (exists.xIsNotEmpty()) return true;
 
             return false;
         }
@@ -280,17 +272,11 @@ namespace eXtensionSharp
         {
             duplicateItem = default;
 
-            if (items.xIsEmpty()) return false;
-
-            HashSet<T> set = new();
-
-            foreach (var item in items)
+            var exists = items.xDuplicate<T>();
+            if (exists.xIsNotEmpty())
             {
-                if (!set.Add(item))
-                {
-                    duplicateItem = item;
-                    return true;
-                }
+                duplicateItem = exists;
+                return true;
             }
 
             return false;
@@ -304,7 +290,7 @@ namespace eXtensionSharp
         /// <param name="items">The read-only list from which to retrieve the element.</param>
         /// <param name="index">The zero-based index of the element to retrieve.</param>
         /// <returns>The element at the specified index, or the default value of the type if the index is invalid or the list is empty.</returns>
-        public static T xValueOfArray<T>(this IReadOnlyList<T> items, int index)
+        public static T xGetSafe<T>(this IReadOnlyList<T> items, int index)
         {
             if (items.xIsEmpty()) return default;
             if (index < 0) return default;
