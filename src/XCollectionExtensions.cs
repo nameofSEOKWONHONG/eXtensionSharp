@@ -473,10 +473,40 @@ namespace eXtensionSharp
             where TKey : notnull
         {
             ref var val = ref CollectionsMarshal.GetValueRefOrNullRef(dict, key);
-            if(Unsafe.IsNullRef(ref val)) return false;
-            
+            if (Unsafe.IsNullRef(ref val)) return false;
+
             val = value;
             return true;
+        }
+
+        public static Span<T> xAsSpan<T>(this List<T> array, int start=0, int length=0)
+        {
+            if (array.xIsEmpty()) return Span<T>.Empty;
+            if (start < 0 || start >= array.Count) throw new ArgumentOutOfRangeException(nameof(start));
+            if (length < 0 || (start + length) > array.Count) throw new ArgumentOutOfRangeException(nameof(length));
+            if (length == 0 && start == 0) return CollectionsMarshal.AsSpan(array);
+            if (length == 0) length = array.Count - start;
+            return CollectionsMarshal.AsSpan(array).Slice(start, length);
+        }
+
+        public static ReadOnlySpan<T> xAsReadOnlySpan<T>(this List<T> array, int start = 0, int length = 0)
+        {
+            return array.xAsSpan(start, length);
+        }
+
+        public static Memory<T> xAsMemory<T>(this List<T> array, int start = 0, int length = 0)
+        {
+            if (array.xIsEmpty()) return Memory<T>.Empty;
+            if (start < 0 || start >= array.Count) throw new ArgumentOutOfRangeException(nameof(start));
+            if (length < 0 || (start + length) > array.Count) throw new ArgumentOutOfRangeException(nameof(length));
+            if (length == 0 && start == 0) return CollectionsMarshal.AsSpan(array).ToArray();
+            if (length == 0) length = array.Count - start;
+            return CollectionsMarshal.AsSpan(array).Slice(start, length).ToArray();
+        }
+
+        public static ReadOnlyMemory<T> xAsReadOnlyMemory<T>(this List<T> array, int start = 0, int length = 0)
+        {
+            return array.xAsMemory(start, length);
         }
     }
 }

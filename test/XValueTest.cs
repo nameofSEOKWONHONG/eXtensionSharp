@@ -164,5 +164,13 @@ public class XValueTest
         var s = f.xValue<string>();
         Assert.That(s, Is.EqualTo(f.ToString()));
     }
+
+    [Test]
+    public void string_to_double_test()
+    {
+        var s = "0.1";
+        var d = s.xValue<double>();
+        Assert.That(d.ToString(), Is.EqualTo(s));
+    }
 }
 
