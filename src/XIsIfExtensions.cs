@@ -48,7 +48,7 @@ namespace eXtensionSharp
             {
                 return string.IsNullOrWhiteSpace(v);
             }
-            
+
             switch (obj)
             {
                 case ICollection { Count: 0 }:
@@ -59,17 +59,17 @@ namespace eXtensionSharp
                 default: return false;
             }
         }
-        
+
         public static bool xIsNotEmpty<T>(this T obj)
         {
             return !obj.xIsEmpty();
         }
-        
+
         public static bool xIsEmptyNumber<T>(this T number)
             where T : INumber<T>
         {
             if (number.xIsEmpty()) return true;
-            
+
             T zero = default;
             return number <= zero;
         }
@@ -84,6 +84,11 @@ namespace eXtensionSharp
         {
             if (src.xIsEmpty()) return false;
             if (compare.xIsEmpty()) return false;
+
+            if (src is string)
+            {
+                return (src as string).Equals(compare as string, StringComparison.OrdinalIgnoreCase);
+            }
             return src.Equals(compare);
         }
 
@@ -92,13 +97,13 @@ namespace eXtensionSharp
             return !src.xIsSame(compare);
         }
 
-        public static void xIf<T>(this T item, Expression<Func<T, bool>> compare, Action match, Action notMatch = null)
+        #endregion [xIs Series]
+        
+        public static void xIf<T>(this T item, Expression<Func<T, bool>> compare, Action<T> match, Action<T> notMatch = null)
         {
             var @case = compare.Compile().Invoke(item);
-            if(@case) match?.Invoke();
-            else notMatch?.Invoke();
+            if (@case) match?.Invoke(item);
+            else notMatch?.Invoke(item);
         }
-
-        #endregion [xIs Series]
     }
 }

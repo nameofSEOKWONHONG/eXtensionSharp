@@ -1,9 +1,6 @@
 using System.IO.Compression;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace eXtensionSharp
 {
@@ -285,47 +282,6 @@ namespace eXtensionSharp
         public static Guid xToGuid(this string str) => Guid.Parse(str);
 
         public static string xToString(this Guid guid, string format = "") => guid.ToString();
-
-        /// <summary>
-        /// string to number
-        /// </summary>
-        /// <param name="value">The value to convert.</param>
-        /// <typeparam name="T">The type of the number to convert to.</typeparam>
-        /// <returns>The converted number.</returns>
-        /// <example> 
-        /// <code>
-        /// [example]
-        /// var s = "5";
-        /// var ss = s.xToNumber&lt;int&gt;();
-        /// Console.WriteLine(ss); //output:5
-        /// </code>
-        /// </example>
-        public static T xToNumber<T>(this string value) where T : struct
-        {
-            return (T)Convert.ChangeType(value, typeof(T));
-        }
-
-        /// <summary>
-        /// string to extract number
-        /// </summary>
-        /// <param name="value"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        /// <example>
-        /// <code>
-        /// var s = "(5)";
-        /// var ss = s.xExtractNumber&lt;int&gt;();
-        /// Console.WriteLine(ss); //output:5
-        /// </code>
-        /// </example>
-        public static T xExtractNumber<T>(this string value) where T : struct
-        {
-            // 숫자가 아닌 문자(\D)를 찾음
-            string pattern = @"\D";
-            // 숫자가 아닌 문자를 공백으로 대체
-            string result = Regex.Replace(value, pattern, ""); 
-            return result.xToNumber<T>();
-        }
 
         /// <summary>
         /// seperate to string arry

@@ -7,29 +7,32 @@ namespace eXtensionSharp
     {
         public static T xDeserialize<T>(this string jsonString, JsonSerializerOptions options = null)
         {
-            if (options.xIsEmpty())
+            if (options.xIsNotEmpty())
             {
-                options = new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true, 
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                };
+                return JsonSerializer.Deserialize<T>(jsonString, options);
             }
+            
+            options = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true,
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            };            
             return JsonSerializer.Deserialize<T>(jsonString, options);
         }
         
         public static string xSerialize<T>(this T entity, JsonSerializerOptions options = null)
             where T : class
         {
-            if (options.xIsEmpty())
+            if (options.xIsNotEmpty())
             {
-                options = new JsonSerializerOptions()
-                {
-                    PropertyNameCaseInsensitive = true, 
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                };
+                return JsonSerializer.Serialize(entity, options);
             }
             
+            options = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true, 
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            };            
             return JsonSerializer.Serialize(entity, options);
         }        
     }

@@ -19,6 +19,21 @@ namespace eXtensionSharp.test
         {
             var a = "A";
             Assert.That(a.xIsSame("A"), Is.True);
+            Assert.That(a.xIsNotSame("a"), Is.False);
+        }
+
+        [Test]
+        public void class_match()
+        {
+            TestObject obj1 = new TestObject() { Id = 1, Name = "test", Next = null };
+            TestObject obj2 = new TestObject() { Id = 1, Name = "test", Next = null };
+            TestObject obj3 = obj1;
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(obj1.xIsSame(obj2), Is.False);
+                Assert.That(obj1.xIsSame(obj3), Is.True);
+            });
         }
 
         [Test]
