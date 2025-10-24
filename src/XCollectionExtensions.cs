@@ -79,7 +79,7 @@ namespace eXtensionSharp
                             return true;
                         }
                     }
-                    
+
                     var v = GetPropertyValue(src, item.Name);
                     var exist = dest.xGetProperties().Where(m => m.CanWrite).Where(m => m.Name == item.Name);
                     if (exist.Any())
@@ -89,7 +89,7 @@ namespace eXtensionSharp
 
                     return true;
                 });
-        } 
+        }
 
         /// <summary>
         /// Checks if a property type matches one of the predefined types (e.g., int, string, DateTime, etc.).
@@ -111,14 +111,14 @@ namespace eXtensionSharp
                 DataTypeName.Byte,
                 DataTypeName.SByte,
                 DataTypeName.Char,
-                DataTypeName.UInt, 
+                DataTypeName.UInt,
                 DataTypeName.IntPtr,
                 DataTypeName.UIntPtr,
                 DataTypeName.Long,
                 DataTypeName.ULong,
                 DataTypeName.Short,
                 DataTypeName.UShort,
-                
+
                 DataTypeName.NullableInt16,
                 DataTypeName.NullableInt32,
                 DataTypeName.NullableInt64,
@@ -129,7 +129,7 @@ namespace eXtensionSharp
                 DataTypeName.NullableByte,
                 DataTypeName.NullableSByte,
                 DataTypeName.NullableChar,
-                DataTypeName.NullableUInt, 
+                DataTypeName.NullableUInt,
                 DataTypeName.NullableIntPtr,
                 DataTypeName.NullableUIntPtr,
                 DataTypeName.NullableLong,
@@ -165,7 +165,7 @@ namespace eXtensionSharp
         /// <returns>A collection of dictionaries representing the objects.</returns>
         public static IEnumerable<DynamicDictionary<object>> xToDictionaries<T>(this IEnumerable<T> values) where T : class
         {
-            if(typeof(T) == typeof(ExpandoObject)) 
+            if (typeof(T) == typeof(ExpandoObject))
             {
                 return values.Select(m => new DynamicDictionary<object>((IDictionary<string, object>)m));
             }
@@ -191,7 +191,7 @@ namespace eXtensionSharp
                 dataTable.Columns.Cast<DataColumn>().ToDictionary(column => column.ColumnName, column => row[column])
             ).ToList();
         }
-        
+
         /// <summary>
         /// Counts the number of elements in a collection, optionally using a predicate to filter the elements.
         /// </summary>
@@ -255,7 +255,7 @@ namespace eXtensionSharp
             if (src.xIsEmpty()) return false;
             return src.Where(m => m.xContains(compares)).xIsNotEmpty();
         }
-        
+
         /// <summary>
         /// Retrieves the first element from a collection that matches a given condition, or the first element if no condition is specified.
         /// </summary>
@@ -268,7 +268,7 @@ namespace eXtensionSharp
             if (enumerable.xIsEmpty()) return default;
 
             if (predicate.xIsNotEmpty()) return enumerable.FirstOrDefault(predicate);
-            
+
             return enumerable.FirstOrDefault();
         }
 
@@ -284,7 +284,7 @@ namespace eXtensionSharp
             if (enumerable.xIsEmpty()) return default;
 
             if (predicate.xIsNotEmpty()) return enumerable.LastOrDefault(predicate);
-            
+
             return enumerable.LastOrDefault();
         }
 
@@ -325,7 +325,7 @@ namespace eXtensionSharp
             if (value >= from && value <= to) return true;
             return false;
         }
-        
+
         /// <summary>
         /// Checks if a DateTime value is between two other DateTime values, inclusive.
         /// </summary>
@@ -352,7 +352,7 @@ namespace eXtensionSharp
             if (value >= from && value <= to) return true;
             return false;
         }
-        
+
         /// <summary>
         /// Checks if a TimeSpan value is between two nullable TimeSpan values, inclusive.
         /// </summary>
@@ -364,12 +364,12 @@ namespace eXtensionSharp
         {
             if (from.xIsEmpty()) throw new Exception("from is empty");
             if (to.xIsEmpty()) throw new Exception("to is empty");
-            
+
             if (value <= TimeSpan.Zero) throw new Exception("not allow value");
-            
+
             if (value >= from && value <= to) return true;
             return false;
-        }        
+        }
 
         /// <summary>
         /// Checks if a char value is between two other char values, inclusive, with an option for strict comparison.
@@ -414,7 +414,7 @@ namespace eXtensionSharp
             });
             return System.Text.Encoding.UTF8.GetBytes(objToString);
         }
-    
+
 
         public static byte[] xFloatArrayToBytes(this float[] arr)
         {
@@ -479,7 +479,7 @@ namespace eXtensionSharp
             return true;
         }
 
-        public static Span<T> xAsSpan<T>(this List<T> array, int start=0, int length=0)
+        public static Span<T> xAsSpan<T>(this List<T> array, int start = 0, int length = 0)
         {
             if (array.xIsEmpty()) return Span<T>.Empty;
             if (start < 0 || start >= array.Count) throw new ArgumentOutOfRangeException(nameof(start));
@@ -508,5 +508,65 @@ namespace eXtensionSharp
         {
             return array.xAsMemory(start, length);
         }
+
+        public static DiffResult<T> xDiff<T, TKey>(this IEnumerable<T> oldSet,
+            IEnumerable<T> newSet,
+            Func<T, TKey> keySelector,
+            IEqualityComparer<TKey> keyComparer = null,
+            IEqualityComparer<T> valueComparer = null)
+        {
+            keyComparer ??= EqualityComparer<TKey>.Default;
+            valueComparer ??= EqualityComparer<T>.Default;
+
+            var oldMap = new Dictionary<TKey, T>(keyComparer);
+            var visited = new HashSet<TKey>(keyComparer);
+
+            foreach (var o in oldSet)
+            {
+                var key = keySelector(o);
+                // 키 중복이 있으면 마지막 값으로 덮어씀(고유키 전제)
+                oldMap[key] = o;
+            }
+
+            var added = new List<T>();
+            var removed = new List<T>();
+            var updated = new List<(T OldItem, T NewItem)>();
+            var unchanged = new List<T>();
+
+            foreach (var n in newSet)
+            {
+                var key = keySelector(n);
+
+                if (!oldMap.TryGetValue(key, out var o))
+                {
+                    added.Add(n);
+                }
+                else
+                {
+                    if (valueComparer.Equals(o, n))
+                        unchanged.Add(n);
+                    else
+                        updated.Add((o, n));
+
+                    visited.Add(key);
+                }
+            }
+
+            // newSet에 없던 키 = 삭제
+            foreach (var (k, o) in oldMap)
+            {
+                if (!visited.Contains(k))
+                    removed.Add(o);
+            }
+
+            return new DiffResult<T>(added, removed, updated, unchanged);
+        }
     }
+
+    public sealed record DiffResult<T>(
+        IReadOnlyList<T> Added,
+        IReadOnlyList<T> Removed,
+        IReadOnlyList<(T OldItem, T NewItem)> Updated,
+        IReadOnlyList<T> Unchanged
+    );
 }

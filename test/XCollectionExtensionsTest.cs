@@ -22,7 +22,7 @@ public class PersonDto
     public int Age { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
-    
+
 
 public class XCollectionExtensionsTest
 {
@@ -60,7 +60,7 @@ public class XCollectionExtensionsTest
     [Test]
     public void xMapping_T1T1_MapsPrimitiveLikeTypes_And_SkipsExclusions()
     {
-        var src  = new Person { Name = "A", Age = 10, CreatedAt = new DateTime(2024, 1, 1) };
+        var src = new Person { Name = "A", Age = 10, CreatedAt = new DateTime(2024, 1, 1) };
         var dest = new Person { Name = "B", Age = 99, CreatedAt = new DateTime(2000, 1, 1) };
 
         src.xMapping<Person, Person>(dest, new[] { nameof(Person.Age) });
@@ -73,7 +73,7 @@ public class XCollectionExtensionsTest
     [Test]
     public void xMapping_T1T2_MapsByMatchingNames()
     {
-        var src  = new Person { Name = "A", Age = 10, CreatedAt = new DateTime(2024, 1, 1) };
+        var src = new Person { Name = "A", Age = 10, CreatedAt = new DateTime(2024, 1, 1) };
         var dest = new PersonDto { Name = "B", Age = 99, CreatedAt = null };
 
         src.xMapping<Person, PersonDto>(dest);
@@ -156,4 +156,63 @@ public class XCollectionExtensionsTest
         Assert.That(v2, Is.EqualTo(1));
         Assert.That(dict["A"], Is.EqualTo(1));
     }
+
+    [Test]
+    public void diff_test()
+    {
+        var oldList = new List<MetaTable>
+        {
+            new MetaTable { Id = 1, Name = "A", Description = "Old A" },
+            new MetaTable { Id = 2, Name = "B", Description = "Old B" },
+            new MetaTable { Id = 3, Name = "C", Description = "Old C" }
+        };
+
+        var newList = new List<MetaTable>
+        {
+            new MetaTable { Id = 2, Name = "B", Description = "Old B" }, // unchanged
+            new MetaTable { Id = 3, Name = "C", Description = "New C" }, // updated
+            new MetaTable { Id = 4, Name = "D", Description = "New D" }  // added
+        };
+
+        var diffResult = oldList.xDiff<MetaTable, string>(newList, x => x.Name, valueComparer: new MetaTableValueComparer());
+
+        Assert.That(diffResult.Added.Count, Is.EqualTo(1));
+        Assert.That(diffResult.Added[0].Id, Is.EqualTo(4));
+
+        Assert.That(diffResult.Removed.Count, Is.EqualTo(1));
+        Assert.That(diffResult.Removed[0].Id, Is.EqualTo(1));
+
+        Assert.That(diffResult.Updated.Count, Is.EqualTo(1));
+        Assert.That(diffResult.Updated[0].OldItem.Id, Is.EqualTo(3));
+        Assert.That(diffResult.Updated[0].NewItem.Description, Is.EqualTo("New C"));
+
+        Assert.That(diffResult.Unchanged.Count, Is.EqualTo(1));
+        Assert.That(diffResult.Unchanged[0].Id, Is.EqualTo(2));
+    }
+}
+
+public class MetaTable
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
+}
+
+public sealed class MetaTableValueComparer : IEqualityComparer<MetaTable>
+{
+    public bool Equals(MetaTable x, MetaTable y)
+        => x is null ? y is null
+                     : y is not null &&
+                       x.Name == y.Name &&
+                       x.Description == y.Description;
+
+    public int GetHashCode(MetaTable obj)
+        => HashCode.Combine(obj.Name, obj.Description);
+}
+
+public class SyncTable
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Description { get; set; } = "";
 }
