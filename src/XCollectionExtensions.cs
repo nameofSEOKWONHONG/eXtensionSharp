@@ -10,6 +10,9 @@ using System.Text.Json;
 
 namespace eXtensionSharp
 {
+
+
+
     public static class XCollectionExtensions
     {
         /// <summary>
@@ -31,29 +34,8 @@ namespace eXtensionSharp
             });
         }
 
-        /// <summary>
-        /// Gets the value of a specified property of an object.
-        /// </summary>
-        /// <param name="obj">The object whose property value is to be retrieved.</param>
-        /// <param name="propertyName">The name of the property to get the value of.</param>
-        /// <returns>The value of the property, or null if the property does not exist.</returns>
-        private static object GetPropertyValue(object obj, string propertyName)
-        {
-            var propertyInfo = obj.GetType().GetProperty(propertyName);
-            return propertyInfo?.GetValue(obj);
-        }
 
-        /// <summary>
-        /// Sets the value of a specified property of an object.
-        /// </summary>
-        /// <param name="obj">The object whose property value is to be set.</param>
-        /// <param name="propertyName">The name of the property to set the value of.</param>
-        /// <param name="value">The value to set the property to.</param>
-        private static void SetPropertyValue(object obj, string propertyName, object value)
-        {
-            var propertyInfo = obj.GetType().GetProperty(propertyName);
-            propertyInfo?.SetValue(obj, value);
-        }
+
 
         /// <summary>
         /// Maps the properties of one object to another of a different type, optionally excluding certain properties from being mapped.

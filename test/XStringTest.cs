@@ -126,7 +126,7 @@ namespace eXtensionSharp.test {
         public void xcount_test()
         {
             var v = "hello world";
-            var n = v.xCount();
+            var n = v.xLength();
             Assert.That(n, Is.EqualTo(v.Length));
             
             n = v.xCount('o');
