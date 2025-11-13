@@ -1,7 +1,8 @@
-using System;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace eXtensionSharp.V2;
@@ -344,6 +345,19 @@ public static class StringExtensions
         public bool xEquals(string dest)
         {
             return string.Equals(source, dest, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public T xDeserialize<T>(JsonSerializerOptions options = null)
+        {
+            if (options.xIsEmpty())
+            {
+                options = new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true, 
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                };
+            }
+            return JsonSerializer.Deserialize<T>(source, options);
         }
     }
 }

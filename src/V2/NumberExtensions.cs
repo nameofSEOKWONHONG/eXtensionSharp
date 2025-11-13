@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using System.Text;
 
 namespace eXtensionSharp.V2;
@@ -28,6 +29,25 @@ public static class NumberExtensions
             }
 
             return lowerCase ? builder.ToString().ToLower() : builder.ToString();
+        }
+    }
+}
+
+public static class INumberExtensions
+{
+    extension<T>(T source) where T : INumber<T>
+    {
+        public bool xIsEmptyNumber()
+        {
+            if (source.xIsEmpty()) return true;
+            
+            T zero = default;
+            return source <= zero;
+        }
+
+        public bool xIsNotEmptyNumber()
+        {
+            return !source.xIsEmptyNumber();
         }
     }
 }
