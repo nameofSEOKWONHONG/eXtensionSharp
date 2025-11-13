@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bogus" Version="35.6.4" />
+      <PackageReference Include="Bogus" Version="35.6.5" />
       <PackageReference Include="Collections.Pooled" Version="1.0.82" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
       <PackageReference Include="NUnit" Version="4.4.0" />
       <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
-      <PackageReference Include="NUnit.Analyzers" Version="4.10.0">
+      <PackageReference Include="NUnit.Analyzers" Version="4.11.2">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
