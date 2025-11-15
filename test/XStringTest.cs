@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using eXtensionSharp.V2;
+
 namespace eXtensionSharp.test {
     public class XStringTest {
         [Test]

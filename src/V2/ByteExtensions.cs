@@ -2,7 +2,7 @@ using System;
 using System.IO.Compression;
 using System.Text;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class ByteExtensions
 {

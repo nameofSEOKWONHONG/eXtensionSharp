@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class DataTableExtensions
 {

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 using NUnit.Framework;
-using JsonSerializer = System.Text.Json.JsonSerializer;
-using eXtensionSharp.V2;
+
 namespace eXtensionSharp.test;
 
 public class XSerializeTest

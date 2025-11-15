@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using eXtensionSharp.V2;
 
 namespace eXtensionSharp.test;
 

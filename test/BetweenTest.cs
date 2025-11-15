@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using eXtensionSharp.V2;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test

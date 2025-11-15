@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class DateTimeRangeExtensions
 {

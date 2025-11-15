@@ -2,8 +2,7 @@ using NUnit.Framework;
 using System.Dynamic;
 using System.Collections.Generic;
 using System.Linq;
-using Bogus.DataSets;
-using eXtensionSharp.V2;
+
 namespace eXtensionSharp.test
 {
     public class XObjectTest

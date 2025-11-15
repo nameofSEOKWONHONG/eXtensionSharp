@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class DictionaryExtensions
 {

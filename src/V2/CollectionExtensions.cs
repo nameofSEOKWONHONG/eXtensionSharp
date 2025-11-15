@@ -1,6 +1,6 @@
 using System;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class CollectionExtensions
 {

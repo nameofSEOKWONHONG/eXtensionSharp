@@ -4,7 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class ListExtensions
 {

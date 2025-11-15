@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class RegularExpressionExtensions
 {

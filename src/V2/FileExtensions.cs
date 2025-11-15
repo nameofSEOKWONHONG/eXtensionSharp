@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class FileExtensions
 {

@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using eXtensionSharp.Job;
-using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using NUnit.Framework;
-using eXtensionSharp.V2;
 
 namespace eXtensionSharp.test {
     public class xForEachTest {

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace eXtensionSharp.V2;
+namespace eXtensionSharp;
 
 public static class GenericExteions
 {

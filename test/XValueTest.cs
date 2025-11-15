@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
 using NUnit.Framework;
-using eXtensionSharp.V2;
 namespace eXtensionSharp.test;
 
 public class XValueTest

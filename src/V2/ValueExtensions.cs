@@ -1,8 +1,7 @@
 using System;
 using System.Text.Json;
 
-namespace eXtensionSharp.V2;
-
+namespace eXtensionSharp;
 
 public static class ValueExtensions
 {
