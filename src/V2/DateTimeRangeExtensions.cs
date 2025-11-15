@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace eXtensionSharp.V2;
 
@@ -14,13 +15,13 @@ public static class DateTimeRangeExtensions
             }
         }
 
-        public void xForEach(Func<int, DateTime, bool> func)
+        public void xForEach(Func<DateTime, int, bool> func)
         {
             var idx = 0;
-            for (var i = source.Item1; i < source.Item2; i = i.AddDays(1))
+            for (var i = source.Item1; i <= source.Item2; i = i.AddDays(1))
             {
-                var @break = func(idx, i);
-                if (@break) break;
+                var @break = func(i, idx);
+                if (!@break) break;
 
                 idx += 1;
             }
@@ -28,7 +29,10 @@ public static class DateTimeRangeExtensions
 
         public void xForEach(Func<DateTime, bool> func)
         {
-            source.xForEach((index, item) => func(item));
+            source.xForEach((item, index) => func(item));
         }
+
+  
     }
 }
+

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using eXtensionSharp.V2;
 
 namespace eXtensionSharp.test;
 
@@ -12,8 +13,8 @@ public class XIsIfExtensionTest
         var expected = true;
         const string a = "a";
         a.xIf(m => m == "a", 
-            () => Assert.That(expected, Is.True), 
-            () => Assert.That(expected, Is.False));
+            (m) => Assert.That(expected, Is.True), 
+            (m) => Assert.That(expected, Is.False));
     }
 
     [Test]
@@ -22,8 +23,8 @@ public class XIsIfExtensionTest
         var a = 1;
         var result = 0;
         a.xIf(m => m > 2, 
-            () => result = 1, 
-            () => result = 2);
+            (m) => result = 1, 
+            (m) => result = 2);
         
         Assert.That(a, Is.Not.EqualTo(result));
     }

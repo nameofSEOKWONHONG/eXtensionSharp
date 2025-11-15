@@ -174,6 +174,14 @@ public static class CollectionExtensions
                 action(lst[i], item2[i], item3[i]);
             }
         }
+
+
+        
+
+
+
+
+  
     }
 }
 

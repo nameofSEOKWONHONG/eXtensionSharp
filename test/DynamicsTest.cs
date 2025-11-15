@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using eXtensionSharp.V2;
 
 namespace eXtensionSharp.test;
 
@@ -207,7 +208,7 @@ public class DynamicsTest
             xs.Add(1);
             xs.Add("x");
             //Assert.Throws<ArgumentOutOfRangeException>(() => { var _ = xs[1]; });
-            Assert.That(xs.xGetSafe(2), Is.Default);
+            Assert.That(xs.xGet(2), Is.Default);
         }
     }
 }

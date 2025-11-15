@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using eXtensionSharp.V2;
 using NUnit.Framework;
 
 namespace eXtensionSharp.test;
@@ -43,8 +44,8 @@ public class XDateTimeTest
         });
 
         var now = DateTime.Now;
-        var from = now.xFromDate().AddDays(1);
-        var to = now.xToDate().AddDays(10);
+        var from = now.xStartDate().AddDays(1);
+        var to = now.xEndDate().AddDays(10);
         var selectedItems = items.Where(m => m.Value >= from && m.Value < to).ToList();
         Assert.That(selectedItems.Count, Is.EqualTo(10));
     }
@@ -53,7 +54,7 @@ public class XDateTimeTest
     public void dateformat_culture_test()
     {
         var date = DateTime.Now;
-        var convertedDate = date.xToDateFormat(new CultureInfo("en-US"), "m");
+        var convertedDate = date.xToDate(new CultureInfo("en-US"), "m");
         TestContext.WriteLine(convertedDate);
 
         TestContext.WriteLine(date.xToDayOfWeek());

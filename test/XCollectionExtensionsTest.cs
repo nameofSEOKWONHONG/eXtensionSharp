@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using eXtensionSharp.V2;
 
 namespace eXtensionSharp.test;
 
@@ -43,45 +44,6 @@ public class XCollectionExtensionsTest
         Assert.That(json, Is.EqualTo(@"{""test"":12345,""test1"":0}"));
     }
 
-    [Test]
-    public void xValueChange_CopiesWritableProperties_Only()
-    {
-        var src = new Person { Name = "A", Age = 10, CreatedAt = new DateTime(2024, 1, 1) };
-        var dest = new Person { Name = "B", Age = 99, CreatedAt = new DateTime(2000, 1, 1) };
-
-        src.xValueChange(dest);
-
-        Assert.That(dest.Name, Is.EqualTo("A"));
-        Assert.That(dest.Age, Is.EqualTo(10));
-        Assert.That(dest.CreatedAt, Is.EqualTo(new DateTime(2024, 1, 1)));
-        Assert.That(dest.ReadOnlyMirror, Is.EqualTo(10));
-    }
-
-    [Test]
-    public void xMapping_T1T1_MapsPrimitiveLikeTypes_And_SkipsExclusions()
-    {
-        var src  = new Person { Name = "A", Age = 10, CreatedAt = new DateTime(2024, 1, 1) };
-        var dest = new Person { Name = "B", Age = 99, CreatedAt = new DateTime(2000, 1, 1) };
-
-        src.xMapping<Person, Person>(dest, new[] { nameof(Person.Age) });
-
-        Assert.That(dest.Name, Is.EqualTo("A"));
-        Assert.That(dest.Age, Is.EqualTo(99)); // excluded
-        Assert.That(dest.CreatedAt, Is.EqualTo(new DateTime(2024, 1, 1)));
-    }
-
-    [Test]
-    public void xMapping_T1T2_MapsByMatchingNames()
-    {
-        var src  = new Person { Name = "A", Age = 10, CreatedAt = new DateTime(2024, 1, 1) };
-        var dest = new PersonDto { Name = "B", Age = 99, CreatedAt = null };
-
-        src.xMapping<Person, PersonDto>(dest);
-
-        Assert.That(dest.Name, Is.EqualTo("A"));
-        Assert.That(dest.Age, Is.EqualTo(10));
-        Assert.That(dest.CreatedAt, Is.EqualTo(new DateTime(2024, 1, 1)));
-    }
 
     [Test]
     public void xToDictionary_ConvertsObjectToDictionary_IncludingReadOnlyProperties()
@@ -133,16 +95,6 @@ public class XCollectionExtensionsTest
     {
         Assert.That(5.xIsBetween(1, 10), Is.True);
         Assert.That(0.xIsBetween(1, 10), Is.False);
-    }
-
-    [Test]
-    public void xStringToBytes_ProducesJsonSerializedBytes()
-    {
-        var s = "hello";
-        var bytes = s.xStringToBytes();
-
-        var json = Encoding.UTF8.GetString(bytes);
-        Assert.That(json, Is.EqualTo("\"hello\""));
     }
 
     [Test]

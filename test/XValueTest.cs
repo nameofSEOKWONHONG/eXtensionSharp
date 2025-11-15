@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using NUnit.Framework;
-
+using eXtensionSharp.V2;
 namespace eXtensionSharp.test;
 
 public class XValueTest
@@ -117,22 +117,22 @@ public class XValueTest
     public void array_to_safe_value()
     {
         var array1 = new int[] {1, 2, 3};
-        var real = array1.xGetSafe(0);
+        var real = array1.xGet(0);
         Assert.That(real, Is.EqualTo(1));
         
         var array2 = new string[] {"1", "2", "3"};
-        var real2 = array2.xGetSafe(0);
+        var real2 = array2.xGet(0);
         Assert.That(real2, Is.EqualTo("1"));
 
         var array3 = Array.Empty<string>();
-        var real3 = array3.xGetSafe(0);
+        var real3 = array3.xGet(0);
         Assert.That(real3, Is.Null);
         
         var array4 = new TestObject[] {new TestObject() {Name = "test"}, new TestObject() {Name = "test2"}};
-        var real4 = array4.xGetSafe(0);
+        var real4 = array4.xGet(0);
         Assert.That(real4.Name, Is.EqualTo("test"));
 
-        var real5 = array4.xGetSafe(3);
+        var real5 = array4.xGet(3);
         Assert.That(real5, Is.Null);
     }
 

@@ -172,7 +172,7 @@ public static class StringExtensions
             var hash = new HashSet<char>();
             source.xForEach(item => { hash.Add(item); });
 
-            return source.xJoin(string.Empty);
+            return hash.xJoin(string.Empty);
         }
 
         public Guid xToGuid()
@@ -359,5 +359,87 @@ public static class StringExtensions
             }
             return JsonSerializer.Deserialize<T>(source, options);
         }
+
+        public bool xContains(IEnumerable<string> arr)
+        {
+            return arr.Contains(source);
+        } 
+
+        /// <summary>
+        /// Checks if a property type matches one of the predefined types (e.g., int, string, DateTime, etc.).
+        /// </summary>
+        /// <param name="propertyTypeName">The name of the property type to check.</param>
+        /// <returns>True if the property type matches one of the predefined types, otherwise false.</returns>
+        public bool xIsTypeMatch()
+        {
+            return source.xContains(new string[]
+            {
+                DataTypeName.Int16,
+                DataTypeName.Int32,
+                DataTypeName.Int64,
+                DataTypeName.Double,
+                DataTypeName.String,
+                DataTypeName.Float,
+                DataTypeName.Decimal,
+                DataTypeName.DateTime,
+                DataTypeName.Byte,
+                DataTypeName.SByte,
+                DataTypeName.Char,
+                DataTypeName.UInt, 
+                DataTypeName.IntPtr,
+                DataTypeName.UIntPtr,
+                DataTypeName.Long,
+                DataTypeName.ULong,
+                DataTypeName.Short,
+                DataTypeName.UShort,
+                
+                DataTypeName.NullableInt16,
+                DataTypeName.NullableInt32,
+                DataTypeName.NullableInt64,
+                DataTypeName.NullableDouble,
+                DataTypeName.NullableFloat,
+                DataTypeName.NullableDecimal,
+                DataTypeName.NullableDateTime,
+                DataTypeName.NullableByte,
+                DataTypeName.NullableSByte,
+                DataTypeName.NullableChar,
+                DataTypeName.NullableUInt, 
+                DataTypeName.NullableIntPtr,
+                DataTypeName.NullableUIntPtr,
+                DataTypeName.NullableLong,
+                DataTypeName.NullableULong,
+                DataTypeName.NullableShort,
+                DataTypeName.NullableUShort,
+                DataTypeName.NullableDateTime
+            });
+        }        
+
+        public string xCultureDiaplayName()
+        {
+            if (source.xIsEmpty()) return string.Empty;
+            
+            var culture = new System.Globalization.CultureInfo(source);
+            return culture.DisplayName;
+        }
+
+        public string xCultureEnglishName()
+        {
+            if (source.xIsEmpty()) return string.Empty;
+            
+            var culture = new System.Globalization.CultureInfo(source);
+            return culture.EnglishName;
+        }    
+
+        /// <summary>
+        /// Converts a string representation of a date to a <see cref="DateTime"/> object.
+        /// </summary>
+        /// <returns>A <see cref="DateTime"/> object if successful; otherwise, null.</returns>
+        public DateTime? xConvertToDate()
+        {
+            if (DateTime.TryParse(source, out var datetime))
+                return datetime;
+
+            return null;
+        }            
     }
 }

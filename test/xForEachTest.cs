@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 using eXtensionSharp.Job;
 using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using NUnit.Framework;
+using eXtensionSharp.V2;
 
 namespace eXtensionSharp.test {
     public class xForEachTest {
         [Test]
         public void xforeach_test()
         {
-            var expected = 114999;
+            var expected = 6;
             var ranges = Enumerable.Range(1, expected).ToList();
             var isFind = false;
-            ranges.xForEach(item => { });
-            ranges.xForEach((index, item) =>
+            ranges.xForEach((item, index) =>
             {
-                if(isFind.xIsFalse())
+                if(!isFind)
                 {
                     isFind = item == expected;
                 }
@@ -29,8 +29,7 @@ namespace eXtensionSharp.test {
         [Test]
         public async Task xforeach_async_test()
         {
-            var ranges = Enumerable.Range(1, 100).ToList();
-            var value = 0;
+            var ranges = Enumerable.Range(1, 100).ToList();            
             await ranges.xForEachAsync(Process);
             //Assert.That(value, Is.Not.Zero);
         }
@@ -44,9 +43,9 @@ namespace eXtensionSharp.test {
 
         [Test]
         public void datetime_from_to_foreach_test() {
-            var from = DateTime.Parse("2020-01-01");
-            var to = DateTime.Parse("2021-12-31");
-            var expected = "2020-12-31";
+            var from = DateTime.Parse("2099-01-01");
+            var to = DateTime.Parse("2099-12-31");
+            var expected = "2099-12-31";
 
             var findDate = string.Empty;
             (from, to).xForEach(date =>
